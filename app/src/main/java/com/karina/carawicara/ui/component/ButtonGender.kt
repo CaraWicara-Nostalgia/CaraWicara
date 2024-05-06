@@ -41,19 +41,13 @@ fun ButtonGender (
         else -> Color.Gray
     }
 
-    val containerColor = when (text) {
-        "Laki-laki" -> MaterialTheme.colorScheme.primary
-        "Perempuan" -> MaterialTheme.colorScheme.secondary
-        else -> Color.White
-    }
-
     Button(
         onClick = {
             isClicked.value = !isClicked.value
             onClick()
         },
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isClicked.value) containerColor else Color.White,
+            containerColor = Color.White,
             contentColor = MaterialTheme.colorScheme.primary
         ),
         shape = RoundedCornerShape(16.dp),
