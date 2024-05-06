@@ -3,4 +3,5 @@
     <string name="onboardTitle">Pilih Jenis Kelamin</string>
     <string name="onboardDescription">Aplikasi akan dikustomisasi berdasarkan pilihan</string>
     <string name="genderBoy">Laki-laki</string>
+    <string name="welcome">Selamat Datang di</string>
 </resources>
