@@ -11,12 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
@@ -32,6 +30,10 @@ import com.karina.carawicara.ui.component.ImageLibrary
 
 @Composable
 fun LibraryDetailPage(navController: NavHostController) {
+    val openDialog = remember {
+        mutableStateOf(false)
+    }
+
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -57,7 +59,7 @@ fun LibraryDetailPage(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 ButtonNav(
-                    onClick = { /*TODO*/ },
+                    onClick = { openDialog.value = true },
                     icon = R.drawable.ic_filter,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
@@ -136,6 +138,17 @@ fun LibraryDetailPage(navController: NavHostController) {
                         }
                     }
                 }
+            }
+        }
+        if (openDialog.value) {
+            Dialog(
+                onDismissRequest = { openDialog.value = false }
+            ) {
+                FilterDialog(
+                    image1 = R.drawable.umum,
+                    image2 = R.drawable.hewan,
+                    image3 = R.drawable.tumbuhan
+                )
             }
         }
     }
