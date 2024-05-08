@@ -28,8 +28,8 @@ fun SplashScreen(
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = modifier
-            .fillMaxSize() // Mengisi seluruh layar
-            .background(MaterialTheme.colorScheme.primary) // Mengatur background ke warna primary
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primary)
     ) {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,8 +50,8 @@ fun SplashScreen(
         Image(
             painter = painterResource(id = R.drawable.two_child),
             contentDescription = null,
-            alignment = Alignment.BottomEnd, // Posisi gambar di bawah kanan
-            modifier = Modifier.fillMaxSize() // Mengisi seluruh container
+            alignment = Alignment.BottomEnd,
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
