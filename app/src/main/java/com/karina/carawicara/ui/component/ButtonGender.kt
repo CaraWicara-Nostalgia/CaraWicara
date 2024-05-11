@@ -70,7 +70,7 @@ fun ButtonGender (
                 )
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                     color = Color.Black,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(end = 32.dp, start = 32.dp, top = 16.dp, bottom = 16.dp)
