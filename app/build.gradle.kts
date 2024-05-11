@@ -69,4 +69,7 @@ dependencies {
 
     implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
+    implementation("com.masoudss.lib:waveformSeekBar:2.0.0")
+    implementation("com.cleveroad:audiovisualization:1.0.1")
+    implementation("com.example:waveview-library:version")
 }
