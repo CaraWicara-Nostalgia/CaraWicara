@@ -6,14 +6,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,29 +23,30 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ButtonAlphabet(
     onClick: () -> Unit,
-    text: String,
-    enabled: Boolean = true
+    alphabet: String,
+    isSelected: Boolean,
+    borderColor: Int,
+    backgroundColor: Int
 ) {
-    val borderColor = if (enabled) Color.DarkGray else Color.LightGray
-    val fontColor = if (enabled) Color.Black else Color.LightGray
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .clickable(onClick = onClick, enabled = enabled)
-            .border(2.dp, color = borderColor, shape = RoundedCornerShape(12.dp))
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp)) // Use the dynamic background color here
-            .size(48.dp, 52.dp)
+            .clickable(onClick = onClick)
+            .border(2.dp, color = Color(borderColor), shape = RoundedCornerShape(12.dp))
+            .background(color = Color(backgroundColor), shape = RoundedCornerShape(12.dp))
+            .size(93.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = text,
-                color = fontColor,
-                fontSize = 20.sp
+                text = alphabet,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White,
+                fontSize = 48.sp
             )
         }
     }
@@ -51,9 +54,12 @@ fun ButtonAlphabet(
 
 @Preview
 @Composable
-fun ButtonAlphabetPreview() {
+fun ButtonAlphabetLibraryPreview() {
     ButtonAlphabet(
         onClick = { /* Handle click here */ },
-        text = "A",
+        alphabet = "A",
+        isSelected = false,
+        borderColor = Color.DarkGray.toArgb(),
+        backgroundColor = Color.White.toArgb()
     )
 }
