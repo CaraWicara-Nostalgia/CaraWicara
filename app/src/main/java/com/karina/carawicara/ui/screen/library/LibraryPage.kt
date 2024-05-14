@@ -20,13 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
-import com.karina.carawicara.ui.component.ButtonAlphabet
+import com.karina.carawicara.ui.component.ButtonAlphabetLibrary
 import com.karina.carawicara.ui.component.ButtonNav
 
 @Composable
@@ -75,7 +72,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { navController.navigate("libraryDetailPage") },
                                 alphabet = "A",
                                 isSelected = false,
@@ -83,7 +80,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "B",
                                 isSelected = false,
@@ -91,7 +88,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "C",
                                 isSelected = false,
@@ -103,7 +100,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "D",
                                 isSelected = false,
@@ -111,7 +108,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "E",
                                 isSelected = false,
@@ -119,7 +116,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "F",
                                 isSelected = false,
@@ -131,7 +128,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "G",
                                 isSelected = false,
@@ -139,7 +136,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "H",
                                 isSelected = false,
@@ -147,7 +144,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "I",
                                 isSelected = false,
@@ -159,7 +156,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "J",
                                 isSelected = false,
@@ -167,7 +164,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "K",
                                 isSelected = false,
@@ -175,7 +172,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "L",
                                 isSelected = false,
@@ -187,7 +184,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "M",
                                 isSelected = false,
@@ -195,7 +192,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "N",
                                 isSelected = false,
@@ -203,7 +200,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "O",
                                 isSelected = false,
@@ -215,7 +212,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "P",
                                 isSelected = false,
@@ -223,7 +220,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "Q",
                                 isSelected = false,
@@ -231,7 +228,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "R",
                                 isSelected = false,
@@ -243,7 +240,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "S",
                                 isSelected = false,
@@ -251,7 +248,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "T",
                                 isSelected = false,
@@ -259,7 +256,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "U",
                                 isSelected = false,
@@ -271,7 +268,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "V",
                                 isSelected = false,
@@ -279,7 +276,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "W",
                                 isSelected = false,
@@ -287,7 +284,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "X",
                                 isSelected = false,
@@ -299,7 +296,7 @@ fun LibraryPage(navController: NavHostController) {
                         Row (
                             horizontalArrangement = Arrangement.SpaceBetween
                         ){
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "Y",
                                 isSelected = false,
@@ -307,7 +304,7 @@ fun LibraryPage(navController: NavHostController) {
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabet(
+                            ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "Z",
                                 isSelected = false,

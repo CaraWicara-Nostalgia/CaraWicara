@@ -15,13 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ButtonAlphabet(
+fun ButtonAlphabetLibrary(
     onClick: () -> Unit,
     alphabet: String,
     isSelected: Boolean,
@@ -50,16 +48,4 @@ fun ButtonAlphabet(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun ButtonAlphabetLibraryPreview() {
-    ButtonAlphabet(
-        onClick = { /* Handle click here */ },
-        alphabet = "A",
-        isSelected = false,
-        borderColor = Color.DarkGray.toArgb(),
-        backgroundColor = Color.White.toArgb()
-    )
 }
