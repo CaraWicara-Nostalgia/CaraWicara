@@ -17,9 +17,9 @@ import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController, startDestination = "homePage") {
         composable("homePage") { HomePage(navController) }
-        composable("susunKataPage") { SusunKataPage(R.drawable.kucing_2) }
+        composable("susunKataPage") { SusunKataPage(R.drawable.kucing_2, navController) }
         composable("onboardingPage") { OnBoardingPage(navController) }
-        composable("suaraPintarPage") { SuaraPintarPage(R.drawable.kucing_2) }
+        composable("suaraPintarPage") { SuaraPintarPage(R.drawable.kucing_2, navController) }
         composable("paduGambarPage") { PaduGambarPage(navController) }
         composable("pustakaWicaraPage") { PustakaWicaraPage(navController) }
         composable("pustakaWicaraDetailPage") { PustakaWicaraDetailPage(navController) }
