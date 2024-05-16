@@ -1,4 +1,4 @@
-package com.karina.carawicara.ui.screen.library
+package com.karina.carawicara.ui.screen.pustakaWicara
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

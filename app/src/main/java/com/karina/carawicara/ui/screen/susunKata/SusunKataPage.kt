@@ -1,4 +1,4 @@
-package com.karina.carawicara.ui.screen.completeTheWord
+package com.karina.carawicara.ui.screen.susunKata
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +34,7 @@ import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.StageBox
 
 @Composable
-fun CompleteTheWordPage(
+fun SusunKataPage(
     image: Int,
 ){
     val selectedLetters = remember {
@@ -179,5 +179,5 @@ fun CompleteTheWordPage(
 @Preview(showBackground = true)
 @Composable
 fun CompleteTheWordPagePreview(){
-    CompleteTheWordPage(image = R.drawable.kucing_2)
+    SusunKataPage(image = R.drawable.kucing_2)
 }

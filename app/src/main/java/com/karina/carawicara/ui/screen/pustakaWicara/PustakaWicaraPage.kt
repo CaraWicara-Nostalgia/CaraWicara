@@ -1,4 +1,4 @@
-package com.karina.carawicara.ui.screen.library
+package com.karina.carawicara.ui.screen.pustakaWicara
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,7 +28,7 @@ import com.karina.carawicara.ui.component.ButtonAlphabetLibrary
 import com.karina.carawicara.ui.component.ButtonNav
 
 @Composable
-fun LibraryPage(navController: NavHostController) {
+fun PustakaWicaraPage(navController: NavHostController) {
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
@@ -67,13 +68,13 @@ fun LibraryPage(navController: NavHostController) {
             LazyColumn {
                 item{
                     Column (
-                        modifier = Modifier.padding(32.dp)
+                        modifier = Modifier.padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ){
                         Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
                         ){
                             ButtonAlphabetLibrary(
-                                onClick = { navController.navigate("libraryDetailPage") },
+                                onClick = { navController.navigate("pustakaWicaraDetailPage") },
                                 alphabet = "A",
                                 isSelected = false,
                                 borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
@@ -303,7 +304,7 @@ fun LibraryPage(navController: NavHostController) {
                                 borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
                             )
-                            Spacer(modifier = Modifier.weight(1f))
+                            Spacer(modifier = Modifier.width(32.dp))
                             ButtonAlphabetLibrary(
                                 onClick = { /*TODO*/ },
                                 alphabet = "Z",

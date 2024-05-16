@@ -1,4 +1,4 @@
-package com.karina.carawicara.ui.screen.library
+package com.karina.carawicara.ui.screen.pustakaWicara
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,7 @@ import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.ImageLibrary
 
 @Composable
-fun LibraryDetailPage(navController: NavHostController) {
+fun PustakaWicaraDetailPage(navController: NavHostController) {
     val openDialog = remember {
         mutableStateOf(false)
     }

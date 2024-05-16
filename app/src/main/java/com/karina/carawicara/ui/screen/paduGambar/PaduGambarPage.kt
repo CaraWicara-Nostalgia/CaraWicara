@@ -1,4 +1,4 @@
-package com.karina.carawicara.ui.screen.imageMatching
+package com.karina.carawicara.ui.screen.paduGambar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,7 @@ import com.karina.carawicara.ui.component.ImageSound
 import com.karina.carawicara.ui.component.StageBox
 
 @Composable
-fun ImageMathcing(
+fun PaduGambarPage(
     navController: NavHostController
 ){
     val isKucingClicked = remember { mutableStateOf(false) }
@@ -53,7 +53,7 @@ fun ImageMathcing(
                 verticalAlignment = Alignment.CenterVertically,
             ){
                 ButtonNav(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.popBackStack() },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),

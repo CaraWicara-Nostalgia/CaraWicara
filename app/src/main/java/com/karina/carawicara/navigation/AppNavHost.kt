@@ -5,21 +5,23 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.karina.carawicara.R
-import com.karina.carawicara.ui.screen.completeTheWord.CompleteTheWordPage
-import com.karina.carawicara.ui.screen.imageMatching.ImageMathcing
-import com.karina.carawicara.ui.screen.library.LibraryDetailPage
-import com.karina.carawicara.ui.screen.library.LibraryPage
+import com.karina.carawicara.ui.screen.susunKata.SusunKataPage
+import com.karina.carawicara.ui.screen.home.HomePage
+import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
+import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
 import com.karina.carawicara.ui.screen.onboarding.OnBoardingPage
-import com.karina.carawicara.ui.screen.voiceRecognition.VoiceRecognitionPage
+import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
+import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
-    NavHost(navController, startDestination = "CompleteTheWordPage") {
-        composable("CompleteTheWordPage") { CompleteTheWordPage(R.drawable.kucing_2) }
-        composable("OnBoardingPage") { OnBoardingPage(navController) }
-        composable("VoiceRecognitionPage") { VoiceRecognitionPage(R.drawable.kucing_2) }
-        composable("ImageMatching") { ImageMathcing(navController) }
-        composable("libraryPage") { LibraryPage(navController) }
-        composable("libraryDetailPage") { LibraryDetailPage(navController) }
+    NavHost(navController, startDestination = "homePage") {
+        composable("homePage") { HomePage(navController) }
+        composable("susunKataPage") { SusunKataPage(R.drawable.kucing_2) }
+        composable("onboardingPage") { OnBoardingPage(navController) }
+        composable("suaraPintarPage") { SuaraPintarPage(R.drawable.kucing_2) }
+        composable("paduGambarPage") { PaduGambarPage(navController) }
+        composable("pustakaWicaraPage") { PustakaWicaraPage(navController) }
+        composable("pustakaWicaraDetailPage") { PustakaWicaraDetailPage(navController) }
     }
 }
