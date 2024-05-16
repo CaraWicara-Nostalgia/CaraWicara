@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.CountdownTimer
@@ -33,7 +34,8 @@ import com.karina.carawicara.ui.component.StageBox
 
 @Composable
 fun SuaraPintarPage(
-    image: Int
+    image: Int,
+    navHostController: NavHostController
 ) {
     val backgroundColor = remember { mutableStateOf(Color.White) }
 
@@ -53,7 +55,7 @@ fun SuaraPintarPage(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ButtonNav(
-                    onClick = { /*TODO*/ },
+                    onClick = { navHostController.popBackStack() },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),

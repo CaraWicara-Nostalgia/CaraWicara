@@ -26,8 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonAlphabet
 import com.karina.carawicara.ui.component.ButtonNav
@@ -36,6 +36,7 @@ import com.karina.carawicara.ui.component.StageBox
 @Composable
 fun SusunKataPage(
     image: Int,
+    navHostController: NavHostController
 ){
     val selectedLetters = remember {
         mutableStateListOf<String>()
@@ -57,7 +58,7 @@ fun SusunKataPage(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ButtonNav(
-                    onClick = { /*TODO*/ },
+                    onClick = { navHostController.popBackStack() },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
@@ -174,10 +175,4 @@ fun SusunKataPage(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CompleteTheWordPagePreview(){
-    SusunKataPage(image = R.drawable.kucing_2)
 }
