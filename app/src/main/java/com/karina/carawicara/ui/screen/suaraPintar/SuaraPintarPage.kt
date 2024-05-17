@@ -108,7 +108,7 @@ fun SuaraPintarPage(
             }
             Spacer(modifier = Modifier.weight(1f))
             ButtonNav(
-                onClick = { /*TODO*/ },
+                onClick = { navHostController.navigate("suaraPintarRecordPage") },
                 icon = R.drawable.ic_arrow_forward,
                 iconColor = Color.Black.toArgb(),
                 borderColor = Color.DarkGray.toArgb(),

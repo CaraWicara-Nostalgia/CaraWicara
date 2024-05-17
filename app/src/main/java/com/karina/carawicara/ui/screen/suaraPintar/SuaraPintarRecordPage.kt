@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -21,13 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.StageBox
 
 @Composable
 fun SuaraPintarRecordPage(
-
+    navHostController: NavHostController
 ) {
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -45,7 +47,7 @@ fun SuaraPintarRecordPage(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ButtonNav(
-                    onClick = { /*TODO*/ },
+                    onClick = { navHostController.popBackStack() },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
@@ -95,7 +97,7 @@ fun SuaraPintarRecordPage(
                         borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
                         backgroundColor = MaterialTheme.colorScheme.error.toArgb()
                     )
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.width(24.dp))
                     Button(
                         onClick = { /*TODO*/ },
                         Modifier
