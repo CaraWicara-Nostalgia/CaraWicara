@@ -51,7 +51,8 @@ fun SuaraPintarRecordPage(
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.error.toArgb()
+                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
+                    enabled = true
                 )
                 Row(
                     modifier = Modifier.padding(8.dp)
@@ -95,7 +96,8 @@ fun SuaraPintarRecordPage(
                         icon = R.drawable.ic_mic,
                         iconColor = Color.White.toArgb(),
                         borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                        backgroundColor = MaterialTheme.colorScheme.error.toArgb()
+                        backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
+                        enabled = true
                     )
                     Spacer(modifier = Modifier.width(24.dp))
                     Button(

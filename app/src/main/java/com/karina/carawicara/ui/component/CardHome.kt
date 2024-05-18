@@ -88,7 +88,8 @@ fun CardHome(
                     icon = R.drawable.ic_arrow_forward,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                    enabled = true
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

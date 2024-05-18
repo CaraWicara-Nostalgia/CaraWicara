@@ -55,7 +55,8 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                     icon = R.drawable.ic_arrow_back,
                     iconColor = Color.Black.toArgb(),
                     borderColor = Color.DarkGray.toArgb(),
-                    backgroundColor = Color.White.toArgb()
+                    backgroundColor = Color.White.toArgb(),
+                    enabled = true
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 ButtonNav(
@@ -63,7 +64,8 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                     icon = R.drawable.ic_filter,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                    enabled = true
                 )
             }
             Column (
@@ -92,7 +94,8 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                         icon = R.drawable.ic_speaker,
                         iconColor = Color.White.toArgb(),
                         borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                        backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+                        backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                        enabled = true
                     )
                 }
                 LazyColumn {

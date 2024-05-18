@@ -105,7 +105,8 @@ fun OnBoardingPage(
                 icon = R.drawable.ic_arrow_forward,
                 iconColor = Color.White.toArgb(),
                 borderColor = buttonNavBorderColor.toArgb(),
-                backgroundColor = buttonNavBackgroundColor.toArgb()
+                backgroundColor = buttonNavBackgroundColor.toArgb(),
+                enabled = isMaleButtonClicked.value || isFemaleButtonClicked.value
             )
             Spacer(modifier = Modifier.weight(1f))
         }

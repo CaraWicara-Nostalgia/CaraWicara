@@ -44,11 +44,12 @@ fun HomePage(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 ButtonNav(
-                    onClick = { navController.navigate("libraryPage") },
+                    onClick = { /* Handle click here */ },
                     icon = R.drawable.ic_gender_male,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                    enabled = true
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Image(
@@ -62,7 +63,8 @@ fun HomePage(
                     icon = R.drawable.ic_library,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                    enabled = true
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -86,7 +88,7 @@ fun HomePage(
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
                             image = R.drawable.card_home_4,
-                            onClick = { navController.navigate("voiceRecognitionPage")}
+                            onClick = { navController.navigate("kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!")}
                         )
                     }
                 }

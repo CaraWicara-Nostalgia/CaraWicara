@@ -62,7 +62,8 @@ fun SusunKataPage(
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.error.toArgb()
+                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
+                    enabled = true
                 )
                 Row(
                     modifier = Modifier.padding(8.dp)
@@ -161,7 +162,8 @@ fun SusunKataPage(
                         icon = R.drawable.ic_restart,
                         iconColor = Color.Black.toArgb(),
                         borderColor = Color.DarkGray.toArgb(),
-                        backgroundColor = Color.White.toArgb()
+                        backgroundColor = Color.White.toArgb(),
+                        enabled = selectedLetters.isNotEmpty()
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     ButtonNav(
@@ -169,7 +171,8 @@ fun SusunKataPage(
                         icon = R.drawable.ic_arrow_forward,
                         iconColor = Color.White.toArgb(),
                         borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                        backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+                        backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                        enabled = selectedLetters.size == 6
                     )
                 }
             }

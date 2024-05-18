@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonAlphabetLibrary
@@ -49,12 +50,13 @@ fun PustakaWicaraPage(navController: NavHostController) {
                         icon = R.drawable.ic_arrow_back,
                         iconColor = Color.Black.toArgb(),
                         borderColor = Color.DarkGray.toArgb(),
-                        backgroundColor = Color.White.toArgb()
+                        backgroundColor = Color.White.toArgb(),
+                        enabled = true
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = "Kamusku",
-                        style = MaterialTheme.typography.titleMedium,
+                        fontSize = 24.sp,
                         color = Color.Black,
                         modifier = Modifier.padding(horizontal = 16.dp) // tambahkan padding jika diperlukan
                     )

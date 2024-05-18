@@ -54,7 +54,8 @@ fun ImageSound(
                 iconColor = Color.White.toArgb(),
 
                 borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+                backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                enabled = true
             )
         }
     }

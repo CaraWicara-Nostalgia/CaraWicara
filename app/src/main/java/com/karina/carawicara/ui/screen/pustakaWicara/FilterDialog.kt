@@ -35,6 +35,7 @@ fun FilterDialog(
         horizontalAlignment = Alignment.End,
     ){
         Icon(painter = painterResource(id = R.drawable.ic_x), contentDescription = null)
+        Spacer(modifier = Modifier.height(8.dp))
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -47,7 +48,8 @@ fun FilterDialog(
             ){
                 Text(
                     text = "Pilih Kategori",
-                    fontSize = 24.sp
+                    fontSize = 24.sp,
+                    color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row (
@@ -69,6 +71,7 @@ fun FilterDialog(
                         Text(
                             text = "Umum",
                             style = MaterialTheme.typography.bodySmall,
+                            color = Color.Black
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
@@ -84,6 +87,7 @@ fun FilterDialog(
                         Text(
                             text = "Hewan",
                             style = MaterialTheme.typography.bodySmall,
+                            color = Color.Black
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
@@ -99,6 +103,7 @@ fun FilterDialog(
                         Text(
                             text = "Tumbuhan",
                             style = MaterialTheme.typography.bodySmall,
+                            color = Color.Black
                         )
                     }
                 }
