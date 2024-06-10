@@ -15,3 +15,5 @@ Speaking ability is vital for effective communication in human life. Children wi
 | Gabriel Dimas Wicaksono | UI/UX Designer |
 | Ilham Yudantyo | Researcher |
 
+# Final Result
+![Prototype CaraWicara](prototype-carawicara.png)
