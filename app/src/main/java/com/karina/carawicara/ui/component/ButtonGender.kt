@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -54,7 +54,8 @@ fun ButtonGender (
         modifier = if (isClicked.value)
             Modifier.border(4.dp, borderColor, shape = RoundedCornerShape(16.dp))
         else
-            Modifier.border(1.dp, borderColor, shape = RoundedCornerShape(16.dp))
+            Modifier
+                .border(1.dp, borderColor, shape = RoundedCornerShape(16.dp))
     ) {
         Box(
             contentAlignment = Alignment.BottomCenter
@@ -68,12 +69,12 @@ fun ButtonGender (
                     alignment = Alignment.BottomEnd,
                     modifier = Modifier.size(72.dp)
                 )
+                Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = text,
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                     color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(end = 32.dp, start = 32.dp, top = 16.dp, bottom = 16.dp)
+                    textAlign = TextAlign.Center
                 )
             }
         }

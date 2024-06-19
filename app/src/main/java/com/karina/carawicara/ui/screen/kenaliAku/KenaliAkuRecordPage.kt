@@ -197,12 +197,10 @@ private fun resetRecordingAndTime(
     // Reset recording state
     recording.value?.stop()
     recording.value = null
-
-    // Reset recording time
     recordingTime.value = 0L
 
     // Navigate to the desired destination with message
-    val message = "Tingkat kecocokan: 82%"
+    val message = "Tingkat kecocokan: 82%. \n Selamat Anda berhasil!"
     navHostController.navigate("kenaliAkuPage/$message")
 }
 

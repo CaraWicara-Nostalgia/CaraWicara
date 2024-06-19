@@ -55,19 +55,23 @@ fun CardHome(
             ) {
                 Column {
                     Row (
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ){
-                        for (i in 1..4) {
-                            Image(
-                                painter = painterResource(id = R.drawable.round_home), // Placeholder image, replace with actual images
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clip(RoundedCornerShape(20.dp))
-                                    .background(Color.Gray)
-                                    .padding(0.dp)
-                            )
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(-8.dp)
+                        ){
+                            for (i in 1..4) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.round_home), // Placeholder image, replace with actual images
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .clip(RoundedCornerShape(20.dp))
+                                        .background(Color.Gray)
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(

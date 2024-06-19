@@ -24,7 +24,7 @@ import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonImage
 import com.karina.carawicara.ui.component.ButtonNav
-import com.karina.carawicara.ui.component.ImageMatchingOverview
+import com.karina.carawicara.ui.component.PopupOverview
 import com.karina.carawicara.ui.component.ImageSound
 import com.karina.carawicara.ui.component.StageBox
 
@@ -118,7 +118,7 @@ fun PaduGambarPage(
                 Dialog(
                     onDismissRequest = { isKucingClicked.value = false }
                 ) {
-                    ImageMatchingOverview(
+                    PopupOverview(
                         onClick = {
                             stageBoxStatus.value = 1
                             isKucingClicked.value = false
@@ -136,7 +136,7 @@ fun PaduGambarPage(
                 Dialog(
                     onDismissRequest = { isKelinciClicked.value = false }
                 ) {
-                    ImageMatchingOverview(
+                    PopupOverview(
                         onClick = { isKelinciClicked.value = false },
                         border = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                         background = MaterialTheme.colorScheme.primary.toArgb(),

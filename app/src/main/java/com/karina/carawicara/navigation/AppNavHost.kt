@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.karina.carawicara.R
+import com.karina.carawicara.ui.screen.SplashScreen
 import com.karina.carawicara.ui.screen.susunKata.SusunKataPage
 import com.karina.carawicara.ui.screen.home.HomePage
 import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuPage
@@ -20,7 +21,8 @@ import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarRecordPage
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
-    NavHost(navController, startDestination = "homePage") {
+    NavHost(navController, startDestination = "splashScreen") {
+        composable("splashScreen") { SplashScreen(navController) }
         composable("homePage") { HomePage(navController) }
         composable("susunKataPage") { SusunKataPage(R.drawable.kucing_2, navController) }
         composable("onboardingPage") { OnBoardingPage(navController) }

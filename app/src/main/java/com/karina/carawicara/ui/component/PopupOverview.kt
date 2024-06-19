@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ImageMatchingOverview(
+fun PopupOverview(
     onClick: () -> Unit,
     border: Int,
     background: Int,

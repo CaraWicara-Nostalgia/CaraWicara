@@ -26,7 +26,7 @@ import com.karina.carawicara.ui.component.ButtonNav
 
 @Composable
 fun OnBoardingPage(
-    navController: NavHostController,
+    navHostController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val isMaleButtonClicked = remember {
@@ -101,7 +101,7 @@ fun OnBoardingPage(
             }
 
             ButtonNav(
-                onClick = { /*TODO*/ },
+                onClick = { navHostController.navigate("homePage") },
                 icon = R.drawable.ic_arrow_forward,
                 iconColor = Color.White.toArgb(),
                 borderColor = buttonNavBorderColor.toArgb(),
