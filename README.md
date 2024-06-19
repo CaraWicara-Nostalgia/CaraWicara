@@ -15,7 +15,7 @@ Children with Down syndrome tend to focus more on interpersonal interactions, re
 | ------ | ------ |
 | Karina Aulia Primanti Putri | Programmer & Project Manager | 
 | Gabriel Dimas Wicaksono | UI/UX Designer |
-| Ilham Yudantyo | Researcher |
+| Ilham Yudantyo | Programmer & Researcher |
 
 # Final Result
 ![Prototype CaraWicara](prototype-carawicara.png)
