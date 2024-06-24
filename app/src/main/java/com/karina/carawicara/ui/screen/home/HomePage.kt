@@ -77,6 +77,11 @@ fun HomePage(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
+                            image = R.drawable.card_home_4,
+                            onClick = { navController.navigate("kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!")}
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        CardHome(
                             image = R.drawable.card_home_2,
                             onClick = { navController.navigate("susunKataPage") }
                         )
@@ -84,11 +89,6 @@ fun HomePage(
                         CardHome(
                             image = R.drawable.card_home_3,
                             onClick = { navController.navigate("suaraPintarPage")}
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        CardHome(
-                            image = R.drawable.card_home_4,
-                            onClick = { navController.navigate("kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!")}
                         )
                     }
                 }
