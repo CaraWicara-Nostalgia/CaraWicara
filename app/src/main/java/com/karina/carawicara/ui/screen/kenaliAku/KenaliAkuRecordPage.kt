@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -39,6 +40,7 @@ import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.CameraPreview
 import java.io.File
 import androidx.core.app.ActivityCompat
+import com.karina.carawicara.ui.component.StageBox
 
 private const val REQUEST_CODE_PERMISSIONS = 1001
 
@@ -72,35 +74,63 @@ fun KenaliAkuRecordPage(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(16.dp)
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            if (allPermissionsGranted) {
-                CameraPreview(
-                    controller = controller,
-                    modifier = Modifier
-                        .aspectRatio(3f / 4)
-                        .padding(32.dp)
+                .padding(31.dp)
+        ){
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ButtonNav(
+                    onClick = { navHostController.popBackStack() },
+                    icon = R.drawable.ic_x,
+                    iconColor = Color.White.toArgb(),
+                    borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
+                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
+                    enabled = true
                 )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            if (allPermissionsGranted) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier.padding(8.dp)
                 ) {
-                    ButtonNav(
-                        onClick = { takePicture(controller, context, filesDir) },
-                        icon = R.drawable.ic_record,
-                        iconColor = Color.White.toArgb(),
-                        borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                        backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
-                        enabled = true
-                    )
+                    StageBox(stage = 0, onClick = { /* Handle click here */ })
+                    StageBox(stage = 0, onClick = { /* Handle click here */ })
+                    StageBox(stage = 0, onClick = { /* Handle click here */ })
+                    StageBox(stage = 0, onClick = { /* Handle click here */ })
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                if (allPermissionsGranted) {
+                    CameraPreview(
+                        controller = controller,
+                        modifier = Modifier
+                            .aspectRatio(3f / 4)
+                            .padding(32.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                if (allPermissionsGranted) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    ) {
+                        ButtonNav(
+                            onClick = { takePicture(controller, context, filesDir) },
+                            icon = R.drawable.ic_record,
+                            iconColor = Color.White.toArgb(),
+                            borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
+                            backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
+                            enabled = true
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+            }
         }
     }
 
