@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.screen.pustakaWicara
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -33,6 +35,11 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
     val openDialog = remember {
         mutableStateOf(false)
     }
+
+    val context = LocalContext.current
+    val mediaPlayer1 = remember { MediaPlayer.create(context, R.raw.sound_pustaka_a) }
+    val mediaPlayer2 = remember { MediaPlayer.create(context, R.raw.sound_pustaka_air) }
+    val mediaPlayer3 = remember { MediaPlayer.create(context, R.raw.sound_pustaka_api) }
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -90,7 +97,14 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                     }
                     Spacer(modifier = Modifier.height(48.dp))
                     ButtonNav(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            if (mediaPlayer1.isPlaying) {
+                                mediaPlayer1.stop()
+                                mediaPlayer1.release()
+                            } else {
+                                mediaPlayer1.start()
+                            }
+                        },
                         icon = R.drawable.ic_speaker,
                         iconColor = Color.White.toArgb(),
                         borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
@@ -107,14 +121,28 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 ImageLibrary(
-                                    onClick = { /*TODO*/ },
+                                    onClick = {
+                                        if (mediaPlayer2.isPlaying) {
+                                            mediaPlayer2.stop()
+                                            mediaPlayer2.release()
+                                        } else {
+                                            mediaPlayer2.start()
+                                        }
+                                    },
                                     image = R.drawable.air,
                                     text = "Air",
                                     homonym = "a.ir"
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 ImageLibrary(
-                                    onClick = { /*TODO*/ },
+                                    onClick = {
+                                        if (mediaPlayer3.isPlaying) {
+                                            mediaPlayer3.stop()
+                                            mediaPlayer3.release()
+                                        } else {
+                                            mediaPlayer3.start()
+                                        }
+                                    },
                                     image = R.drawable.api,
                                     text = "Api",
                                     homonym = "a.pi"
