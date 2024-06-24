@@ -92,8 +92,15 @@ fun KenaliAkuPage(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = message,
+                    text = "Senang",
                     fontSize = 20.sp,
+                    color = Color.Red,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = message,
+                    fontSize = 16.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
             }
