@@ -28,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
+import com.karina.carawicara.ui.component.ButtonSpeaker
 import com.karina.carawicara.ui.component.ImageLibrary
 
 @Composable
@@ -35,11 +36,6 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
     val openDialog = remember {
         mutableStateOf(false)
     }
-
-    val context = LocalContext.current
-    val mediaPlayer1 = remember { MediaPlayer.create(context, R.raw.sound_pustaka_a) }
-    val mediaPlayer2 = remember { MediaPlayer.create(context, R.raw.sound_pustaka_air) }
-    val mediaPlayer3 = remember { MediaPlayer.create(context, R.raw.sound_pustaka_api) }
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -95,21 +91,14 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                             color = Color.Black,
                         )
                     }
-                    Spacer(modifier = Modifier.height(48.dp))
-                    ButtonNav(
-                        onClick = {
-                            if (mediaPlayer1.isPlaying) {
-                                mediaPlayer1.stop()
-                                mediaPlayer1.release()
-                            } else {
-                                mediaPlayer1.start()
-                            }
-                        },
-                        icon = R.drawable.ic_speaker,
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ButtonSpeaker(
+                        onClick = { },
                         iconColor = Color.White.toArgb(),
                         borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                         backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
-                        enabled = true
+                        enabled = true,
+                        mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_a)
                     )
                 }
                 LazyColumn {
@@ -121,31 +110,19 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 ImageLibrary(
-                                    onClick = {
-                                        if (mediaPlayer2.isPlaying) {
-                                            mediaPlayer2.stop()
-                                            mediaPlayer2.release()
-                                        } else {
-                                            mediaPlayer2.start()
-                                        }
-                                    },
+                                    onClick = { },
                                     image = R.drawable.air,
                                     text = "Air",
-                                    homonym = "a.ir"
+                                    homonym = "a.ir",
+                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_air)
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 ImageLibrary(
-                                    onClick = {
-                                        if (mediaPlayer3.isPlaying) {
-                                            mediaPlayer3.stop()
-                                            mediaPlayer3.release()
-                                        } else {
-                                            mediaPlayer3.start()
-                                        }
-                                    },
+                                    onClick = { },
                                     image = R.drawable.api,
                                     text = "Api",
-                                    homonym = "a.pi"
+                                    homonym = "a.pi",
+                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_api)
                                 )
                             }
                             Spacer(modifier = Modifier.height(24.dp))
@@ -156,14 +133,16 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                                     onClick = { /*TODO*/ },
                                     image = R.drawable.aku,
                                     text = "Aku",
-                                    homonym = "a.ku"
+                                    homonym = "a.ku",
+                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_api)
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 ImageLibrary(
                                     onClick = { /*TODO*/ },
                                     image = R.drawable.asap,
                                     text = "A",
-                                    homonym = "a.sap"
+                                    homonym = "a.sap",
+                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_api)
                                 )
                             }
                         }
