@@ -6,13 +6,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
+import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.video.FileOutputOptions
-import androidx.camera.video.Recording
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
-import androidx.camera.view.video.AudioConfig
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,11 +19,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -108,7 +104,7 @@ fun KenaliAkuRecordPage(
                     CameraPreview(
                         controller = controller,
                         modifier = Modifier
-                            .aspectRatio(3f / 4)
+                            .aspectRatio(3f / 5)
                             .padding(32.dp)
                     )
                 }
@@ -119,6 +115,14 @@ fun KenaliAkuRecordPage(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 8.dp)
                     ) {
+                        ButtonNav(
+                            onClick = { flipCamera(controller, context) },
+                            icon = R.drawable.ic_flip,
+                            iconColor = Color.White.toArgb(),
+                            borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                            backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                            enabled = true
+                        )
                         ButtonNav(
                             onClick = { takePicture(controller, context, filesDir) },
                             icon = R.drawable.ic_record,
@@ -142,68 +146,6 @@ fun KenaliAkuRecordPage(
             REQUEST_CODE_PERMISSIONS
         )
     }
-
-//    // Update recording time every second when recording is active
-//    LaunchedEffect(isRecording) {
-//        if (isRecording) {
-//            while (true) {
-//                delay(1000)
-//                recordingTime.value += 1000
-//            }
-//        }
-//    }
-}
-@SuppressLint("MissingPermission")
-private fun toggleRecording(controller: LifecycleCameraController, context: Context, filesDir: File, permissions: Array<String>, recording: MutableState<Recording?>) {
-    if (recording.value != null) {
-        // Stop recording
-        recording.value?.stop()
-        recording.value = null
-    } else {
-        // Start or resume recording
-        if (!hasRequiredPermissions(context, permissions)) {
-            // Request permissions if not already granted
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                permissions,
-                REQUEST_CODE_PERMISSIONS
-            )
-            return
-        }
-        val outputFile = File(filesDir, "my-recording.mp4")
-        if (outputFile.exists()) {
-            // If the file exists, delete it to start a new recording
-            outputFile.delete()
-        }
-        recording.value = controller.startRecording(
-            FileOutputOptions.Builder(outputFile).build(), // Use FileOutputOptions for recording to a file
-            AudioConfig.create(true),
-            ContextCompat.getMainExecutor(context)
-        ) { event ->
-            // Event handling logic remains unchanged
-        }
-    }
-}
-
-private fun resetRecordingAndTime(
-    recording: MutableState<Recording?>,
-    recordingTime: MutableState<Long>,
-    navHostController: NavHostController
-) {
-    // Reset recording state
-    recording.value?.stop()
-    recording.value = null
-    recordingTime.value = 0L
-
-    // Navigate to the desired destination with message
-    val message = "Tingkat kecocokan: 82%. \n Selamat Anda berhasil!"
-    navHostController.navigate("kenaliAkuPage/$message")
-}
-
-private fun stopRecording(recording: MutableState<Recording?>) {
-    // Stop recording if in progress
-    recording.value?.stop()
-    recording.value = null
 }
 
 private fun hasRequiredPermissions(context: Context, permissions: Array<String>): Boolean {
@@ -215,11 +157,12 @@ private fun hasRequiredPermissions(context: Context, permissions: Array<String>)
     }
 }
 
-private fun formatElapsedTime(timeMillis: Long): String {
-    val seconds = timeMillis / 1000
-    val minutes = seconds / 60
-    val remainingSeconds = seconds % 60
-    return "%02d:%02d".format(minutes, remainingSeconds)
+private var isUsingFrontCamera = true
+
+private fun flipCamera(controller: LifecycleCameraController, context: Context) {
+    isUsingFrontCamera = !isUsingFrontCamera
+    val lensFacing = if (isUsingFrontCamera) CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK
+    controller.cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 }
 
 @SuppressLint("MissingPermission")
