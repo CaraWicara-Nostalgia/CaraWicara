@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
-import com.karina.carawicara.ui.component.CountdownTimer
 import com.karina.carawicara.ui.component.StageBox
 
 @Composable
@@ -71,12 +70,12 @@ fun SuaraPintarPage(
                 StageBox(stage = 0, onClick = { /* Handle click here */ })
                 StageBox(stage = 0, onClick = { /* Handle click here */ })
             }
-            Spacer(modifier = Modifier.weight(1f))
-            CountdownTimer(
-                durationMillis = 10000,
-                onTimerFinished = { /* Handle timer finished */ },
-                onTwoSecondsLeft = { backgroundColor.value = Color.Red }
-            )
+//            Spacer(modifier = Modifier.weight(1f))
+//            CountdownTimer(
+//                durationMillis = 10000,
+//                onTimerFinished = { /* Handle timer finished */ },
+//                onTwoSecondsLeft = { backgroundColor.value = Color.Red }
+//            )
             Spacer(modifier = Modifier.weight(1f))
             Column(
                 verticalArrangement = Arrangement.Center,

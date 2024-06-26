@@ -26,7 +26,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonAlphabet
@@ -80,12 +82,13 @@ fun SusunKataPage(
                 modifier = Modifier
                     .background(Color(0xFFFEEFD4))
                     .border(2.dp, Color(0xFFFEE4B7))
-                    .size(311.dp, 43.dp) // Add this line to give your Box a size
+                    .padding(4.dp)
             ) {
                 Text(
                     text = "susunlah huruf dibawah untuk menjawab",
-                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 20.sp,
                     color = Color(0xFFFCB028),
+                    textAlign = TextAlign.Center
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

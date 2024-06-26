@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -31,7 +32,6 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
-import com.karina.carawicara.ui.component.CountdownTimer
 import com.karina.carawicara.ui.component.PopupOverview
 import com.karina.carawicara.ui.component.StageBox
 
@@ -100,12 +100,13 @@ fun SuaraPintarRecordPage(
                 modifier = Modifier
                     .background(Color(0xFFFEEFD4))
                     .border(2.dp, Color(0xFFFEE4B7))
-                    .size(311.dp, 43.dp) // Add this line to give your Box a size
+                    .padding(4.dp)
             ) {
                 Text(
                     text = "tahan tombol rekam untuk mulai merekam suara",
-                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 20.sp,
                     color = Color(0xFFFCB028),
+                    textAlign = TextAlign.Center
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -113,12 +114,12 @@ fun SuaraPintarRecordPage(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                CountdownTimer(
-                    durationMillis = 10000,
-                    onTimerFinished = { /* Handle timer finished */ },
-                    onTwoSecondsLeft = { backgroundColor.value = Color.Red }
-                )
-                Spacer(modifier = Modifier.height(24.dp))
+//                CountdownTimer(
+//                    durationMillis = 10000,
+//                    onTimerFinished = { /* Handle timer finished */ },
+//                    onTwoSecondsLeft = { backgroundColor.value = Color.Red }
+//                )
+//                Spacer(modifier = Modifier.height(24.dp))
                 Image(
                     painter = painterResource(id = R.drawable.record_spectrum),
                     contentDescription = null

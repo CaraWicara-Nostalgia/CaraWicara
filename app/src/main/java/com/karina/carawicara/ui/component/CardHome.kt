@@ -83,7 +83,7 @@ fun CardHome(
                     Spacer(modifier = Modifier.padding(4.dp))
                     Text(
                         text = "299 Lebih Pengguna Berhasil Mengerjakan",
-                        fontSize = 10.sp
+                        fontSize = 12.sp
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
