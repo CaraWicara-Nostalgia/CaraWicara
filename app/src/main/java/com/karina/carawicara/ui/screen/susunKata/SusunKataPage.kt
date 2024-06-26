@@ -19,12 +19,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,14 +36,26 @@ import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonAlphabet
 import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.StageBox
+import androidx.compose.ui.window.Dialog
+import com.karina.carawicara.ui.component.PopupOverview
 
 @Composable
 fun SusunKataPage(
     image: Int,
     navHostController: NavHostController
-){
-    val selectedLetters = remember {
-        mutableStateListOf<String>()
+) {
+    val context = LocalContext.current
+    val selectedLetters = remember { mutableStateListOf<String>() }
+    val isCorrectAnswer = remember { mutableStateOf(false) }
+    val isPopupVisible = remember { mutableStateOf(false) }
+
+    fun validateAnswer(letters: List<String>) {
+        if (letters.joinToString("") == "KUCING") {
+            isCorrectAnswer.value = true
+        } else {
+            isCorrectAnswer.value = false
+        }
+        isPopupVisible.value = true
     }
 
     Box(
@@ -113,7 +127,7 @@ fun SusunKataPage(
             }
             Spacer(modifier = Modifier.weight(1f))
             Row (
-                modifier = Modifier.padding( 8.dp)
+                modifier = Modifier.padding(8.dp)
             ){
                 ButtonAlphabet(onClick = { /*TODO*/ }, text = selectedLetters.getOrNull(0) ?: "")
                 Spacer(modifier = Modifier.width(4.dp))
@@ -133,7 +147,7 @@ fun SusunKataPage(
             Row {
                 Column {
                     Row (
-                        modifier = Modifier.padding( 8.dp)
+                        modifier = Modifier.padding(8.dp)
                     ){
                         ButtonAlphabet(onClick = { selectedLetters.add("U") }, text = "U", enabled = !selectedLetters.contains("U"))
                         Spacer(modifier = Modifier.width(8.dp))
@@ -145,7 +159,7 @@ fun SusunKataPage(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row (
-                        modifier = Modifier.padding( 8.dp)
+                        modifier = Modifier.padding(8.dp)
                     ){
                         ButtonAlphabet(onClick = { selectedLetters.add("C") }, text = "C", enabled = !selectedLetters.contains("C"))
                         Spacer(modifier = Modifier.width(8.dp))
@@ -170,7 +184,7 @@ fun SusunKataPage(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     ButtonNav(
-                        onClick = { /*TODO*/ },
+                        onClick = { validateAnswer(selectedLetters) },
                         icon = R.drawable.ic_arrow_forward,
                         iconColor = Color.White.toArgb(),
                         borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
@@ -179,6 +193,26 @@ fun SusunKataPage(
                     )
                 }
             }
+        }
+    }
+
+    if (isPopupVisible.value) {
+        Dialog(
+            onDismissRequest = { isPopupVisible.value = false }
+        ) {
+            PopupOverview(
+                onClick = {
+                    isPopupVisible.value = false
+                    if (isCorrectAnswer.value) {
+                        navHostController.popBackStack()
+                    }
+                },
+                border = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                background = MaterialTheme.colorScheme.primary.toArgb(),
+                text = if (isCorrectAnswer.value) "Yey, kamu berhasil menjawab dengan benar" else "Yah, kamu belum berhasil menjawab dengan benar",
+                image = if (isCorrectAnswer.value) R.drawable.boy_2 else R.drawable.boy_4,
+                message = if (isCorrectAnswer.value) "Lanjutkan" else "Coba lagi"
+            )
         }
     }
 }
