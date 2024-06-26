@@ -28,30 +28,95 @@ import com.karina.carawicara.ui.component.PopupOverview
 import com.karina.carawicara.ui.component.ImageSound
 import com.karina.carawicara.ui.component.StageBox
 
+data class Soal(
+    val gambarUtama: Int,
+    val pilihan: List<GambarPilihan>
+)
+
+data class GambarPilihan(
+    val gambar: Int,
+    val nama: String,
+    val benar: Boolean
+)
+
 @Composable
 fun PaduGambarPage(
     navController: NavHostController
-){
-    val isKucingClicked = remember { mutableStateOf(false) }
-    val isKelinciClicked = remember { mutableStateOf(false) }
+) {
+    val soalList = listOf(
+        Soal(
+            gambarUtama = R.drawable.kucing_2,
+            pilihan = listOf(
+                GambarPilihan(R.drawable.kucing, "Kucing", benar = true),
+                GambarPilihan(R.drawable.anjing_3, "Anjing", benar = false),
+                GambarPilihan(R.drawable.kuda, "Kuda", benar = false),
+                GambarPilihan(R.drawable.kelinci, "Kelinci", benar = false)
+            )
+        ),
+        Soal(
+            gambarUtama = R.drawable.anjing_2,
+            pilihan = listOf(
+                GambarPilihan(R.drawable.kelinci, "Kelinci", benar = false),
+                GambarPilihan(R.drawable.anjing_3, "Anjing", benar = true),
+                GambarPilihan(R.drawable.kuda, "Kuda", benar = false),
+                GambarPilihan(R.drawable.kucing, "Kucing", benar = false)
+            )
+        ),
+        Soal(
+            gambarUtama = R.drawable.sapi_3,
+            pilihan = listOf(
+                GambarPilihan(R.drawable.kucing, "Kucing", benar = false),
+                GambarPilihan(R.drawable.ikan, "Ikan", benar = false),
+                GambarPilihan(R.drawable.tupai, "Tupai", benar = false),
+                GambarPilihan(R.drawable.sapi_2, "Sapi", benar = true)
+            )
+        ),
+        Soal(
+            gambarUtama = R.drawable.ikan_2,
+            pilihan = listOf(
+                GambarPilihan(R.drawable.sapi, "Sapi", benar = false),
+                GambarPilihan(R.drawable.anjing_3, "Anjing", benar = false),
+                GambarPilihan(R.drawable.ikan, "Ikan", benar = true),
+                GambarPilihan(R.drawable.kelinci, "Kelinci", benar = false)
+            )
+        )
+    )
 
-    val stageBoxStatus = remember {
-        mutableStateOf(0)
+    val currentSoalIndex = remember { mutableStateOf(0) }
+    val isPopupVisible = remember { mutableStateOf(false) }
+    val isCorrectAnswer = remember { mutableStateOf(false) }
+    val stageBoxStatus = remember { mutableStateOf(0) }
+    val isEndPopupVisible = remember { mutableStateOf(false) }
+
+    fun validateAnswer(isCorrect: Boolean) {
+        isCorrectAnswer.value = isCorrect
+        isPopupVisible.value = true
     }
+
+    fun nextSoal() {
+        if (currentSoalIndex.value < soalList.size - 1) {
+            currentSoalIndex.value += 1
+            stageBoxStatus.value += 1
+        } else {
+            isEndPopupVisible.value = true
+        }
+    }
+
+    val currentSoal = soalList[currentSoalIndex.value]
 
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-    ){
-        Column (
+    ) {
+        Column(
             modifier = Modifier
                 .padding(31.dp)
-        ){
-            Row (
+        ) {
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
-            ){
+            ) {
                 ButtonNav(
                     onClick = { navController.popBackStack() },
                     icon = R.drawable.ic_x,
@@ -60,89 +125,84 @@ fun PaduGambarPage(
                     backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                     enabled = true
                 )
-                Row (
+                Row(
                     modifier = Modifier.padding(8.dp)
-                ){
-                    StageBox(stage = stageBoxStatus.value, onClick = { /* Handle click here */ })
-                    StageBox(stage = 0, onClick = { /* Handle click here */ })
-                    StageBox(stage = 0, onClick = { /* Handle click here */ })
-                    StageBox(stage = 0, onClick = { /* Handle click here */ })
+                ) {
+                    for (i in 0 until 4) {
+                        StageBox(stage = if (i < stageBoxStatus.value) 1 else 0, onClick = { /* Handle click here */ })
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
             ImageSound(
                 onClick = { /*TODO*/ },
-                image = R.drawable.kucing_2
+                image = currentSoal.gambarUtama
             )
             Spacer(modifier = Modifier.height(24.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-            ){
+            ) {
                 Column {
-                    ButtonImage(
-                        onClick = { isKucingClicked.value = true },
-                        image = R.drawable.kucing,
-                        text = "Kucing",
-                        border = Color.Gray.toArgb(),
-                        background = if (isKucingClicked.value) Color.Green.toArgb() else Color.White.toArgb()
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    ButtonImage(
-                        onClick = { /*TODO*/ },
-                        image = R.drawable.anjing,
-                        text = "Anjing",
-                        border = Color.Gray.toArgb(),
-                        background = Color.White.toArgb()
-                    )
+                    for (pilihan in currentSoal.pilihan.chunked(2)[0]) {
+                        ButtonImage(
+                            onClick = { validateAnswer(pilihan.benar) },
+                            image = pilihan.gambar,
+                            text = pilihan.nama,
+                            border = Color.Gray.toArgb(),
+                            background = Color.White.toArgb()
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
                 }
                 Spacer(modifier = Modifier.width(20.dp))
                 Column {
-                    ButtonImage(
-                        onClick = { /*TODO*/ },
-                        image = R.drawable.kuda,
-                        text = "Kuda",
-                        border = Color.Gray.toArgb(),
-                        background = Color.White.toArgb()
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    ButtonImage(
-                        onClick = { isKelinciClicked.value = true},
-                        image = R.drawable.kelinci,
-                        text = "Kelinci",
-                        border = Color.Gray.toArgb(),
-                        background = if (isKelinciClicked.value) Color.Red.toArgb() else Color.White.toArgb()
-                    )
+                    for (pilihan in currentSoal.pilihan.chunked(2)[1]) {
+                        ButtonImage(
+                            onClick = { validateAnswer(pilihan.benar) },
+                            image = pilihan.gambar,
+                            text = pilihan.nama,
+                            border = Color.Gray.toArgb(),
+                            background = Color.White.toArgb()
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
                 }
             }
-            if (isKucingClicked.value) {
+
+            if (isPopupVisible.value) {
                 Dialog(
-                    onDismissRequest = { isKucingClicked.value = false }
+                    onDismissRequest = { isPopupVisible.value = false }
                 ) {
                     PopupOverview(
                         onClick = {
-                            stageBoxStatus.value = 1
-                            isKucingClicked.value = false
+                            isPopupVisible.value = false
+                            if (isCorrectAnswer.value) {
+                                nextSoal()
+                            }
                         },
                         border = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                         background = MaterialTheme.colorScheme.primary.toArgb(),
-                        text = "Yey, kamu berhasil menjawab dengan benar",
-                        image = R.drawable.boy_2,
-                        message = "Lanjutkan"
+                        text = if (isCorrectAnswer.value) "Yey, kamu berhasil menjawab dengan benar" else "Yah, kamu belum berhasil menjawab dengan benar",
+                        image = if (isCorrectAnswer.value) R.drawable.boy_2 else R.drawable.boy_4,
+                        message = if (isCorrectAnswer.value) "Lanjutkan" else "Coba lagi"
                     )
                 }
             }
 
-            if (isKelinciClicked.value) {
+            if (isEndPopupVisible.value) {
                 Dialog(
-                    onDismissRequest = { isKelinciClicked.value = false }
+                    onDismissRequest = { isEndPopupVisible.value = false }
                 ) {
                     PopupOverview(
-                        onClick = { isKelinciClicked.value = false },
+                        onClick = {
+                            isEndPopupVisible.value = false
+                            navController.popBackStack() // Kembali ke layar sebelumnya
+                        },
                         border = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                         background = MaterialTheme.colorScheme.primary.toArgb(),
-                        text = "Yah, kamu belum berhasil menjawab dengan benar",
-                        image = R.drawable.boy_4,
-                        message = "Coba lagi"
+                        text = "Yey, kamu telah menyelesaikan semua soal dengan baik!",
+                        image = R.drawable.boy_2,
+                        message = "Selesai"
                     )
                 }
             }
