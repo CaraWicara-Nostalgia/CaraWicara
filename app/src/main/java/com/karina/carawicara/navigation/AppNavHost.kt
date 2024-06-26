@@ -30,7 +30,10 @@ fun AppNavHost(navController: NavHostController) {
         composable("suaraPintarRecordPage") { SuaraPintarRecordPage(navController) }
         composable("paduGambarPage") { PaduGambarPage(navController) }
         composable("pustakaWicaraPage") { PustakaWicaraPage(navController) }
-        composable("pustakaWicaraDetailPage") { PustakaWicaraDetailPage(navController) }
+        composable("pustakaWicaraDetailPage/{selectedLetter}") { backStackEntry ->
+            val selectedLetter = backStackEntry.arguments?.getString("selectedLetter") ?: "A"
+            PustakaWicaraDetailPage(navController, selectedLetter)
+        }
         composable(
             "kenaliAkuPage/{message}",
             arguments = listOf(navArgument("message") { type = NavType.StringType })

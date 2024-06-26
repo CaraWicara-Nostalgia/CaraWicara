@@ -5,13 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,25 +30,31 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
+import com.karina.carawicara.data.letterSounds
+import com.karina.carawicara.data.libraryData
 import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.ButtonSpeaker
 import com.karina.carawicara.ui.component.ImageLibrary
 
 @Composable
-fun PustakaWicaraDetailPage(navController: NavHostController) {
+fun PustakaWicaraDetailPage(navController: NavHostController, selectedLetter: String) {
     val openDialog = remember {
         mutableStateOf(false)
     }
+
+    val context = LocalContext.current
+    val items = libraryData[selectedLetter] ?: emptyList()
+    val letterSound = letterSounds[selectedLetter] ?: R.raw.sound_pustaka_a
 
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-    ){
-        Column (
+    ) {
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-        ){
+        ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -71,22 +80,22 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                     enabled = true
                 )
             }
-            Column (
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-            ){
-                Column (
+            ) {
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                ){
-                    Row (
+                ) {
+                    Row(
                         verticalAlignment = Alignment.Bottom,
-                    ){
+                    ) {
                         Text(
-                            text = "A",
+                            text = selectedLetter,
                             fontSize = 128.sp,
                             color = Color.Black,
                         )
                         Text(
-                            text = "A",
+                            text = selectedLetter,
                             fontSize = 64.sp,
                             color = Color.Black,
                         )
@@ -98,54 +107,23 @@ fun PustakaWicaraDetailPage(navController: NavHostController) {
                         borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                         backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
                         enabled = true,
-                        mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_a)
+                        mediaPlayer = MediaPlayer.create(context, letterSound)
                     )
                 }
-                LazyColumn {
-                    item {
-                        Column(
-                            modifier = Modifier.padding(32.dp)
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                ImageLibrary(
-                                    onClick = { },
-                                    image = R.drawable.air,
-                                    text = "Air",
-                                    homonym = "a.ir",
-                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_air)
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                ImageLibrary(
-                                    onClick = { },
-                                    image = R.drawable.api,
-                                    text = "Api",
-                                    homonym = "a.pi",
-                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_api)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                ImageLibrary(
-                                    onClick = { /*TODO*/ },
-                                    image = R.drawable.aku,
-                                    text = "Aku",
-                                    homonym = "a.ku",
-                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_api)
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                ImageLibrary(
-                                    onClick = { /*TODO*/ },
-                                    image = R.drawable.asap,
-                                    text = "A",
-                                    homonym = "a.sap",
-                                    mediaPlayer = MediaPlayer.create(LocalContext.current, R.raw.sound_pustaka_api)
-                                )
-                            }
-                        }
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(32.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    items(items) { item ->
+                        ImageLibrary(
+                            onClick = { },
+                            image = item.image,
+                            text = item.text,
+                            homonym = item.homonym,
+                            mediaPlayer = MediaPlayer.create(context, item.sound)
+                        )
                     }
                 }
             }

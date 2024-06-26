@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -69,257 +68,75 @@ fun PustakaWicaraPage(navController: NavHostController) {
                     )
                 }
             }
-            LazyColumn {
-                item{
-                    Column (
-                        modifier = Modifier.padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ){
-                        Row (
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { navController.navigate("pustakaWicaraDetailPage") },
-                                alphabet = "A",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "B",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "C",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "D",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "E",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "F",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "G",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "H",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "I",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "J",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "K",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "L",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "M",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "N",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "O",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "P",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "Q",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "R",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "S",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "T",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "U",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "V",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "W",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "X",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Row (
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "Y",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                            Spacer(modifier = Modifier.width(32.dp))
-                            ButtonAlphabetLibrary(
-                                onClick = { /*TODO*/ },
-                                alphabet = "Z",
-                                isSelected = false,
-                                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
-                            )
-                        }
-                    }
+            LazyColumn(
+                modifier = Modifier.padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("A", "B", "C")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("D", "E", "F")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("G", "H", "I")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("J", "K", "L")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("M", "N", "O")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("P", "Q", "R")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("S", "T", "U")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("V", "W", "X")
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    AlphabetRow(
+                        navController = navController,
+                        alphabets = listOf("Y", "Z")
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun AlphabetRow(navController: NavHostController, alphabets: List<String>) {
+    Row (
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        alphabets.forEach { alphabet ->
+            ButtonAlphabetLibrary(
+                onClick = { navController.navigate("pustakaWicaraDetailPage/$alphabet") },
+                alphabet = alphabet,
+                isSelected = false,
+                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                backgroundColor = MaterialTheme.colorScheme.primary.toArgb()
+            )
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
