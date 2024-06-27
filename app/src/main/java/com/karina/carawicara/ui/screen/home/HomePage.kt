@@ -83,7 +83,7 @@ fun HomePage(
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
                             image = R.drawable.card_home_2,
-                            onClick = { navController.navigate("susunKataPage") }
+                            onClick = { navController.navigate("susunKataPage/0") }
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(

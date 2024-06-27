@@ -24,7 +24,13 @@ fun AppNavHost(navController: NavHostController) {
     NavHost(navController, startDestination = "splashScreen") {
         composable("splashScreen") { SplashScreen(navController) }
         composable("homePage") { HomePage(navController) }
-        composable("susunKataPage") { SusunKataPage(R.drawable.kucing_2, navController) }
+        composable(
+            "susunKataPage/{index}",
+            arguments = listOf(navArgument("index") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val index = backStackEntry.arguments?.getInt("index") ?: 0
+            SusunKataPage(index, navController)
+        }
         composable("onboardingPage") { OnBoardingPage(navController) }
         composable("suaraPintarPage") { SuaraPintarPage(R.drawable.kucing_2, navController) }
         composable("suaraPintarRecordPage") { SuaraPintarRecordPage(navController) }
@@ -46,3 +52,4 @@ fun AppNavHost(navController: NavHostController) {
         composable("kenaliAkuRecordPage") { KenaliAkuRecordPage(navController) }
     }
 }
+

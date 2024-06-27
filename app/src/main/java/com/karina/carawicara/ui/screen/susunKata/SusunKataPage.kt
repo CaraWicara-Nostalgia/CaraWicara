@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,19 +40,68 @@ import com.karina.carawicara.ui.component.StageBox
 import androidx.compose.ui.window.Dialog
 import com.karina.carawicara.ui.component.PopupOverview
 
+data class SoalSusunKata(
+    val image: Int,
+    val correctAnswer: String
+)
+
 @Composable
 fun SusunKataPage(
-    image: Int,
+    index: Int,
     navHostController: NavHostController
 ) {
     val context = LocalContext.current
+    val currentSoalIndex = remember { mutableStateOf(0) }
     val selectedLetters = remember { mutableStateListOf<String>() }
+    val letterUsage = remember { mutableStateMapOf<Char, Int>() }
     val isCorrectAnswer = remember { mutableStateOf(false) }
     val isPopupVisible = remember { mutableStateOf(false) }
+    val stageBoxStatus = remember { mutableStateOf(0) }
+    val isEndPopupVisible = remember { mutableStateOf(false) }
+
+    val soalList = listOf(
+        SoalSusunKata(R.drawable.kucing_2, "KUCING"),
+        SoalSusunKata(R.drawable.anjing_2, "ANJING"),
+        SoalSusunKata(R.drawable.ikan_2, "IKAN"),
+        SoalSusunKata(R.drawable.sapi_3, "SAPI")
+    )
+
+    fun nextSoal() {
+        if (currentSoalIndex.value < soalList.size - 1) {
+            currentSoalIndex.value += 1
+            stageBoxStatus.value += 1
+        } else {
+            isEndPopupVisible.value = true
+        }
+    }
+
+    val currentSoal = soalList[index]
+
+    // Generate additional random letters and shuffle them once
+    val allLetters = remember {
+        val additionalLetters = ('A'..'Z').filterNot { it in currentSoal.correctAnswer }.shuffled().take(8 - currentSoal.correctAnswer.length)
+        (currentSoal.correctAnswer.toList() + additionalLetters).shuffled()
+    }
+
+    // Initialize letter usage count
+    currentSoal.correctAnswer.forEach { char ->
+        letterUsage[char] = letterUsage.getOrDefault(char, 0) + 1
+    }
+    allLetters.forEach { char ->
+        if (char !in letterUsage) {
+            letterUsage[char] = 1
+        }
+    }
 
     fun validateAnswer(letters: List<String>) {
-        if (letters.joinToString("") == "KUCING") {
+        if (letters.joinToString("") == currentSoal.correctAnswer) {
             isCorrectAnswer.value = true
+            stageBoxStatus.value += 1
+            if (index < soalList.size - 1) {
+                navHostController.navigate("susunKataPage/${index + 1}")
+            } else {
+                isEndPopupVisible.value = true
+            }
         } else {
             isCorrectAnswer.value = false
         }
@@ -84,10 +134,9 @@ fun SusunKataPage(
                 Row(
                     modifier = Modifier.padding(8.dp)
                 ) {
-                    StageBox(stage = 0, onClick = { /* Handle click here */ })
-                    StageBox(stage = 0, onClick = { /* Handle click here */ })
-                    StageBox(stage = 0, onClick = { /* Handle click here */ })
-                    StageBox(stage = 0, onClick = { /* Handle click here */ })
+                    for (i in 0 until 4) {
+                        StageBox(stage = if (i < stageBoxStatus.value) 1 else 0, onClick = { /* Handle click here */ })
+                    }
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -99,8 +148,8 @@ fun SusunKataPage(
                     .padding(4.dp)
             ) {
                 Text(
-                    text = "susunlah huruf dibawah untuk menjawab",
-                    fontSize = 20.sp,
+                    text = "Susunlah huruf dibawah untuk menjawab",
+                    fontSize = 16.sp,
                     color = Color(0xFFFCB028),
                     textAlign = TextAlign.Center
                 )
@@ -118,7 +167,7 @@ fun SusunKataPage(
                     .background(color = Color.White, shape = RoundedCornerShape(12.dp))
             ) {
                 Image(
-                    painter = painterResource(image),
+                    painter = painterResource(currentSoal.image),
                     contentDescription = null,
                     modifier = Modifier
                         .size(279.dp, 300.dp)
@@ -126,57 +175,69 @@ fun SusunKataPage(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            Row (
+            Row(
                 modifier = Modifier.padding(8.dp)
-            ){
-                ButtonAlphabet(onClick = { /*TODO*/ }, text = selectedLetters.getOrNull(0) ?: "")
-                Spacer(modifier = Modifier.width(4.dp))
-                ButtonAlphabet(onClick = { /*TODO*/ }, text = selectedLetters.getOrNull(1) ?: "")
-                Spacer(modifier = Modifier.width(4.dp))
-                ButtonAlphabet(onClick = { /*TODO*/ }, text = selectedLetters.getOrNull(2) ?: "")
-                Spacer(modifier = Modifier.width(4.dp))
-                ButtonAlphabet(onClick = { /*TODO*/ }, text = selectedLetters.getOrNull(3) ?: "")
-                Spacer(modifier = Modifier.width(4.dp))
-                ButtonAlphabet(onClick = { /*TODO*/ }, text = selectedLetters.getOrNull(4) ?: "")
-                Spacer(modifier = Modifier.width(4.dp))
-                ButtonAlphabet(onClick = { /*TODO*/ }, text = selectedLetters.getOrNull(5) ?: "")
+            ) {
+                repeat(currentSoal.correctAnswer.length) { index ->
+                    ButtonAlphabet(
+                        onClick = { /*TODO*/ },
+                        text = selectedLetters.getOrNull(index) ?: ""
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
             Divider()
             Spacer(modifier = Modifier.weight(1f))
-            Row {
+            Row (
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Column {
-                    Row (
+                    Row(
                         modifier = Modifier.padding(8.dp)
-                    ){
-                        ButtonAlphabet(onClick = { selectedLetters.add("U") }, text = "U", enabled = !selectedLetters.contains("U"))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ButtonAlphabet(onClick = { selectedLetters.add("K") }, text = "K", enabled = !selectedLetters.contains("K"))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ButtonAlphabet(onClick = { selectedLetters.add("N") }, text = "N", enabled = !selectedLetters.contains("N"))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ButtonAlphabet(onClick = { selectedLetters.add("D") }, text = "D", enabled = !selectedLetters.contains("D"))
+                    ) {
+                        allLetters.subList(0, allLetters.size / 2).forEach { letter ->
+                            ButtonAlphabet(
+                                onClick = {
+                                    selectedLetters.add(letter.toString())
+                                    letterUsage[letter] = letterUsage.getOrDefault(letter, 0) - 1
+                                },
+                                text = letter.toString(),
+                                enabled = letterUsage[letter] ?: 0 > 0
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Row (
+                    Row(
                         modifier = Modifier.padding(8.dp)
-                    ){
-                        ButtonAlphabet(onClick = { selectedLetters.add("C") }, text = "C", enabled = !selectedLetters.contains("C"))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ButtonAlphabet(onClick = { selectedLetters.add("G") }, text = "G", enabled = !selectedLetters.contains("G"))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ButtonAlphabet(onClick = { selectedLetters.add("I") }, text = "I", enabled = !selectedLetters.contains("I"))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ButtonAlphabet(onClick = { selectedLetters.add("A") }, text = "A", enabled = !selectedLetters.contains("A"))
+                    ) {
+                        allLetters.subList(allLetters.size / 2, allLetters.size).forEach { letter ->
+                            ButtonAlphabet(
+                                onClick = {
+                                    selectedLetters.add(letter.toString())
+                                    letterUsage[letter] = letterUsage.getOrDefault(letter, 0) - 1
+                                },
+                                text = letter.toString(),
+                                enabled = letterUsage[letter] ?: 0 > 0
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
                     }
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                Column (
+                Column(
                     modifier = Modifier.padding(8.dp)
-                ){
+                ) {
                     ButtonNav(
-                        onClick = { selectedLetters.clear() },
-                        icon = R.drawable.ic_restart,
+                        onClick = {
+                            if (selectedLetters.isNotEmpty()) {
+                                val lastLetter = selectedLetters.removeLast()
+                                letterUsage[lastLetter.single()] =
+                                    letterUsage.getOrDefault(lastLetter.single(), 0) + 1
+                            }
+                        },
+                        icon = R.drawable.ic_erase, // Ganti dengan ikon erase yang sesuai
                         iconColor = Color.Black.toArgb(),
                         borderColor = Color.DarkGray.toArgb(),
                         backgroundColor = Color.White.toArgb(),
@@ -184,15 +245,30 @@ fun SusunKataPage(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     ButtonNav(
-                        onClick = { validateAnswer(selectedLetters) },
-                        icon = R.drawable.ic_arrow_forward,
-                        iconColor = Color.White.toArgb(),
-                        borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                        backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
-                        enabled = selectedLetters.size == 6
+                        onClick = {
+                            selectedLetters.clear()
+                            // Reset letter usage
+                            currentSoal.correctAnswer.forEach { char ->
+                                letterUsage[char] = letterUsage.getOrDefault(char, 0) + 1
+                            }
+                        },
+                        icon = R.drawable.ic_restart,
+                        iconColor = Color.Black.toArgb(),
+                        borderColor = Color.DarkGray.toArgb(),
+                        backgroundColor = Color.White.toArgb(),
+                        enabled = selectedLetters.isNotEmpty()
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            ButtonNav(
+                onClick = { validateAnswer(selectedLetters) },
+                icon = R.drawable.ic_arrow_forward,
+                iconColor = Color.White.toArgb(),
+                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                enabled = selectedLetters.size == currentSoal.correctAnswer.length
+            )
         }
     }
 
@@ -204,7 +280,7 @@ fun SusunKataPage(
                 onClick = {
                     isPopupVisible.value = false
                     if (isCorrectAnswer.value) {
-                        navHostController.popBackStack()
+                        nextSoal()
                     }
                 },
                 border = MaterialTheme.colorScheme.primaryContainer.toArgb(),
@@ -212,6 +288,24 @@ fun SusunKataPage(
                 text = if (isCorrectAnswer.value) "Yey, kamu berhasil menjawab dengan benar" else "Yah, kamu belum berhasil menjawab dengan benar",
                 image = if (isCorrectAnswer.value) R.drawable.boy_2 else R.drawable.boy_4,
                 message = if (isCorrectAnswer.value) "Lanjutkan" else "Coba lagi"
+            )
+        }
+    }
+
+    if (isEndPopupVisible.value) {
+        Dialog(
+            onDismissRequest = { isEndPopupVisible.value = false }
+        ) {
+            PopupOverview(
+                onClick = {
+                    isEndPopupVisible.value = false
+                    navHostController.popBackStack() // Kembali ke layar sebelumnya
+                },
+                border = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                background = MaterialTheme.colorScheme.primary.toArgb(),
+                text = "Yey, kamu telah menyelesaikan semua soal dengan baik!",
+                image = R.drawable.boy_2,
+                message = "Selesai"
             )
         }
     }
