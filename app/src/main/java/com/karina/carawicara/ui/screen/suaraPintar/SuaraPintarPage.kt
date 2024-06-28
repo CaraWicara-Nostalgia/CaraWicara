@@ -103,7 +103,8 @@ fun SuaraPintarPage(
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = "Ayo tebak nama hewan ini!",
-                    fontSize = 20.sp
+                    fontSize = 24.sp,
+                    color = Color(MaterialTheme.colorScheme.primary.toArgb())
                 )
             }
             Spacer(modifier = Modifier.weight(1f))

@@ -16,9 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonGender
@@ -53,15 +52,16 @@ fun OnBoardingPage(
             ) {
                 Text(
                     text = stringResource(id = R.string.onboardTitle),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    fontSize = 40.sp,
                     color = Color.Black,
-                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(id = R.string.onboardDescription),
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    fontSize = 20.sp,
                     color = Color.Black,
-                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
             Column(

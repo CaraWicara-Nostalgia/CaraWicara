@@ -143,21 +143,6 @@ fun SusunKataPage(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .background(Color(0xFFFEEFD4))
-                    .border(2.dp, Color(0xFFFEE4B7))
-                    .padding(4.dp)
-            ) {
-                Text(
-                    text = "Susunlah huruf dibawah untuk menjawab",
-                    fontSize = 16.sp,
-                    color = Color(0xFFFCB028),
-                    textAlign = TextAlign.Center
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
                     .size(311.dp, 332.dp)
                     .border(
                         2.dp,
@@ -174,6 +159,13 @@ fun SusunKataPage(
                         .clip(RoundedCornerShape(6.dp))
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "Susunlah huruf dibawah untuk menjawab!",
+                fontSize = 24.sp,
+                color = Color(0xFFFCB028),
+                textAlign = TextAlign.Center
+            )
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier.padding(8.dp)

@@ -72,7 +72,7 @@ fun ButtonGender (
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                     color = Color.Black,
                     textAlign = TextAlign.Center
                 )

@@ -55,7 +55,7 @@ fun SplashScreen(
             Text(
                 text = stringResource(id = R.string.welcome),
                 textAlign = TextAlign.Center,
-                fontSize = 20.sp,
+                fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onPrimary
             )
             Spacer(modifier = Modifier.height(16.dp))
