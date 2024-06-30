@@ -76,5 +76,16 @@ dependencies {
     implementation("androidx.camera:camera-video:1.3.3")
 
     implementation("androidx.camera:camera-view:1.3.3")
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    //lifecycle compose
+
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.2")
     implementation("androidx.camera:camera-extensions:1.3.3")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
 }

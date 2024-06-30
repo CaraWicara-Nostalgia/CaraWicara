@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.karina.carawicara.navigation.AppNavHost
+import com.karina.carawicara.ui.navigation.AppNavHost
 import com.karina.carawicara.ui.theme.CaraWicaraTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    AppNavHost(navController)
+                    AppNavHost(navController = navController)
                 }
             }
         }

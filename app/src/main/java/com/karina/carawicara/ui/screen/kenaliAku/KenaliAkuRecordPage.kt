@@ -29,14 +29,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.CameraPreview
-import java.io.File
-import androidx.core.app.ActivityCompat
 import com.karina.carawicara.ui.component.StageBox
+import java.io.File
+import java.util.Random
 
 private const val REQUEST_CODE_PERMISSIONS = 1001
 
@@ -71,7 +72,7 @@ fun KenaliAkuRecordPage(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .padding(31.dp)
-        ){
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -124,7 +125,7 @@ fun KenaliAkuRecordPage(
                             enabled = true
                         )
                         ButtonNav(
-                            onClick = { takePicture(controller, context, filesDir) },
+                            onClick = { takePicture(controller, context, filesDir, navHostController) },
                             icon = R.drawable.ic_record,
                             iconColor = Color.White.toArgb(),
                             borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
@@ -138,7 +139,6 @@ fun KenaliAkuRecordPage(
         }
     }
 
-    // Request permissions if not already granted
     if (!allPermissionsGranted) {
         ActivityCompat.requestPermissions(
             context as Activity,
@@ -166,7 +166,12 @@ private fun flipCamera(controller: LifecycleCameraController, context: Context) 
 }
 
 @SuppressLint("MissingPermission")
-private fun takePicture(controller: LifecycleCameraController, context: Context, filesDir: File) {
+private fun takePicture(
+    controller: LifecycleCameraController,
+    context: Context,
+    filesDir: File,
+    navHostController: NavHostController
+) {
     val outputFile = File(filesDir, "my-picture.jpg")
     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
 
@@ -177,6 +182,17 @@ private fun takePicture(controller: LifecycleCameraController, context: Context,
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                 // Handle the success of image capture
                 Toast.makeText(context, "Picture taken successfully!", Toast.LENGTH_SHORT).show()
+
+                // Generate a random accuracy value between 50 and 70
+                val random = Random()
+                val accuracy = 50 + random.nextInt(21)
+
+                // Save the image path to SavedStateHandle
+                navHostController.currentBackStackEntry?.savedStateHandle?.set("imagePath", outputFile.absolutePath)
+
+                // Navigate to the result page with the accuracy
+                val route = "kenaliAkuResultPage/$accuracy"
+                navHostController.navigate(route)
             }
 
             override fun onError(exception: ImageCaptureException) {

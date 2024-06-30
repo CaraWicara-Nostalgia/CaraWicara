@@ -93,21 +93,21 @@ fun KenaliAkuPage(
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = "Senang",
-                    fontSize = 20.sp,
-                    color = Color.Red,
+                    fontSize = 40 .sp,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = message,
-                    fontSize = 16.sp,
+                    fontSize = 24.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
             ButtonNav(
                 onClick = { navHostController.navigate("kenaliAkuRecordPage") },
-                icon = R.drawable.ic_record,
+                icon = R.drawable.ic_arrow_forward,
                 iconColor = Color.Black.toArgb(),
                 borderColor = Color.Gray.toArgb(),
                 backgroundColor = Color.White.toArgb(),

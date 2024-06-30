@@ -7,7 +7,7 @@
     <!-- Audio recording permission -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Optional: Internet permission, if you plan to upload or stream the videos -->
-    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Camera hardware feature declaration -->
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
