@@ -54,7 +54,7 @@ fun SuaraPintarPage(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ButtonNav(
-                    onClick = { navHostController.popBackStack() },
+                    onClick = { navHostController.navigate("homePage") },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
                     borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
