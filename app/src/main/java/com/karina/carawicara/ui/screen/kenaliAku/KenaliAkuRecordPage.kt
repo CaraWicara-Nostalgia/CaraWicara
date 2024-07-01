@@ -157,8 +157,6 @@ private fun hasRequiredPermissions(context: Context, permissions: Array<String>)
     }
 }
 
-private var isUsingFrontCamera = true
-
 private fun flipCamera(controller: LifecycleCameraController, context: Context) {
     isUsingFrontCamera = !isUsingFrontCamera
     val lensFacing = if (isUsingFrontCamera) CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK

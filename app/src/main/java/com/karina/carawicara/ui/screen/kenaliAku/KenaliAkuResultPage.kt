@@ -27,6 +27,8 @@ import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonNav
 
+var isUsingFrontCamera = true // Pastikan variabel ini tersedia di skop yang tepat
+
 @Composable
 fun KenaliAkuResultPage(
     navHostController: NavHostController,
@@ -52,6 +54,9 @@ fun KenaliAkuResultPage(
             // Membuat matrix untuk rotasi
             val matrix = Matrix().apply {
                 postRotate(90f)
+                if (isUsingFrontCamera) {
+                    postRotate(180f)
+                }
             }
 
             // Menerapkan rotasi ke bitmap
