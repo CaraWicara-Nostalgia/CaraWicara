@@ -80,7 +80,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     //lottiefiles
     implementation("com.airbnb.android:lottie-compose:5.2.0")
-
+    //gif
+    implementation("io.coil-kt:coil-compose:1.3.2")
+    implementation("io.coil-kt:coil-gif:1.3.2")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.2")
     implementation("androidx.camera:camera-extensions:1.3.3")

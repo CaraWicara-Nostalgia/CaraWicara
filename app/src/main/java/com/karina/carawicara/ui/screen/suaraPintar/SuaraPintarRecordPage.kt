@@ -44,7 +44,7 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
     val stageBoxStatus = remember { mutableStateOf(0) }
     val isPlaying = remember { mutableStateOf(false) }
 
-    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("spectrum_audio.json"))
+    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("audio_animation.json"))
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -97,10 +97,11 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
                 LottieAnimation(
-                    composition,
+                    composition = composition,
                     isPlaying = isPlaying.value,
+                    iterations = Int.MAX_VALUE, // Loop terus menerus
                     modifier = Modifier
-                        .height(200.dp) // Sesuaikan ukuran sesuai kebutuhan Anda
+                        .size(200.dp) // Sesuaikan ukuran sesuai kebutuhan Anda
                         .padding(16.dp)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
@@ -120,7 +121,9 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     ButtonNav(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            isPlaying.value = true // Mulai animasi Lottie ketika tombol diklik
+                        },
                         icon = R.drawable.ic_mic,
                         iconColor = Color.White.toArgb(),
                         borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
@@ -131,7 +134,6 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
                     Button(
                         onClick = {
                             sendButtonClicked.value = true
-                            isPlaying.value = true // Mulai animasi Lottie ketika tombol diklik
                         },
                         Modifier
                             .size(239.dp, 47.dp)
