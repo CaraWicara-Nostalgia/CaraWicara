@@ -44,7 +44,7 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
     val stageBoxStatus = remember { mutableStateOf(0) }
     val isPlaying = remember { mutableStateOf(false) }
 
-    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("audio_animation.json"))
+    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("audio.json"))
 
     Box(
         contentAlignment = Alignment.TopCenter,
