@@ -26,12 +26,13 @@ import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonImage
 import com.karina.carawicara.ui.component.ButtonNav
-import com.karina.carawicara.ui.component.PopupOverview
 import com.karina.carawicara.ui.component.ImageSound
+import com.karina.carawicara.ui.component.PopupOverview
 import com.karina.carawicara.ui.component.StageBox
 
 data class Soal(
     val gambarUtama: Int,
+    val suara: Int,
     val pilihan: List<GambarPilihan>
 )
 
@@ -48,6 +49,7 @@ fun PaduGambarPage(
     val soalList = listOf(
         Soal(
             gambarUtama = R.drawable.kucing_2,
+            suara = R.raw.kucing,
             pilihan = listOf(
                 GambarPilihan(R.drawable.kucing, "Kucing", benar = true),
                 GambarPilihan(R.drawable.anjing_3, "Anjing", benar = false),
@@ -57,6 +59,7 @@ fun PaduGambarPage(
         ),
         Soal(
             gambarUtama = R.drawable.anjing_2,
+            suara = R.raw.anjing,
             pilihan = listOf(
                 GambarPilihan(R.drawable.kelinci, "Kelinci", benar = false),
                 GambarPilihan(R.drawable.anjing_3, "Anjing", benar = true),
@@ -66,6 +69,7 @@ fun PaduGambarPage(
         ),
         Soal(
             gambarUtama = R.drawable.sapi_3,
+            suara = R.raw.sapi,
             pilihan = listOf(
                 GambarPilihan(R.drawable.kucing, "Kucing", benar = false),
                 GambarPilihan(R.drawable.ikan, "Ikan", benar = false),
@@ -75,6 +79,7 @@ fun PaduGambarPage(
         ),
         Soal(
             gambarUtama = R.drawable.ikan_2,
+            suara = R.raw.ikan,
             pilihan = listOf(
                 GambarPilihan(R.drawable.sapi, "Sapi", benar = false),
                 GambarPilihan(R.drawable.anjing_3, "Anjing", benar = false),
@@ -137,8 +142,8 @@ fun PaduGambarPage(
             }
             Spacer(modifier = Modifier.height(24.dp))
             ImageSound(
-                onClick = { /*TODO*/ },
-                image = currentSoal.gambarUtama
+                image = currentSoal.gambarUtama,
+                sound = currentSoal.suara
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(

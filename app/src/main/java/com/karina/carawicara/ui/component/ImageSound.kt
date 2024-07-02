@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.component
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,15 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.karina.carawicara.R
 
 @Composable
 fun ImageSound(
-    onClick: () -> Unit,
     image: Int,
+    sound: Int
 ) {
+    val context = LocalContext.current
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -36,7 +40,7 @@ fun ImageSound(
                 shape = RoundedCornerShape(12.dp)
             )
             .background(color = Color.White, shape = RoundedCornerShape(12.dp))
-    ){
+    ) {
         Image(
             painter = painterResource(image),
             contentDescription = null,
@@ -44,19 +48,28 @@ fun ImageSound(
                 .size(279.dp, 300.dp)
                 .clip(RoundedCornerShape(6.dp))
         )
-        Column (
+        Column(
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxSize().padding(24.dp)
-        ){
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp)
+        ) {
             ButtonNav(
-                onClick = { /*TODO*/ },
+                onClick = { playSound(context, sound) },
                 icon = R.drawable.ic_speaker,
                 iconColor = Color.White.toArgb(),
-
                 borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                 backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
                 enabled = true
             )
         }
+    }
+}
+
+private fun playSound(context: android.content.Context, sound: Int) {
+    val mediaPlayer = MediaPlayer.create(context, sound)
+    mediaPlayer.start()
+    mediaPlayer.setOnCompletionListener {
+        it.release()
     }
 }
