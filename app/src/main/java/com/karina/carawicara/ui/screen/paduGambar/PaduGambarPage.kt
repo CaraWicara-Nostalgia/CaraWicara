@@ -128,8 +128,6 @@ fun PaduGambarPage(
                     onClick = { navController.popBackStack() },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                     enabled = true
                 )
                 Row(

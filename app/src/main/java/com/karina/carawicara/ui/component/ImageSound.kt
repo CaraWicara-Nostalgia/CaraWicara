@@ -58,8 +58,6 @@ fun ImageSound(
                 onClick = { playSound(context, sound) },
                 icon = R.drawable.ic_speaker,
                 iconColor = Color.White.toArgb(),
-                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
                 enabled = true
             )
         }

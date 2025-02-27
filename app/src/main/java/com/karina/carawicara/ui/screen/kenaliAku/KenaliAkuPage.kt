@@ -53,8 +53,6 @@ fun KenaliAkuPage(
                     onClick = { navHostController.navigate("homePage") },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                     enabled = true
                 )
                 Row(
@@ -109,8 +107,6 @@ fun KenaliAkuPage(
                 onClick = { navHostController.navigate("kenaliAkuRecordPage") },
                 icon = R.drawable.ic_arrow_forward,
                 iconColor = Color.Black.toArgb(),
-                borderColor = Color.Gray.toArgb(),
-                backgroundColor = Color.White.toArgb(),
                 enabled = true
             )
             Spacer(modifier = Modifier.weight(1f))

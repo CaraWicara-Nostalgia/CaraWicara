@@ -43,15 +43,6 @@ fun HomePage(
             Row (
                 verticalAlignment = Alignment.CenterVertically
             ){
-                ButtonNav(
-                    onClick = { /* Handle click here */ },
-                    icon = R.drawable.ic_gender_male,
-                    iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
-                    enabled = true
-                )
-                Spacer(modifier = Modifier.weight(1f))
                 Image(
                     modifier = Modifier.size(130.dp, 24.dp),
                     painter = painterResource(id = R.drawable.logo_color),
@@ -61,9 +52,7 @@ fun HomePage(
                 ButtonNav(
                     onClick = { navController.navigate("pustakaWicaraPage")},
                     icon = R.drawable.ic_library,
-                    iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
+                    iconColor = MaterialTheme.colorScheme.primary.toArgb(),
                     enabled = true
                 )
             }
@@ -72,23 +61,27 @@ fun HomePage(
                 item {
                     Column {
                         CardHome(
-                            image = R.drawable.card_home_1,
-                            onClick = { navController.navigate("paduGambarPage") }
+                            onClick = { navController.navigate("paduGambarPage") },
+                            title = TODO(),
+                            description = TODO()
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
-                            image = R.drawable.card_home_4,
-                            onClick = { navController.navigate("kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!")}
+                            onClick = { navController.navigate("kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!") },
+                            title = TODO(),
+                            description = TODO()
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
-                            image = R.drawable.card_home_2,
-                            onClick = { navController.navigate("susunKataPage/0") }
+                            onClick = { navController.navigate("susunKataPage/0") },
+                            title = TODO(),
+                            description = TODO()
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
-                            image = R.drawable.card_home_3,
-                            onClick = { navController.navigate("suaraPintarPage")}
+                            onClick = { navController.navigate("suaraPintarPage") },
+                            title = TODO(),
+                            description = TODO()
                         )
                     }
                 }

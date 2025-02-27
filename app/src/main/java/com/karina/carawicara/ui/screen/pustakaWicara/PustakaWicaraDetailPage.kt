@@ -66,8 +66,6 @@ fun PustakaWicaraDetailPage(navController: NavHostController, selectedLetter: St
                     onClick = { navController.popBackStack() },
                     icon = R.drawable.ic_arrow_back,
                     iconColor = Color.Black.toArgb(),
-                    borderColor = Color.DarkGray.toArgb(),
-                    backgroundColor = Color.White.toArgb(),
                     enabled = true
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -75,8 +73,6 @@ fun PustakaWicaraDetailPage(navController: NavHostController, selectedLetter: St
                     onClick = { openDialog.value = true },
                     icon = R.drawable.ic_filter,
                     iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
                     enabled = true
                 )
             }

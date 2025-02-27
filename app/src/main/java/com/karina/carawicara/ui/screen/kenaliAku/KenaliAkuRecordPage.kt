@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -80,8 +79,6 @@ fun KenaliAkuRecordPage(
                     onClick = { navHostController.popBackStack() },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                     enabled = true
                 )
                 Row(
@@ -117,19 +114,15 @@ fun KenaliAkuRecordPage(
                         modifier = Modifier.padding(vertical = 8.dp)
                     ) {
                         ButtonNav(
-                            onClick = { flipCamera(controller, context) },
+                            onClick = { flipCamera(controller) },
                             icon = R.drawable.ic_flip,
                             iconColor = Color.White.toArgb(),
-                            borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                            backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
                             enabled = true
                         )
                         ButtonNav(
                             onClick = { takePicture(controller, context, filesDir, navHostController) },
                             icon = R.drawable.ic_record,
                             iconColor = Color.White.toArgb(),
-                            borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                            backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                             enabled = true
                         )
                     }
@@ -157,7 +150,7 @@ private fun hasRequiredPermissions(context: Context, permissions: Array<String>)
     }
 }
 
-private fun flipCamera(controller: LifecycleCameraController, context: Context) {
+private fun flipCamera(controller: LifecycleCameraController) {
     isUsingFrontCamera = !isUsingFrontCamera
     val lensFacing = if (isUsingFrontCamera) CameraSelector.LENS_FACING_FRONT else CameraSelector.LENS_FACING_BACK
     controller.cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()

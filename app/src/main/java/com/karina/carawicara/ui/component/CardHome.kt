@@ -9,11 +9,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,73 +29,58 @@ import com.karina.carawicara.R
 
 @Composable
 fun CardHome(
-    image: Int,
+    title: String,
+    description: String,
     onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .height(170.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .border(1.dp, Color.Gray, RoundedCornerShape(16.dp))
-            .size(311.dp, 220.dp),
+            .padding(24.dp)
     ) {
-        Column (
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ){
-            Image(
-                painter = painterResource(id = image),
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                modifier = Modifier.padding(16.dp)
+            Column (
+                modifier = Modifier
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column {
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically,
-                    ){
-                        Row (
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(-8.dp)
-                        ){
-                            for (i in 1..4) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.round_home), // Placeholder image, replace with actual images
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .clip(RoundedCornerShape(20.dp))
-                                        .background(Color.Gray)
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "299+",
-                            fontSize = 10.sp,
-                            color = Color.Green
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(4.dp))
+                Column (
+                    modifier = Modifier
+                        .weight(1f)
+                ){
                     Text(
-                        text = "299 Lebih Pengguna Berhasil Mengerjakan",
-                        fontSize = 16.sp
+                        text = title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = description,
+                        fontSize = 14.sp,
+                        color = Color.Black
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(4.dp))
                 ButtonNav(
-                    onClick = { onClick() },
-                    icon = R.drawable.ic_arrow_forward,
-                    iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
-                    enabled = true
+                    onClick = onClick,
+                    icon = R.drawable.ic_right_arrow,
+                    iconColor = Color.Black.toArgb(),
+                    text = "Mulai",
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
+            Image(
+                painter = painterResource(id = R.drawable.boy_2),
+                contentDescription = null,
+                modifier = Modifier.size(140.dp)
+            )
         }
     }
 }
@@ -105,7 +89,8 @@ fun CardHome(
 @Composable
 fun CardHomePreview(){
     CardHome(
-        image = R.drawable.card_home_1,
-        onClick = { /* Handle click here */ }
+        onClick = { /* Handle click here */ },
+        title = "Flashcard",
+        description = "Belajar kata melalui gambar"
     )
 }

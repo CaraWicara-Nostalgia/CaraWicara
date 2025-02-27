@@ -50,7 +50,6 @@ fun SusunKataPage(
     index: Int,
     navHostController: NavHostController
 ) {
-    val context = LocalContext.current
     val currentSoalIndex = remember { mutableStateOf(0) }
     val selectedLetters = remember { mutableStateListOf<String>() }
     val letterUsage = remember { mutableStateMapOf<Char, Int>() }
@@ -127,8 +126,6 @@ fun SusunKataPage(
                     onClick = { navHostController.popBackStack() },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                     enabled = true
                 )
                 Row(
@@ -196,7 +193,7 @@ fun SusunKataPage(
                                     letterUsage[letter] = letterUsage.getOrDefault(letter, 0) - 1
                                 },
                                 text = letter.toString(),
-                                enabled = letterUsage[letter] ?: 0 > 0
+                                enabled = (letterUsage[letter] ?: 0) > 0
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                         }
@@ -212,7 +209,7 @@ fun SusunKataPage(
                                     letterUsage[letter] = letterUsage.getOrDefault(letter, 0) - 1
                                 },
                                 text = letter.toString(),
-                                enabled = letterUsage[letter] ?: 0 > 0
+                                enabled = (letterUsage[letter] ?: 0) > 0
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                         }
@@ -231,8 +228,6 @@ fun SusunKataPage(
                         },
                         icon = R.drawable.ic_erase, // Ganti dengan ikon erase yang sesuai
                         iconColor = Color.Black.toArgb(),
-                        borderColor = Color.DarkGray.toArgb(),
-                        backgroundColor = Color.White.toArgb(),
                         enabled = selectedLetters.isNotEmpty()
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -246,8 +241,6 @@ fun SusunKataPage(
                         },
                         icon = R.drawable.ic_restart,
                         iconColor = Color.Black.toArgb(),
-                        borderColor = Color.DarkGray.toArgb(),
-                        backgroundColor = Color.White.toArgb(),
                         enabled = selectedLetters.isNotEmpty()
                     )
                 }
@@ -257,8 +250,6 @@ fun SusunKataPage(
                 onClick = { validateAnswer(selectedLetters) },
                 icon = R.drawable.ic_arrow_forward,
                 iconColor = Color.White.toArgb(),
-                borderColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                backgroundColor = MaterialTheme.colorScheme.primary.toArgb(),
                 enabled = selectedLetters.size == currentSoal.correctAnswer.length
             )
         }

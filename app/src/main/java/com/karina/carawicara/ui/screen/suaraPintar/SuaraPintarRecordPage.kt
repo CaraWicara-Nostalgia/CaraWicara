@@ -39,7 +39,6 @@ import com.karina.carawicara.ui.component.StageBox
 
 @Composable
 fun SuaraPintarRecordPage(navHostController: NavHostController) {
-    val backgroundColor = remember { mutableStateOf(Color.White) }
     val sendButtonClicked = remember { mutableStateOf(false) }
     val stageBoxStatus = remember { mutableStateOf(0) }
     val isPlaying = remember { mutableStateOf(false) }
@@ -65,8 +64,6 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
                     onClick = { navHostController.navigate("homePage") },
                     icon = R.drawable.ic_x,
                     iconColor = Color.White.toArgb(),
-                    borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                    backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                     enabled = true
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -126,8 +123,6 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
                         },
                         icon = R.drawable.ic_mic,
                         iconColor = Color.White.toArgb(),
-                        borderColor = MaterialTheme.colorScheme.errorContainer.toArgb(),
-                        backgroundColor = MaterialTheme.colorScheme.error.toArgb(),
                         enabled = true
                     )
                     Spacer(modifier = Modifier.width(24.dp))

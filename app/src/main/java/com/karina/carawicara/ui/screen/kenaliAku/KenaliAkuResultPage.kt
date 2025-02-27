@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -34,7 +33,6 @@ fun KenaliAkuResultPage(
     navHostController: NavHostController,
     backStackEntry: NavBackStackEntry
 ) {
-    val context = LocalContext.current
     val imagePath = remember {
         navHostController.previousBackStackEntry?.savedStateHandle?.get<String>("imagePath")
     }
@@ -80,8 +78,6 @@ fun KenaliAkuResultPage(
             onClick = { navHostController.navigate("homePage") },
             icon = R.drawable.ic_arrow_forward,
             iconColor = Color.Black.toArgb(),
-            borderColor = Color.Gray.toArgb(),
-            backgroundColor = Color.White.toArgb(),
             enabled = true
         )
     }

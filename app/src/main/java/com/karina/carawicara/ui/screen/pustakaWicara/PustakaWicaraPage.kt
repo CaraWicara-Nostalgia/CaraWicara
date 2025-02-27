@@ -49,8 +49,6 @@ fun PustakaWicaraPage(navController: NavHostController) {
                         onClick = { navController.popBackStack() },
                         icon = R.drawable.ic_arrow_back,
                         iconColor = Color.Black.toArgb(),
-                        borderColor = Color.DarkGray.toArgb(),
-                        backgroundColor = Color.White.toArgb(),
                         enabled = true
                     )
                     Spacer(modifier = Modifier.weight(1f))

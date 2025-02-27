@@ -88,24 +88,10 @@ fun OnBoardingPage(
                 )
             }
 
-            val buttonNavBackgroundColor = when {
-                isMaleButtonClicked.value -> MaterialTheme.colorScheme.primary
-                isFemaleButtonClicked.value -> MaterialTheme.colorScheme.secondary
-                else -> Color.LightGray
-            }
-
-            val buttonNavBorderColor = when {
-                isMaleButtonClicked.value -> MaterialTheme.colorScheme.primaryContainer
-                isFemaleButtonClicked.value -> MaterialTheme.colorScheme.secondaryContainer
-                else -> Color.LightGray
-            }
-
             ButtonNav(
                 onClick = { navHostController.navigate("homePage") },
                 icon = R.drawable.ic_arrow_forward,
                 iconColor = Color.White.toArgb(),
-                borderColor = buttonNavBorderColor.toArgb(),
-                backgroundColor = buttonNavBackgroundColor.toArgb(),
                 enabled = isMaleButtonClicked.value || isFemaleButtonClicked.value
             )
             Spacer(modifier = Modifier.weight(1f))
