@@ -61,6 +61,12 @@ fun HomePage(
                 item {
                     Column {
                         CardHome(
+                            onClick = { navController.navigate("flashcardPage") },
+                            title = "Flashcard",
+                            description = "Belajar kata melalui gambar"
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        CardHome(
                             onClick = { navController.navigate("paduGambarPage") },
                             title = "Padu Gambar",
                             description = "Mencocokkan gambar yang sesuai"
