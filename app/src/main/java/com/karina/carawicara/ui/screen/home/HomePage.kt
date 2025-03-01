@@ -62,26 +62,26 @@ fun HomePage(
                     Column {
                         CardHome(
                             onClick = { navController.navigate("paduGambarPage") },
-                            title = TODO(),
-                            description = TODO()
+                            title = "Padu Gambar",
+                            description = "Mencocokkan gambar yang sesuai"
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
                             onClick = { navController.navigate("kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!") },
-                            title = TODO(),
-                            description = TODO()
+                            title = "Kenali Aku",
+                            description = "Mengekspresikan suasana hati"
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
                             onClick = { navController.navigate("susunKataPage/0") },
-                            title = TODO(),
-                            description = TODO()
+                            title = "Susun Kata",
+                            description = "Merangkai kata menjadi kalimat"
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         CardHome(
                             onClick = { navController.navigate("suaraPintarPage") },
-                            title = TODO(),
-                            description = TODO()
+                            title = "Suara Pintar",
+                            description = "Latihan pelafalan kalimat sederhana"
                         )
                     }
                 }
