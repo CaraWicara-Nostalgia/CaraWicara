@@ -12,6 +12,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,19 +21,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
-import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.CameraPreview
 import com.karina.carawicara.ui.component.StageBox
 import java.io.File
@@ -75,11 +77,16 @@ fun KenaliAkuRecordPage(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ButtonNav(
-                    onClick = { navHostController.popBackStack() },
-                    icon = R.drawable.ic_x,
-                    iconColor = Color.White.toArgb(),
-                    enabled = true
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_cancel),
+                    contentDescription = "Cancel",
+                    tint = Color(0xFF4A73B9), // Warna biru
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            navHostController.popBackStack()
+                        }
+                        .padding(4.dp)
                 )
                 Row(
                     modifier = Modifier.padding(8.dp)
@@ -113,17 +120,25 @@ fun KenaliAkuRecordPage(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 8.dp)
                     ) {
-                        ButtonNav(
-                            onClick = { flipCamera(controller) },
-                            icon = R.drawable.ic_flip,
-                            iconColor = Color.White.toArgb(),
-                            enabled = true
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_flip),
+                            contentDescription = "Putar Balik",
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clickable {
+                                    flipCamera(controller)
+                                }
+                                .padding(4.dp)
                         )
-                        ButtonNav(
-                            onClick = { takePicture(controller, context, filesDir, navHostController) },
-                            icon = R.drawable.ic_record,
-                            iconColor = Color.White.toArgb(),
-                            enabled = true
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_record),
+                            contentDescription = "Rekam",
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clickable {
+                                    takePicture(controller, context, filesDir, navHostController)
+                                }
+                                .padding(4.dp)
                         )
                     }
                 }

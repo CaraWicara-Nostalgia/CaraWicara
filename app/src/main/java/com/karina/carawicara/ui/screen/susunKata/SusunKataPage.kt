@@ -3,6 +3,7 @@ package com.karina.carawicara.ui.screen.susunKata
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonAlphabet
-import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.StageBox
 import androidx.compose.ui.window.Dialog
 import com.karina.carawicara.ui.component.PopupOverview
@@ -122,11 +122,15 @@ fun SusunKataPage(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ButtonNav(
-                    onClick = { navHostController.popBackStack() },
-                    icon = R.drawable.ic_x,
-                    iconColor = Color.White.toArgb(),
-                    enabled = true
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_cancel),
+                    contentDescription = "Cancel",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            navHostController.popBackStack()
+                        }
+                        .padding(4.dp)
                 )
                 Row(
                     modifier = Modifier.padding(8.dp)
@@ -218,39 +222,47 @@ fun SusunKataPage(
                 Column(
                     modifier = Modifier.padding(8.dp)
                 ) {
-                    ButtonNav(
-                        onClick = {
-                            if (selectedLetters.isNotEmpty()) {
-                                val lastLetter = selectedLetters.removeLast()
-                                letterUsage[lastLetter.single()] =
-                                    letterUsage.getOrDefault(lastLetter.single(), 0) + 1
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_erase),
+                        contentDescription = "Hapus",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                if (selectedLetters.isNotEmpty()) {
+                                    val lastLetter = selectedLetters.removeLast()
+                                    letterUsage[lastLetter.single()] =
+                                        letterUsage.getOrDefault(lastLetter.single(), 0) + 1
+                                }
                             }
-                        },
-                        icon = R.drawable.ic_erase, // Ganti dengan ikon erase yang sesuai
-                        iconColor = Color.Black.toArgb(),
-                        enabled = selectedLetters.isNotEmpty()
+                            .padding(4.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    ButtonNav(
-                        onClick = {
-                            selectedLetters.clear()
-                            // Reset letter usage
-                            currentSoal.correctAnswer.forEach { char ->
-                                letterUsage[char] = letterUsage.getOrDefault(char, 0) + 1
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_restart),
+                        contentDescription = "Ulang",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                selectedLetters.clear()
+                                // Reset letter usage
+                                currentSoal.correctAnswer.forEach { char ->
+                                    letterUsage[char] = letterUsage.getOrDefault(char, 0) + 1
+                                }
                             }
-                        },
-                        icon = R.drawable.ic_restart,
-                        iconColor = Color.Black.toArgb(),
-                        enabled = selectedLetters.isNotEmpty()
+                            .padding(4.dp)
                     )
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            ButtonNav(
-                onClick = { validateAnswer(selectedLetters) },
-                icon = R.drawable.ic_arrow_forward,
-                iconColor = Color.White.toArgb(),
-                enabled = selectedLetters.size == currentSoal.correctAnswer.length
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_forward),
+                contentDescription = "Kembali",
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable {
+                        validateAnswer(selectedLetters)
+                    }
+                    .padding(4.dp)
             )
         }
     }

@@ -26,45 +26,33 @@ fun ButtonNav(
     onClick: () -> Unit,
     icon: Int,
     iconColor: Int,
-    text: String? = null,
-    enabled: Boolean = true
+    text: String
 ) {
     Box(
         modifier = Modifier
-            .clickable(onClick = onClick, enabled = enabled)
+            .clickable(onClick = onClick)
             .border(2.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp))
     ) {
-        if (text != null) {
-            Box(
+            Row(
                 modifier = Modifier
-                    .clickable(onClick = onClick, enabled = enabled)
-                    .border(
-                        2.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = text,
-                        color = Color.Black,
-                        fontSize = 12.sp
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        painter = painterResource(icon),
-                        contentDescription = null,
-                        tint = Color(iconColor),
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                Text(
+                    text = text,
+                    color = Color.Black,
+                    fontSize = 12.sp
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = null,
+                    tint = Color(iconColor),
+                    modifier = Modifier.size(24.dp)
+                )
             }
-        }
+
     }
 }
 

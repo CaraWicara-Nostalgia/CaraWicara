@@ -2,6 +2,7 @@ package com.karina.carawicara.ui.screen.suaraPintar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +36,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.karina.carawicara.R
-import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.PopupOverview
 import com.karina.carawicara.ui.component.StageBox
 
@@ -60,11 +62,15 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ButtonNav(
-                    onClick = { navHostController.navigate("homePage") },
-                    icon = R.drawable.ic_x,
-                    iconColor = Color.White.toArgb(),
-                    enabled = true
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_cancel),
+                    contentDescription = "Kembali",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            navHostController.navigate("homePage")
+                        }
+                        .padding(4.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 repeat(4) {
@@ -117,13 +123,15 @@ fun SuaraPintarRecordPage(navHostController: NavHostController) {
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    ButtonNav(
-                        onClick = {
-                            isPlaying.value = true // Mulai animasi Lottie ketika tombol diklik
-                        },
-                        icon = R.drawable.ic_mic,
-                        iconColor = Color.White.toArgb(),
-                        enabled = true
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_mic),
+                        contentDescription = "Kembali",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable {
+                                isPlaying.value = true
+                            }
+                            .padding(4.dp)
                     )
                     Spacer(modifier = Modifier.width(24.dp))
                     Button(
