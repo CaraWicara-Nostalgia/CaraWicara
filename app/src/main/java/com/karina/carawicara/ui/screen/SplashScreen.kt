@@ -39,7 +39,7 @@ fun SplashScreen(
     LaunchedEffect(navigationStarted) {
         delay(3000L)
         navigationStarted = true
-        navHostController.navigate("homePage")
+        navHostController.navigate("onboardingPage")
     }
 
     Box(

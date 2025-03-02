@@ -9,12 +9,14 @@ import androidx.navigation.navArgument
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.screen.Profile.ProfilePage
 import com.karina.carawicara.ui.screen.SplashScreen
+import com.karina.carawicara.ui.screen.auth.LoginPage
 import com.karina.carawicara.ui.screen.flashcard.FlashcardPage
 import com.karina.carawicara.ui.screen.home.HomePage
 import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuPage
 import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuRecordPage
 import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuResultPage
-import com.karina.carawicara.ui.screen.onboarding.OnBoardingPage
+import com.karina.carawicara.ui.screen.auth.OnBoardingPage
+import com.karina.carawicara.ui.screen.auth.RegisterPage
 import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
 import com.karina.carawicara.ui.screen.patient.PatientPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
@@ -44,6 +46,10 @@ fun AppNavHost(navController: NavHostController) {
             SusunKataPage(index, navController)
         }
         composable("onboardingPage") { OnBoardingPage(navController) }
+
+        composable("registerPage") { RegisterPage(navController) }
+
+        composable("loginPage") { LoginPage(navController) }
 
         composable("suaraPintarPage") { SuaraPintarPage(R.drawable.kucing_2, navController) }
 
