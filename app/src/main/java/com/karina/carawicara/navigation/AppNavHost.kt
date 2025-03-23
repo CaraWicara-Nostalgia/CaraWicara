@@ -17,6 +17,9 @@ import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuRecordPage
 import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuResultPage
 import com.karina.carawicara.ui.screen.auth.OnBoardingPage
 import com.karina.carawicara.ui.screen.auth.RegisterPage
+import com.karina.carawicara.ui.screen.flashcard.KosakataExercisePage
+import com.karina.carawicara.ui.screen.flashcard.PelafalanExercisePage
+import com.karina.carawicara.ui.screen.flashcard.SequenceExercisePage
 import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
 import com.karina.carawicara.ui.screen.patient.PatientPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
@@ -37,6 +40,12 @@ fun AppNavHost(navController: NavHostController) {
         composable("profilePage") { ProfilePage(navController) }
 
         composable("flashcardPage") { FlashcardPage(navController) }
+
+        composable("pelafalanExercisePage") { PelafalanExercisePage(navController) }
+
+        composable("kosakataExercisePage") { KosakataExercisePage(navController) }
+
+        composable("sequenceExercisePage") { SequenceExercisePage(navController) }
 
         composable(
             "susunKataPage/{index}",
