@@ -14,6 +14,12 @@ class PelafalanExerciseViewModel : ViewModel() {
     private val _currentIndex = MutableStateFlow(0)
     val currentIndex: StateFlow<Int> = _currentIndex
 
+    private val _score = MutableStateFlow(0)
+    val score: StateFlow<Int> = _score
+
+    private val _isExerciseCompleted = MutableStateFlow(false)
+    val isExerciseCompleted: StateFlow<Boolean> = _isExerciseCompleted
+
     init {
         loadFlashcards()
     }
@@ -57,16 +63,28 @@ class PelafalanExerciseViewModel : ViewModel() {
 
     // Fungsi untuk menangani jawaban benar
     fun handleCorrectAnswer() {
-        // Logika untuk jawaban benar (misalnya: menandai kartu sebagai benar, update skor, dll)
-        // Kemudian lanjut ke kartu berikutnya
-        nextCard()
+        _score.value += 1
+
+        if (currentIndex.value >= flashcards.value.size - 1) {
+            _isExerciseCompleted.value = true
+        } else {
+            nextCard()
+        }
     }
 
     // Fungsi untuk menangani jawaban salah
     fun handleWrongAnswer() {
-        // Logika untuk jawaban salah
-        // Kemudian lanjut ke kartu berikutnya
-        nextCard()
+        if (currentIndex.value >= flashcards.value.size - 1) {
+            _isExerciseCompleted.value = true
+        } else {
+            nextCard()
+        }
+    }
+
+    fun resetExercise() {
+        _currentIndex.value = 0
+        _score.value = 0
+        _isExerciseCompleted.value = false
     }
 }
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,25 +32,26 @@ fun ButtonNav(
     Box(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .border(2.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp))
+            .border(2.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
     ) {
             Row(
                 modifier = Modifier
-                    .padding(12.dp),
+                    .padding(12.dp)
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = text,
                     color = Color.Black,
-                    fontSize = 12.sp
+                    fontSize = 14.sp
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     painter = painterResource(icon),
                     contentDescription = null,
                     tint = Color(iconColor),
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(16.dp)
                 )
             }
 

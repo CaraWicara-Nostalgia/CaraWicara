@@ -18,8 +18,10 @@ import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuResultPage
 import com.karina.carawicara.ui.screen.auth.OnBoardingPage
 import com.karina.carawicara.ui.screen.auth.RegisterPage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExercisePage
+import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExercisePage
 import com.karina.carawicara.ui.screen.flashcard.SequenceExercisePage
+import com.karina.carawicara.ui.screen.flashcard.TherapyResultPage
 import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
 import com.karina.carawicara.ui.screen.patient.PatientPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
@@ -43,9 +45,36 @@ fun AppNavHost(navController: NavHostController) {
 
         composable("pelafalanExercisePage") { PelafalanExercisePage(navController) }
 
+        composable("pelafalanExerciseDetailPage") { PelafalanExerciseDetailPage(navController) }
+
         composable("kosakataExercisePage") { KosakataExercisePage(navController) }
 
         composable("sequenceExercisePage") { SequenceExercisePage(navController) }
+
+        composable("therapyResultPage") { TherapyResultPage(navController) }
+
+        composable(
+            "therapyResultPage/{score}/{totalQuestions}",
+            arguments = listOf(
+                navArgument("score") {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
+                navArgument("totalQuestions") {
+                    type = NavType.IntType
+                    defaultValue = 10
+                }
+            )
+        ) { backStackEntry ->
+            val score = backStackEntry.arguments?.getInt("score") ?: 0
+            val totalQuestions = backStackEntry.arguments?.getInt("totalQuestions") ?: 10
+
+            TherapyResultPage(
+                navController = navController,
+                score = score,
+                totalQuestions = totalQuestions
+            )
+        }
 
         composable(
             "susunKataPage/{index}",

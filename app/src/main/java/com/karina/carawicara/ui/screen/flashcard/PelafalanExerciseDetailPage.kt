@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,14 +50,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.karina.carawicara.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PelafalanExerciseDetailPage(
-    navController: NavController,
+    navController: NavHostController,
     initialCardIndex: Int = 0,
     viewModel: PelafalanExerciseViewModel = viewModel(
         factory = FlashcardViewModelFactory(initialCardIndex)
@@ -66,6 +67,11 @@ fun PelafalanExerciseDetailPage(
     val currentIndex by viewModel.currentIndex.collectAsState()
 
     var isFlipped by remember { mutableStateOf(false) }
+
+    val isExerciseCompleted by viewModel.isExerciseCompleted.collectAsState()
+    val score by viewModel.score.collectAsState()
+    val totalCards = flashcards.size
+    var completedAnswers by remember { mutableIntStateOf(0) }
 
     val rotation by animateFloatAsState(
         targetValue = if (isFlipped) 180f else 0f,
@@ -77,6 +83,18 @@ fun PelafalanExerciseDetailPage(
 
     LaunchedEffect(currentIndex) {
         isFlipped = false
+    }
+
+    LaunchedEffect(isExerciseCompleted) {
+        if (isExerciseCompleted) {
+            navController.navigate("therapyResultPage/${score}/${totalCards}"){
+                popUpTo("pelafalanExerciseDetailPage/{initialCardindex}") {
+                    inclusive = true
+                }
+            }
+
+            viewModel.resetExercise()
+        }
     }
 
     if (flashcards.isEmpty()) {
@@ -218,7 +236,14 @@ fun PelafalanExerciseDetailPage(
             ) {
                 // Tombol BENAR
                 OutlinedButton(
-                    onClick = { viewModel.handleCorrectAnswer() },
+                    onClick = {
+                        viewModel.handleCorrectAnswer()
+                        completedAnswers++
+
+                        if (completedAnswers >= totalCards) {
+                            navController.navigate("therapyResultPage/${score}/${totalCards}")
+                        }
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),
@@ -237,7 +262,14 @@ fun PelafalanExerciseDetailPage(
 
                 // Tombol SALAH
                 OutlinedButton(
-                    onClick = { viewModel.handleWrongAnswer() },
+                    onClick = {
+                        viewModel.handleWrongAnswer()
+                        completedAnswers++
+
+                        if (completedAnswers >= totalCards) {
+                            navController.navigate("therapyResultPage/${score}/${totalCards}")
+                        }
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),

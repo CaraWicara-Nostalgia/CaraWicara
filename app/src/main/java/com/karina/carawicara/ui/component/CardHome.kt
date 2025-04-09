@@ -48,12 +48,14 @@ fun CardHome(
         ){
             Column (
                 modifier = Modifier
-                    .weight(1f),
+                    .weight(1f)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Column (
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxWidth()
                 ){
                     Text(
                         text = title,
@@ -68,7 +70,7 @@ fun CardHome(
                         color = Color.Black
                     )
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+
                 ButtonNav(
                     onClick = onClick,
                     icon = R.drawable.ic_right_arrow,

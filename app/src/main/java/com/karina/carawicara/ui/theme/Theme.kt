@@ -104,7 +104,7 @@ fun CaraWicaraTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = BubblegumSansTypography,
+        typography = MontserratTypography,
         content = content
     )
 }
