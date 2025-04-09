@@ -55,12 +55,6 @@ class PelafalanExerciseViewModel : ViewModel() {
         }
     }
 
-    fun previousCard() {
-        if (currentIndex.value > 0) {
-            _currentIndex.value -= 1
-        }
-    }
-
     // Fungsi untuk menangani jawaban benar
     fun handleCorrectAnswer() {
         _score.value += 1
