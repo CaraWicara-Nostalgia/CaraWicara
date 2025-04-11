@@ -46,7 +46,27 @@ fun AppNavHost(navController: NavHostController) {
 
         composable("pelafalanExercisePage") { PelafalanExercisePage(navController) }
 
-        composable("pelafalanExerciseDetailPage") { PelafalanExerciseDetailPage(navController) }
+        composable(
+            route = "pelafalanExerciseDetailPage/{categoryTitle}",
+            arguments = listOf(
+                navArgument("categoryTitle") {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ) { entry ->
+            val category = entry.arguments?.getString("categoryTitle")
+            PelafalanExerciseDetailPage(
+                navController = navController,
+                category = category
+            )
+        }
+
+        composable("pelafalanExerciseDetailPage") {
+            PelafalanExerciseDetailPage(
+                navController = navController
+            )
+        }
 
         composable("kosakataExercisePage") { KosakataExercisePage(navController) }
 

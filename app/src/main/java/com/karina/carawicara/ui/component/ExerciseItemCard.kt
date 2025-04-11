@@ -17,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,7 +43,7 @@ fun ExerciseItemCard(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(8.dp)
             ),
         shape = RoundedCornerShape(8.dp),

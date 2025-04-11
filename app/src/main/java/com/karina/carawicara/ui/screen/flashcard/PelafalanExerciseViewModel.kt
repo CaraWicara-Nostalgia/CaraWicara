@@ -4,12 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.karina.carawicara.R
 import com.karina.carawicara.data.FlashcardPelafalanItem
+import com.karina.carawicara.data.PelafalanExerciseCategory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class PelafalanExerciseViewModel : ViewModel() {
     private val _flashcards = MutableStateFlow<List<FlashcardPelafalanItem>>(emptyList())
     val flashcards: StateFlow<List<FlashcardPelafalanItem>> = _flashcards
+
+    private val _categories = MutableStateFlow<List<PelafalanExerciseCategory>>(emptyList())
+    val categories: StateFlow<List<PelafalanExerciseCategory>> = _categories
+
+    private val _currentCategory = MutableStateFlow<String>("")
+    val currentCategory: StateFlow<String> = _currentCategory
 
     private val _currentIndex = MutableStateFlow(0)
     val currentIndex: StateFlow<Int> = _currentIndex
@@ -21,10 +28,11 @@ class PelafalanExerciseViewModel : ViewModel() {
     val isExerciseCompleted: StateFlow<Boolean> = _isExerciseCompleted
 
     init {
-        loadFlashcards()
+        loadAllFlashcards()
+        loadCategories()
     }
 
-    private fun loadFlashcards() {
+    private fun loadAllFlashcards() {
         // Data contoh, dalam aplikasi nyata ini akan diambil dari repository/database
         val dummyData = listOf(
             FlashcardPelafalanItem(1, R.drawable.child_boy, "HIDUNG", "/-ng-/"),
@@ -34,6 +42,28 @@ class PelafalanExerciseViewModel : ViewModel() {
             FlashcardPelafalanItem(5, R.drawable.child_boy, "KEPALA", "/-la/")
         )
         _flashcards.value = dummyData
+    }
+
+    private fun loadCategories() {
+        val categoryList = listOf(
+            PelafalanExerciseCategory(
+                id = 1,
+                title = "Melafalkan konsonan 'm'",
+                description = "Berlatih mengucapkan huruf 'm' dengan benar.",
+                total = 5,
+                progress = 0,
+                progressPercentage = 80
+            )
+        )
+
+        _categories.value = categoryList
+    }
+
+    // Set kategori saat ini
+    fun setCurrentCategory(category: String) {
+        _currentCategory.value = category
+        _score.value = 0
+        _isExerciseCompleted.value = false
     }
 
     // Fungsi untuk mengganti flashcard saat ini
@@ -83,13 +113,11 @@ class PelafalanExerciseViewModel : ViewModel() {
 }
 
 // Factory untuk membuat instance ViewModel dengan parameter
-class FlashcardViewModelFactory(private val initialIndex: Int) : ViewModelProvider.Factory {
+class PelafalanExerciseViewModelFactory : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(PelafalanExerciseViewModel::class.java)) {
-            val viewModel = PelafalanExerciseViewModel()
-            viewModel.setCurrentIndex(initialIndex)
-            return viewModel as T
+            return PelafalanExerciseViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

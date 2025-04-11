@@ -6,3 +6,12 @@ data class FlashcardPelafalanItem(
     val word: String,
     val pronunciation: String,
 )
+
+data class PelafalanExerciseCategory(
+    val id: Int,
+    val title: String,
+    val description: String,
+    val progress: Int = 0,
+    val total: Int = 0,
+    val progressPercentage: Int = 75,
+)

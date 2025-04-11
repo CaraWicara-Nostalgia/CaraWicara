@@ -58,9 +58,9 @@ import com.karina.carawicara.R
 @Composable
 fun PelafalanExerciseDetailPage(
     navController: NavHostController,
-    initialCardIndex: Int = 0,
+    category: String? = null,
     viewModel: PelafalanExerciseViewModel = viewModel(
-        factory = FlashcardViewModelFactory(initialCardIndex)
+        factory = PelafalanExerciseViewModelFactory()
     )
 ) {
     val flashcards by viewModel.flashcards.collectAsState()
@@ -94,6 +94,13 @@ fun PelafalanExerciseDetailPage(
             }
 
             viewModel.resetExercise()
+        }
+    }
+
+    LaunchedEffect(category) {
+        if (!category.isNullOrEmpty()) {
+            println("Setting category from navigation: $category")
+            viewModel.setCurrentCategory(category)
         }
     }
 
@@ -294,7 +301,6 @@ fun PelafalanExerciseDetailPage(
 @Composable
 fun PelafalanExerciseDetailPagePreview(){
     PelafalanExerciseDetailPage(
-        navController = rememberNavController(),
-        initialCardIndex = 0
+        navController = rememberNavController()
     )
 }
