@@ -20,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.karina.carawicara.R
@@ -36,8 +39,11 @@ import com.karina.carawicara.ui.component.ExerciseItemCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KosakataExercisePage(
-    navController: NavController
+    navController: NavController,
+    viewModel: KosakataExerciseViewModel = viewModel(factory = KosakataExerciseViewModelFactory())
 ){
+    val categories by viewModel.categories.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -84,7 +90,7 @@ fun KosakataExercisePage(
                         tint = Color.Gray
                     )
                     Text(
-                        text = "4 Exercise",
+                        text = "${categories.size} exercise",
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -93,45 +99,29 @@ fun KosakataExercisePage(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            ExerciseItemCard(
-                title = "Mengenal Buah",
-                progressPercentage = 80,
-                onClick = {
-                    navController.navigate("pelafalanExerciseDetailPage")
-                }
-            )
+            // Menampilkan daftar kategori dari ViewModel
+            categories.forEach { category ->
+                ExerciseItemCard(
+                    title = category.title,
+                    progressPercentage = category.progressPercentage,
+                    onClick = {
+                        // Tentukan kategori dari judul
+                        val categoryKey = when {
+                            category.title.contains("buah", ignoreCase = true) -> "buah"
+                            category.title.contains("hewan", ignoreCase = true) -> "hewan"
+                            category.title.contains("pakaian", ignoreCase = true) -> "pakaian"
+                            category.title.contains("aktivitas", ignoreCase = true) -> "aktivitas"
+                            else -> ""
+                        }
 
-            Spacer(modifier = Modifier.height(12.dp))
+                        // Set kategori aktif sebelum navigasi
+                        viewModel.setCurrentCategory(categoryKey)
+                        navController.navigate("kosakataExerciseDetailPage/$categoryKey")
+                    }
+                )
 
-            ExerciseItemCard(
-                title = "Mengenal hewan",
-                progressPercentage = 80,
-                onClick = {
-                    navController.navigate("pelafalanExerciseDetailPage")
-                }
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            ExerciseItemCard(
-                title = "Mengenal Pakaian",
-                progressPercentage = 80,
-                onClick = {
-                    navController.navigate("pelafalanExerciseDetailPage")
-                }
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            ExerciseItemCard(
-                title = "Mengenal Aktivitas",
-                progressPercentage = 80,
-                onClick = {
-                    navController.navigate("pelafalanExerciseDetailPage")
-                }
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+            }
         }
     }
 }
