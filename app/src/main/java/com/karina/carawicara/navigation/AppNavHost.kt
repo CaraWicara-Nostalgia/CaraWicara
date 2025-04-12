@@ -21,6 +21,7 @@ import com.karina.carawicara.ui.screen.flashcard.KosakataExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExercisePage
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExercisePage
+import com.karina.carawicara.ui.screen.flashcard.SequenceExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.SequenceExercisePage
 import com.karina.carawicara.ui.screen.flashcard.TherapyResultPage
 import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
@@ -88,6 +89,28 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable("sequenceExercisePage") { SequenceExercisePage(navController) }
+
+        composable(
+            route = "sequenceExerciseDetailPage/{categoryTitle}",
+            arguments = listOf(
+                navArgument("categoryTitle") {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ) { entry ->
+            val category = entry.arguments?.getString("categoryTitle")
+            SequenceExerciseDetailPage(
+                navController = navController,
+                categoryTitle = category
+            )
+        }
+
+        composable("sequenceExerciseDetailPage") {
+            SequenceExerciseDetailPage(
+                navController = navController
+            )
+        }
 
         composable("therapyResultPage") { TherapyResultPage(navController) }
 
