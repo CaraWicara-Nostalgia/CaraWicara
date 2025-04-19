@@ -1,13 +1,16 @@
 package com.karina.carawicara.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.karina.carawicara.R
-import com.karina.carawicara.ui.screen.Profile.ProfilePage
+import com.karina.carawicara.ui.screen.profile.ProfilePage
 import com.karina.carawicara.ui.screen.SplashScreen
 import com.karina.carawicara.ui.screen.auth.LoginPage
 import com.karina.carawicara.ui.screen.flashcard.FlashcardPage
@@ -25,23 +28,69 @@ import com.karina.carawicara.ui.screen.flashcard.SequenceExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.SequenceExercisePage
 import com.karina.carawicara.ui.screen.flashcard.TherapyResultPage
 import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
+import com.karina.carawicara.ui.screen.patient.AddPatientPage
+import com.karina.carawicara.ui.screen.patient.LanguageAbilityPage
 import com.karina.carawicara.ui.screen.patient.PatientPage
+import com.karina.carawicara.ui.screen.patient.PatientViewModel
+import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarRecordPage
 import com.karina.carawicara.ui.screen.susunKata.SusunKataPage
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(navController: NavHostController) {
+
+    val patientViewModel: PatientViewModel = viewModel(factory = PatientViewModelFactory())
+
     NavHost(navController, startDestination = "splashScreen") {
+
+        // ----- Splashscreen Routes -----
+
         composable("splashScreen") { SplashScreen(navController) }
+
+        // ----- Home Routes -----
 
         composable("homePage") { HomePage(navController) }
 
-        composable("patientPage") { PatientPage(navController) }
+        // ----- Patient Routes -----
+
+        composable("patientPage") {
+            PatientPage(
+                navController = navController,
+                viewModel = patientViewModel)
+        }
+
+        composable("addPatientPage") {
+            AddPatientPage(
+                navController = navController,
+                viewModel = patientViewModel)
+        }
+
+        composable("languageAbilityPage") {
+            LanguageAbilityPage(
+                navController = navController,
+                viewModel = patientViewModel)
+        }
+
+        composable(
+            route = "patientProfilePage/{patientId}",
+            arguments = listOf(
+                navArgument("patientId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            val patientId = entry.arguments?.getString("patientId") ?: ""
+        }
+
+        // ----- Profile Routes -----
 
         composable("profilePage") { ProfilePage(navController) }
+
+        // ----- Flashcard Routes -----
 
         composable("flashcardPage") { FlashcardPage(navController) }
 
@@ -144,17 +193,30 @@ fun AppNavHost(navController: NavHostController) {
             val index = backStackEntry.arguments?.getInt("index") ?: 0
             SusunKataPage(index, navController)
         }
+
+        // ----- Onboarding Routes -----
+
         composable("onboardingPage") { OnBoardingPage(navController) }
+
+        // ----- Register Routes -----
 
         composable("registerPage") { RegisterPage(navController) }
 
+        // ----- Login Routes -----
+
         composable("loginPage") { LoginPage(navController) }
+
+        // ----- Suara Pintar Routes -----
 
         composable("suaraPintarPage") { SuaraPintarPage(R.drawable.kucing_2, navController) }
 
         composable("suaraPintarRecordPage") { SuaraPintarRecordPage(navController) }
 
+        // ----- Padu Gambar Routes -----
+
         composable("paduGambarPage") { PaduGambarPage(navController) }
+
+        // ----- Pustaka Wicara Routes -----
 
         composable("pustakaWicaraPage") { PustakaWicaraPage(navController) }
 
@@ -172,6 +234,8 @@ fun AppNavHost(navController: NavHostController) {
                 backStackEntry.arguments?.getString("message") ?: "No message"
             )
         }
+
+        // ----- Kenali Aku Routes -----
 
         composable("kenaliAkuRecordPage") { KenaliAkuRecordPage(navController) }
 

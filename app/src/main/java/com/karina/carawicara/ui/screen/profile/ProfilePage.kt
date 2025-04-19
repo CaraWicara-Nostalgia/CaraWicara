@@ -1,4 +1,4 @@
-package com.karina.carawicara.ui.screen.Profile
+package com.karina.carawicara.ui.screen.profile
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
