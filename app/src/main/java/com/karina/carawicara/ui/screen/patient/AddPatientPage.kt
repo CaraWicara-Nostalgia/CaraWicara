@@ -5,7 +5,6 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.widget.DatePicker
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -137,7 +136,7 @@ fun AddPatientPage(
                         val formatter = DateTimeFormatter.ofPattern("dd MM yyyy")
                         val date = LocalDate.parse(newText, formatter)
                         viewModel.updateNewPatientBirthDate(date)
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                     }
                 },
                 placeholder = { Text("14 12 2018") },
