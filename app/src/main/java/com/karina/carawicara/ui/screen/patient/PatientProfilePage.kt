@@ -227,6 +227,12 @@ fun PatientProfilePage(
                 var monthDropdownExpanded by remember { mutableStateOf(false) }
 
                 TextButton(
+                    onClick = { navController.navigate("developmentDetailPage/{patientId}") }
+                ) {
+                    Text("Detail")
+                }
+
+                TextButton(
                     onClick = { monthDropdownExpanded = true }
                 ) {
                     Text("Januari")
