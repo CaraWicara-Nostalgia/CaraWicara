@@ -31,6 +31,7 @@ import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
 import com.karina.carawicara.ui.screen.patient.AddPatientPage
 import com.karina.carawicara.ui.screen.patient.LanguageAbilityPage
 import com.karina.carawicara.ui.screen.patient.PatientPage
+import com.karina.carawicara.ui.screen.patient.PatientProfilePage
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
@@ -84,6 +85,11 @@ fun AppNavHost(navController: NavHostController) {
             )
         ) { entry ->
             val patientId = entry.arguments?.getString("patientId") ?: ""
+            PatientProfilePage(
+                navController = navController,
+                patientId = patientId,
+                viewModel = patientViewModel
+            )
         }
 
         // ----- Profile Routes -----

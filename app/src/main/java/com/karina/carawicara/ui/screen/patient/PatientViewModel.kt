@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.karina.carawicara.data.LanguageAbility
 import com.karina.carawicara.data.Patient
+import com.karina.carawicara.data.TherapyHistory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
@@ -35,19 +36,33 @@ class PatientViewModel : ViewModel() {
     private val _languageAbilities = MutableStateFlow<List<LanguageAbility>>(emptyList())
     val languageAbilities: StateFlow<List<LanguageAbility>> = _languageAbilities
 
+    private val _therapyHistories = MutableStateFlow<Map<String, List<TherapyHistory>>>(emptyMap())
+    val therapyHistories: StateFlow<Map<String, List<TherapyHistory>>> = _therapyHistories
+
     init {
         localDummyPatients()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun localDummyPatients() {
+        val patientId = UUID.randomUUID().toString()
+
         val dummyPatients = listOf(
             Patient(
-                id = UUID.randomUUID().toString(),
-                name = "John Doe",
+                id = patientId,
+                name = "Cody Fisher",
                 birthDate = LocalDate.of(2018, 1, 1),
                 age = 6,
-                address = "123 Main St, Cityville"
+                address = "Jl. Bunga Melati No. 08, Kota Malang",
+                languageAbilities = listOf(
+                    LanguageAbility("1", "Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
+                    LanguageAbility("2", "Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
+                    LanguageAbility("3", "Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
+                    LanguageAbility("4", "Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
+                    LanguageAbility("5", "Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
+                    LanguageAbility("6", "Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
+                    LanguageAbility("7", "Lorem Ipsum is simply dummy text of the printing and typesetting industry.")
+                )
             )
         )
         _patients.value = dummyPatients
@@ -349,6 +364,20 @@ class PatientViewModel : ViewModel() {
             years > 0 && months == 0 -> "$years tahun"
             else -> "$years tahun $months bulan"
         }
+    }
+
+    // Fungsi untuk mendapatkan therapy history berdasarkan patient id
+    fun getTherapyHistoriesForPatient(patientId: String): List<TherapyHistory> {
+        return _therapyHistories.value[patientId] ?: emptyList()
+    }
+
+    // Fungsi untuk menambahkan therapy history baru
+    fun addTherapyHistory(patientId: String, therapyHistory: TherapyHistory) {
+        val currentHistories = _therapyHistories.value.toMutableMap()
+        val patientHistories = currentHistories[patientId]?.toMutableList() ?: mutableListOf()
+        patientHistories.add(therapyHistory)
+        currentHistories[patientId] = patientHistories
+        _therapyHistories.value = currentHistories
     }
 }
 
