@@ -156,7 +156,7 @@ fun SequenceExerciseDetailPage(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Grid of image options
+            // Grid of images options
             val imageSize = 160.dp
 
             // 2x2 grid of images to choose from
@@ -232,7 +232,7 @@ fun SequenceExerciseDetailPage(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Selected image or empty slot
+                        // Selected images or empty slot
                         SelectedImageSlot(
                             selectedImageIndex = selectedImages[i],
                             images = currentItem.images,
@@ -328,7 +328,7 @@ fun ImageOption(
     ) {
         Image(
             painter = painterResource(id = imageRes),
-            contentDescription = "Sequence image",
+            contentDescription = "Sequence images",
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .fillMaxSize()
@@ -358,14 +358,14 @@ fun SelectedImageSlot(
         contentAlignment = Alignment.Center
     ) {
         if (selectedImageIndex != null && selectedImageIndex < images.size) {
-            // Show selected image
+            // Show selected images
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(id = images[selectedImageIndex]),
-                    contentDescription = "Selected image",
+                    contentDescription = "Selected images",
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .fillMaxSize()

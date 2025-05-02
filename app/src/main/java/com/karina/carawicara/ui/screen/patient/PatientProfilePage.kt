@@ -25,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -237,7 +238,7 @@ fun PatientProfilePage(
                 ) {
                     Text("Januari")
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_down), // Ganti dengan icon dropdown
+                        imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Select Month",
                         modifier = Modifier.size(16.dp)
                     )

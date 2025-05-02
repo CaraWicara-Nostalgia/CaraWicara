@@ -1,0 +1,260 @@
+[
+  {
+    "word": "ANGGUR",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_anggur.png",
+    "category": "buah"
+  },
+  {
+    "word": "APEL",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_apel.png",
+    "category": "buah"
+  },
+  {
+    "word": "JERUK",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_jeruk.png",
+    "category": "buah"
+  },
+  {
+    "word": "MANGGA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_mangga.png",
+    "category": "buah"
+  },
+  {
+    "word": "MELON",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_melon.png",
+    "category": "buah"
+  },
+  {
+    "word": "NANAS",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_nanas.png",
+    "category": "buah"
+  },
+  {
+    "word": "PISANG",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_pisang.png",
+    "category": "buah"
+  },
+  {
+    "word": "SEMANGKA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_semangka.png",
+    "category": "buah"
+  },
+  {
+    "word": "STROBERI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_strawberry.png",
+    "category": "buah"
+  },
+  {
+    "word": "ALPUKAT",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_alpukat.png",
+    "category": "buah"
+  },
+  {
+    "word": "KUCING",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_kucing.png",
+    "category": "hewan"
+  },
+  {
+    "word": "IKAN",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_ikan.png",
+    "category": "hewan"
+  },
+  {
+    "word": "ANJING",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_anjing.png",
+    "category": "hewan"
+  },
+  {
+    "word": "BUAYA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_buaya.png",
+    "category": "hewan"
+  },
+  {
+    "word": "ULAR",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_ular.png",
+    "category": "hewan"
+  },
+  {
+    "word": "SINGA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_singa.png",
+    "category": "hewan"
+  },
+  {
+    "word": "SAPI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_sapi.png",
+    "category": "hewan"
+  },
+  {
+    "word": "AYAM",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_ayam.png",
+    "category": "hewan"
+  },
+  {
+    "word": "BEBEK",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_bebek.png",
+    "category": "hewan"
+  },
+  {
+    "word": "ELANG",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_elang.png",
+    "category": "hewan"
+  },
+  {
+    "word": "BURUNG",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_burung.png",
+    "category": "hewan"
+  },
+  {
+    "word": "CICAK",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_cicak.png",
+    "category": "hewan"
+  },
+  {
+    "word": "GAJAH",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_gajah.png",
+    "category": "hewan"
+  },
+  {
+    "word": "JERAPAH",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_jerapah.png",
+    "category": "hewan"
+  },
+  {
+    "word": "MONYET",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_monyet.png",
+    "category": "hewan"
+  },
+  {
+    "word": "CELANA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_celana.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "JAKET",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_jaket.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "KAOS KAKI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_kaoskaki.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "SEPATU",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_sepatu.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "TOPI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_topi.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "SANDAL",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_sandal.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "KAOS",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_kaos.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "PAMPERS",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_diapers.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "MENELEPON",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_menelepon.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "MANDI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_mandi.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "MAKAN",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_makan.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "MENYAPU",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_menyapu.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "MINUM",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_minum.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "MEMASAK",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_memasak.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "GOSOK GIGI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_gosokgigi.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "TIDUR",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_tidur.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "CUCI TANGAN",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_cucitanangan.png",
+    "category": "aktivitas"
+  },
+  {
+    "word": "MENCUCI PIRING",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/aktivitas/ic_mencucipiring.png",
+    "category": "aktivitas"
+  }
+]

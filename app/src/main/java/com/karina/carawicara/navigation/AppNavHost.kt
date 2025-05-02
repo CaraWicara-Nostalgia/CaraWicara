@@ -1,8 +1,10 @@
 package com.karina.carawicara.ui.navigation
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -22,6 +24,7 @@ import com.karina.carawicara.ui.screen.auth.OnBoardingPage
 import com.karina.carawicara.ui.screen.auth.RegisterPage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExercisePage
+import com.karina.carawicara.ui.screen.flashcard.KosakataExerciseViewModelFactory
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExercisePage
 import com.karina.carawicara.ui.screen.flashcard.SequenceExerciseDetailPage
@@ -148,9 +151,15 @@ fun AppNavHost(navController: NavHostController) {
             arguments = listOf(navArgument("category") { type = NavType.StringType })
         ) { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category")
+            val context = LocalContext.current
             KosakataExerciseDetailPage(
                 navController = navController,
-                category = category
+                category = category,
+                viewModel = viewModel(
+                    factory = KosakataExerciseViewModelFactory(
+                        application = context.applicationContext as Application,
+                    )
+                )
             )
         }
 

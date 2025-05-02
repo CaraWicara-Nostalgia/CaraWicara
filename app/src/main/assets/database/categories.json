@@ -1,0 +1,56 @@
+[
+  {
+    "id": "buah",
+    "title": "Mengenal buah",
+    "description": "Belajar nama-nama buah",
+    "type": "kosakata",
+    "progress": 0,
+    "progressPercentage": 0,
+    "total": 5
+  },
+  {
+    "id": "hewan",
+    "title": "Mengenal hewan",
+    "description": "Belajar nama-nama hewan",
+    "type": "kosakata",
+    "progress": 0,
+    "progressPercentage": 0,
+    "total": 5
+  },
+  {
+    "id": "pakaian",
+    "title": "Mengenal pakaian",
+    "description": "Belajar nama-nama pakaian",
+    "type": "kosakata",
+    "progress": 0,
+    "progressPercentage": 0,
+    "total": 5
+  },
+  {
+    "id": "aktivitas",
+    "title": "Mengenal aktivitas",
+    "description": "Belajar nama-nama aktivitas",
+    "type": "kosakata",
+    "progress": 0,
+    "progressPercentage": 0,
+    "total": 5
+  },
+  {
+    "id": "konsonan_m",
+    "title": "Melafalkan konsonan 'm'",
+    "description": "Berlatih mengucapkan huruf 'm' dengan benar",
+    "type": "pelafalan",
+    "progress": 0,
+    "progressPercentage": 0,
+    "total": 5
+  },
+  {
+    "id": "aktivitas_urutan",
+    "title": "Mengurutkan aktivitas",
+    "description": "Belajar mengurutkan aktivitas sehari-hari",
+    "type": "sequence",
+    "progress": 0,
+    "progressPercentage": 0,
+    "total": 3
+  }
+]

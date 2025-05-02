@@ -1,5 +1,7 @@
 package com.karina.carawicara.ui.screen.flashcard
 
+import android.app.Application
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +43,9 @@ import com.karina.carawicara.ui.component.ExerciseItemCard
 @Composable
 fun KosakataExercisePage(
     navController: NavController,
-    viewModel: KosakataExerciseViewModel = viewModel(factory = KosakataExerciseViewModelFactory())
+    viewModel: KosakataExerciseViewModel = viewModel(factory = KosakataExerciseViewModelFactory(
+        application = LocalContext.current.applicationContext as Application,
+    ))
 ){
     val categories by viewModel.categories.collectAsState()
 
@@ -111,7 +116,10 @@ fun KosakataExercisePage(
                             category.title.contains("hewan", ignoreCase = true) -> "hewan"
                             category.title.contains("pakaian", ignoreCase = true) -> "pakaian"
                             category.title.contains("aktivitas", ignoreCase = true) -> "aktivitas"
-                            else -> ""
+                            else -> {
+                            Log.e("KosakataExercisePage", "Unknown category: ${category.title}")
+                                ""
+                        }
                         }
 
                         // Set kategori aktif sebelum navigasi

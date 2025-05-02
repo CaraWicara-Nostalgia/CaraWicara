@@ -186,14 +186,14 @@ private fun takePicture(
         ContextCompat.getMainExecutor(context),
         object : ImageCapture.OnImageSavedCallback {
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                // Handle the success of image capture
+                // Handle the success of images capture
                 Toast.makeText(context, "Picture taken successfully!", Toast.LENGTH_SHORT).show()
 
                 // Generate a random accuracy value between 50 and 70
                 val random = Random()
                 val accuracy = 50 + random.nextInt(21)
 
-                // Save the image path to SavedStateHandle
+                // Save the images path to SavedStateHandle
                 navHostController.currentBackStackEntry?.savedStateHandle?.set("imagePath", outputFile.absolutePath)
 
                 // Navigate to the result page with the accuracy
@@ -202,7 +202,7 @@ private fun takePicture(
             }
 
             override fun onError(exception: ImageCaptureException) {
-                // Handle any errors during image capture
+                // Handle any errors during images capture
                 Toast.makeText(context, "Failed to take picture: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }

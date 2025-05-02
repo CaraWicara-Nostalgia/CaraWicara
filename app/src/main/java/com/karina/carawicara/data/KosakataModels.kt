@@ -1,15 +1,15 @@
 package com.karina.carawicara.data
 
 data class FlashcardKosakataItem(
-    val id: Int,
-    val imageRes: Int,
+    val id: Int = 0,
+    val imageRes: String,
     val word: String,
     val pronunciation: String,
     val category: String,
 )
 
 data class KosakataExerciseCategory(
-    val id: Int,
+    val id: String,
     val title: String,
     val description: String,
     val progress: Int = 0,

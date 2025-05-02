@@ -194,7 +194,7 @@ fun PelafalanExerciseDetailPage(
                         ) {
                             Image(
                                 painter = painterResource(id = currentCard.imageRes),
-                                contentDescription = "Flashcard image",
+                                contentDescription = "Flashcard images",
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .size(200.dp)

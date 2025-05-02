@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Urutan Daur Hidup Katak",
+    "correctOrder": [0, 1, 2, 3],
+    "imageResources": ["ic_berudu", "ic_telurpenyu", "ic_anakpenyu", "ic_penyu"],
+    "category": "aktivitas_urutan"
+  },
+  {
+    "title": "Urutan Daur Hidup Ayam",
+    "correctOrder": [0, 1, 2, 3],
+    "imageResources": ["ic_telurayam", "ic_anakayam", "ic_ayammuda", "ic_ayamdewasa"],
+    "category": "aktivitas_urutan"
+  },
+  {
+    "title": "Urutan Daur Hidup Kupu-Kupu",
+    "correctOrder": [0, 1, 2, 3],
+    "imageResources": ["ic_telur", "ic_ulat", "ic_kepompong", "ic_kupukupu"],
+    "category": "aktivitas_urutan"
+  }
+]
