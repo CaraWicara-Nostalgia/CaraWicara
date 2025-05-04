@@ -61,6 +61,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.BuildConfig
 import com.karina.carawicara.R
+import kotlinx.coroutines.delay
 import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +79,7 @@ fun KosakataExerciseDetailPage(
     val isExerciseCompleted by viewModel.isExerciseCompleted.collectAsState()
     val score by viewModel.score.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val totalCards = currentFlashcards.size
+    var debugMessage by remember { mutableStateOf("") }
 
     var isLoading by remember { mutableStateOf(true) }
     var isFlipped by remember { mutableStateOf(false) }
@@ -94,7 +95,18 @@ fun KosakataExerciseDetailPage(
 
     // Check loading state
     LaunchedEffect(currentFlashcards) {
-        isLoading = false
+        Log.d("KosakataExerciseDetailPage", "Current flashcards size: ${currentFlashcards.size}")
+        if (currentFlashcards.isNotEmpty()) {
+            isLoading = false
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        delay(5000)
+        if (isLoading) {
+            Log.w("KosakataExerciseDetailPage", "Loading took too long, showing error message")
+            isLoading = false
+        }
     }
 
     // Reset flip state when index changes
@@ -316,8 +328,15 @@ fun KosakataExerciseDetailPage(
                                         val bitmap = remember {
                                             try {
                                                 val assetManager = context.assets
+                                                Log.d("KosakataExerciseDetailPage", "Loading image: ${currentCard.imageRes}")
                                                 val inputStream = assetManager.open(currentCard.imageRes)
-                                                BitmapFactory.decodeStream(inputStream)
+                                                val bitmap = BitmapFactory.decodeStream(inputStream)
+                                                if (bitmap == null) {
+                                                    Log.e("KosakataExerciseDetailPage", "Failed to decode bitmap for: ${currentCard.imageRes}")
+                                                } else {
+                                                    Log.d("KosakataExerciseDetailPage", "Successfully loaded image: ${currentCard.imageRes}")
+                                                }
+                                                bitmap
                                             } catch (e: IOException) {
                                                 Log.e("KosakataExerciseDetailPage", "Error loading image: ${currentCard.imageRes}", e)
                                                 null

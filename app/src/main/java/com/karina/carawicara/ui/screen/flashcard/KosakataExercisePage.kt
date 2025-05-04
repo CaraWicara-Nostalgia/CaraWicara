@@ -111,20 +111,12 @@ fun KosakataExercisePage(
                     progressPercentage = category.progressPercentage,
                     onClick = {
                         // Tentukan kategori dari judul
-                        val categoryKey = when {
-                            category.title.contains("buah", ignoreCase = true) -> "buah"
-                            category.title.contains("hewan", ignoreCase = true) -> "hewan"
-                            category.title.contains("pakaian", ignoreCase = true) -> "pakaian"
-                            category.title.contains("aktivitas", ignoreCase = true) -> "aktivitas"
-                            else -> {
-                            Log.e("KosakataExercisePage", "Unknown category: ${category.title}")
-                                ""
-                        }
-                        }
+                        val categoryId = category.id
+                        Log.d("KosakataExercisePage", "Category ID: $categoryId")
 
                         // Set kategori aktif sebelum navigasi
-                        viewModel.setCurrentCategory(categoryKey)
-                        navController.navigate("kosakataExerciseDetailPage/$categoryKey")
+                        viewModel.setCurrentCategory(categoryId)
+                        navController.navigate("kosakataExerciseDetailPage/$categoryId")
                     }
                 )
 

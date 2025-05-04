@@ -15,24 +15,50 @@ class DataInitializer(
         withContext(Dispatchers.IO) {
             try {
                 if (repository.isDatabaseEmpty()) {
-                    Log.d("DataInitializer", "Database is empty, initializing data...")
+                    Log.d("DataInitializer", "Database kosong, inisialisasi data...")
 
+                    // Load data dengan verifikasi
                     val categories = JsonDataUtil.loadCategories(context)
+                    Log.d("DataInitializer", "Loaded ${categories.size} kategori dari JSON")
+
                     val kosakata = JsonDataUtil.loadKosakata(context)
+                    Log.d("DataInitializer", "Loaded ${kosakata.size} kosakata dari JSON")
+
                     val pelafalan = JsonDataUtil.loadPelafalan(context)
                     val sequence = JsonDataUtil.loadSequence(context)
 
-                    repository.insertAllCategories(categories)
-                    repository.insertAllKosakata(kosakata)
-                    repository.insertAllPelafalan(pelafalan)
-                    repository.insertAllSequence(sequence)
+                    // Insert data dengan exception handling
+                    try {
+                        repository.insertAllCategories(categories)
+                        Log.d("DataInitializer", "Kategori berhasil dimasukkan ke database")
+                    } catch (e: Exception) {
+                        Log.e("DataInitializer", "Error memasukkan kategori", e)
+                    }
 
-                    Log.d("DataInitializer", "Database initialized successfully.")
+                    try {
+                        repository.insertAllKosakata(kosakata)
+                        Log.d("DataInitializer", "Kosakata berhasil dimasukkan ke database")
+                    } catch (e: Exception) {
+                        Log.e("DataInitializer", "Error memasukkan kosakata", e)
+                    }
+
+                    try {
+                        repository.insertAllPelafalan(pelafalan)
+                        repository.insertAllSequence(sequence)
+                        Log.d("DataInitializer", "Pelafalan dan sequence berhasil dimasukkan")
+                    } catch (e: Exception) {
+                        Log.e("DataInitializer", "Error memasukkan pelafalan/sequence", e)
+                    }
+
+                    // Verifikasi data
+                    val categoryCount = repository.getCategoryCount()
+                    val kosakataCount = repository.getKosakataCount()
+                    Log.d("DataInitializer", "Database setelah inisialisasi - Kategori: $categoryCount, Kosakata: $kosakataCount")
                 } else {
-                    Log.d("DataInitializer", "Database already initialized")
+                    Log.d("DataInitializer", "Database sudah diinisialisasi")
                 }
             } catch (e: Exception) {
-                Log.e("DataInitializer", "Error initializing database", e)
+                Log.e("DataInitializer", "Error inisialisasi database", e)
             }
         }
     }

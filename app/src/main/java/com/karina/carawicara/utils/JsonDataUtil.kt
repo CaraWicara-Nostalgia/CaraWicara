@@ -1,6 +1,7 @@
 package com.karina.carawicara.utils
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.karina.carawicara.data.entity.CategoryEntity
@@ -12,10 +13,30 @@ object JsonDataUtil {
 
     fun loadCategories(context: Context): List<CategoryEntity> {
         val jsonString = loadJsonFromAsset(context, "database/categories.json")
-            ?: return emptyList()
 
-        val typeToken = object : TypeToken<List<CategoryEntity>>() {}.type
-        return Gson().fromJson(jsonString, typeToken)
+        if (jsonString == null) {
+            Log.e("JsonDataUtil", "Failed to load categories.json from assets")
+            return emptyList()
+        }
+
+        Log.d("JsonDataUtil", "Categories JSON loaded successfully, length: ${jsonString.length}")
+
+        try {
+            val typeToken = object : TypeToken<List<CategoryEntity>>() {}.type
+            val categories: List<CategoryEntity> = Gson().fromJson(jsonString, typeToken)
+            Log.d("JsonDataUtil", "Parsed ${categories.size} categories from JSON")
+
+            // Log sample data
+            if (categories.isNotEmpty()) {
+                val sample = categories.first()
+                Log.d("JsonDataUtil", "Sample category: ${sample.id}, ${sample.title}, ${sample.type}")
+            }
+
+            return categories
+        } catch (e: Exception) {
+            Log.e("JsonDataUtil", "Error parsing categories JSON", e)
+            return emptyList()
+        }
     }
 
     fun loadKosakata(context: Context): List<KosakataEntity> {
@@ -69,11 +90,18 @@ object JsonDataUtil {
         }
     }
 
-    private fun loadJsonFromAsset(context: Context, fileName: String): String?{
+    private fun loadJsonFromAsset(context: Context, fileName: String): String? {
         return try {
-            context.assets.open(fileName).bufferedReader().use { it.readText() }
+            val inputStream = context.assets.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            val json = String(buffer, Charsets.UTF_8)
+            Log.d("JsonDataUtil", "Successfully read $fileName, size: $size bytes")
+            json
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("JsonDataUtil", "Failed to read $fileName from assets", e)
             null
         }
     }

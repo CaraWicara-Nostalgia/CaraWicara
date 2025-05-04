@@ -60,28 +60,46 @@ class KosakataExerciseViewModel(
     private fun loadAllFlashcards() {
         viewModelScope.launch {
             try {
-                repository.getCategoriesByType("kosakata").collect { dbCategories ->
-                    val uiCategories = dbCategories.map { category ->
-                        KosakataExerciseCategory(
-                            id = category.id, // Use the string ID directly, don't convert to Int
-                            title = category.title,
-                            description = category.description,
-                            total = category.total,
-                            progress = category.progress,
-                            progressPercentage = category.progressPercentage
-                        )
-                    }
+                Log.d("KosakataExerciseViewModel", "Memulai loadAllFlashcards")
+                // Coba akses database secara direct terlebih dahulu
+                val categoryCount = repository.getCategoryCount()
+                Log.d("KosakataExerciseViewModel", "Jumlah kategori di database: $categoryCount")
 
-                    if (uiCategories.isEmpty()) {
-                        Log.w("KosakataExerciseViewModel", "No categories found in database, loading dummy data")
-                        loadDummyCategories()
-                    } else {
-                        _categories.value = uiCategories
-                        Log.d("KosakataExerciseViewModel", "Loaded ${uiCategories.size} categories from database")
+                if (categoryCount > 0) {
+                    // Database sudah berisi data
+                    repository.getCategoriesByType("kosakata").collect { dbCategories ->
+                        Log.d("KosakataExerciseViewModel", "Dapat ${dbCategories.size} kategori kosakata")
+
+                        val uiCategories = dbCategories.map { category ->
+                            // Cek jumlah kosakata di kategori ini
+                            val kosakataCount = repository.countKosakataInCategory(category.id)
+                            Log.d("KosakataExerciseViewModel", "Kategori ${category.id} memiliki $kosakataCount kosakata")
+
+                            KosakataExerciseCategory(
+                                id = category.id,
+                                title = category.title,
+                                description = category.description,
+                                total = category.total,
+                                progress = category.progress,
+                                progressPercentage = category.progressPercentage
+                            )
+                        }
+
+                        if (uiCategories.isEmpty()) {
+                            Log.w("KosakataExerciseViewModel", "Dapat 0 kategori kosakata, menggunakan data dummy")
+                            loadDummyCategories()
+                        } else {
+                            _categories.value = uiCategories
+                            Log.d("KosakataExerciseViewModel", "Berhasil memuat ${uiCategories.size} kategori dari database")
+                        }
                     }
+                } else {
+                    // Database kosong
+                    Log.w("KosakataExerciseViewModel", "Database kosong atau belum terinisialisasi, menggunakan data dummy")
+                    loadDummyCategories()
                 }
             } catch (e: Exception) {
-                Log.e("KosakataExerciseViewModel", "Error loading categories from database", e)
+                Log.e("KosakataExerciseViewModel", "Error loading categories: ${e.message}", e)
                 loadDummyCategories()
             }
         }
@@ -129,17 +147,32 @@ class KosakataExerciseViewModel(
         _score.value = 0
         _isExerciseCompleted.value = false
 
-        // First try to load from the database
         viewModelScope.launch {
             try {
+                // Log jumlah kosakata di kategori ini
+                val count = repository.countKosakataInCategory(category)
+                Log.d("KosakataExerciseViewModel", "Jumlah kosakata dalam kategori $category: $count")
+
+                // Jika kosong, set pesan error yang jelas
+                if (count == 0) {
+                    _errorMessage.value = "Tidak ada kosakata dalam kategori '$category'"
+                    _currentFlashcards.value = emptyList()
+                    return@launch
+                }
+
+                // Lanjutkan dengan kode yang ada...
                 repository.getKosakataByCategory(category)
                     .catch { e ->
                         Log.e("KosakataExerciseViewModel", "Error loading from database", e)
+                        _errorMessage.value = "Error: ${e.message}"
                         loadFlashcardsFromJson(category)
                     }
                     .collect { entityList ->
+                        Log.d("KosakataExerciseViewModel", "Database returned ${entityList.size} kosakata")
+
                         if (entityList.isNotEmpty()) {
                             val flashcardItems = entityList.map { entity ->
+                                Log.d("KosakataExerciseViewModel", "Mapping: ${entity.word}, ${entity.imageRes}")
                                 FlashcardKosakataItem(
                                     id = entity.id,
                                     imageRes = entity.imageRes,
@@ -157,17 +190,46 @@ class KosakataExerciseViewModel(
                             }
 
                             _currentFlashcards.value = limitedItems
-                            Log.d("KosakataExerciseViewModel", "Loaded ${limitedItems.size} flashcards from database")
+                            Log.d("KosakataExerciseViewModel", "SUCCESS: Set ${limitedItems.size} flashcards")
+
+                            // Print semua flashcard untuk debugging
+                            limitedItems.forEachIndexed { index, item ->
+                                Log.d("KosakataExerciseViewModel", "[$index] ${item.word}, ${item.imageRes}")
+                            }
                         } else {
-                            Log.d("KosakataExerciseViewModel", "No flashcards found in database, trying JSON")
+                            Log.w("KosakataExerciseViewModel", "Tidak ada data dari database, coba JSON")
+                            _errorMessage.value = "Tidak ada flashcard tersedia di database"
                             loadFlashcardsFromJson(category)
                         }
                     }
             } catch (e: Exception) {
-                Log.e("KosakataExerciseViewModel", "Error accessing database", e)
+                Log.e("KosakataExerciseViewModel", "Error umum", e)
+                _errorMessage.value = "Error: ${e.message}"
                 loadFlashcardsFromJson(category)
             }
         }
+    }
+
+    private fun processDbKosakata(entityList: List<KosakataEntity>) {
+        val flashcardItems = entityList.map { entity ->
+            FlashcardKosakataItem(
+                id = entity.id,
+                imageRes = entity.imageRes,
+                word = entity.word,
+                pronunciation = entity.pronunciation,
+                category = entity.categoryId
+            )
+        }
+
+        // Limit to 10 random flashcards if there are more than 10
+        val limitedItems = if (flashcardItems.size > 10) {
+            flashcardItems.shuffled().take(10)
+        } else {
+            flashcardItems
+        }
+
+        _currentFlashcards.value = limitedItems
+        Log.d("KosakataExerciseViewModel", "SUKSES: Loaded ${limitedItems.size} flashcards dari database")
     }
 
     private fun loadFlashcardsFromJson(category: String) {
@@ -252,7 +314,7 @@ class KosakataExerciseViewModel(
         }
     }
 
-    private fun loadDummyFlashcards(category: String) {
+     fun loadDummyFlashcards(category: String) {
         // Fallback dummy data for testing (limited to 10 items per category)
         val dummyFlashcards = when (category) {
             "buah" -> listOf(
@@ -262,7 +324,7 @@ class KosakataExerciseViewModel(
                 FlashcardKosakataItem(4, "images/buah/ic_mangga.png", "MANGGA", "maŋɡa", "buah"),
                 FlashcardKosakataItem(5, "images/buah/ic_pisang.png", "PISANG", "pisaŋ", "buah"),
                 FlashcardKosakataItem(6, "images/buah/ic_semangka.png", "SEMANGKA", "səmaŋka", "buah"),
-                FlashcardKosakataItem(7, "images/buah/ic_stroberi.png", "STROBERI", "strobəri", "buah"),
+                FlashcardKosakataItem(7, "images/buah/ic_strawberry.png", "STROBERI", "strobəri", "buah"),
                 FlashcardKosakataItem(8, "images/buah/ic_alpukat.png", "ALPUKAT", "alpukat", "buah"),
                 FlashcardKosakataItem(9, "images/buah/ic_nanas.png", "NANAS", "nanas", "buah"),
                 FlashcardKosakataItem(10, "images/buah/ic_melon.png", "MELON", "məlon", "buah")

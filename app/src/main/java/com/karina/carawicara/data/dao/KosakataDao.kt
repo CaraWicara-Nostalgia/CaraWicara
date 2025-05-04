@@ -15,6 +15,9 @@ interface KosakataDao {
     @Query("SELECT * FROM kosakata WHERE categoryId = :categoryId")
     fun getKosakataByCategory(categoryId: String): Flow<List<KosakataEntity>>
 
+    @Query("SELECT * FROM kosakata WHERE categoryId = :categoryId")
+    suspend fun getKosakataByCategoryDirect(categoryId: String): List<KosakataEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertKosakata(kosakata: KosakataEntity)
 
@@ -23,4 +26,10 @@ interface KosakataDao {
 
     @Query("SELECT COUNT(*) FROM kosakata")
     suspend fun getKosakataCount(): Int
+
+    @Query("SELECT COUNT(*) FROM kosakata WHERE categoryId = :categoryId")
+    suspend fun countKosakataInCategory(categoryId: String): Int
+
+    @Query("SELECT * FROM kosakata WHERE categoryId = :categoryId LIMIT 1")
+    suspend fun getSampleKosakata(categoryId: String): KosakataEntity?
 }
