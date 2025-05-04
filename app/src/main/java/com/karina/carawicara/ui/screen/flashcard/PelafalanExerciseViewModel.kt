@@ -24,7 +24,7 @@ class PelafalanExerciseViewModel(
     private val repository: FlashcardRepository
 ) : AndroidViewModel(application) {
     private val _allflashcards = MutableStateFlow<Map<String, List<FlashcardPelafalanItem>>>(emptyMap())
-    val flashcards: StateFlow<Map<String, List<FlashcardPelafalanItem>>> = _allflashcards
+    val allFlashcards: StateFlow<Map<String, List<FlashcardPelafalanItem>>> = _allflashcards
 
     private val _categories = MutableStateFlow<List<PelafalanExerciseCategory>>(emptyList())
     val categories: StateFlow<List<PelafalanExerciseCategory>> = _categories
