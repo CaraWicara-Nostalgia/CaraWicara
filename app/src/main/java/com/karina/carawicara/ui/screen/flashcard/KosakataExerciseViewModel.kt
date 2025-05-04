@@ -342,23 +342,37 @@ class KosakataExerciseViewModel(
     fun handleCorrectAnswer() {
         _score.value += 1
 
+        // Log untuk debugging
+        Log.d("KosakataExerciseViewModel", "Correct answer selected. Current index: ${currentIndex.value}, Score: ${score.value}")
+
         if (currentIndex.value >= currentFlashcards.value.size - 1) {
+            // Ini adalah kartu terakhir
             _isExerciseCompleted.value = true
+            Log.d("KosakataExerciseViewModel", "Last card completed, exercise marked as completed")
             // Update progress untuk kategori ini
             updateCategoryProgress()
         } else {
-            nextCard()
+            // Masih ada kartu lain, langsung pindah ke kartu berikutnya
+            _currentIndex.value += 1
+            Log.d("KosakataExerciseViewModel", "Moving to next card. New index: ${currentIndex.value}")
         }
     }
 
     // Fungsi untuk menangani jawaban salah
     fun handleWrongAnswer() {
+        // Log untuk debugging
+        Log.d("KosakataExerciseViewModel", "Wrong answer selected. Current index: ${currentIndex.value}")
+
         if (currentIndex.value >= currentFlashcards.value.size - 1) {
+            // Ini adalah kartu terakhir
             _isExerciseCompleted.value = true
+            Log.d("KosakataExerciseViewModel", "Last card completed, exercise marked as completed")
             // Update progress untuk kategori ini
             updateCategoryProgress()
         } else {
-            nextCard()
+            // Masih ada kartu lain, langsung pindah ke kartu berikutnya
+            _currentIndex.value += 1
+            Log.d("KosakataExerciseViewModel", "Moving to next card. New index: ${currentIndex.value}")
         }
     }
 
