@@ -2,61 +2,49 @@
   {
     "word": "masker",
     "pronunciation": "mas-ker",
-    "imageRes": "ic_masker",
+    "imageRes": "images/pelafalan/ic_masker.png",
     "category": "konsonan_m"
   },
   {
     "word": "mata",
     "pronunciation": "ma-ta",
-    "imageRes": "ic_mata",
+    "imageRes": "images/pelafalan/ic_mata.png",
     "category": "konsonan_m"
   },
   {
     "word": "mulut",
     "pronunciation": "mu-lut",
-    "imageRes": "ic_mulut",
+    "imageRes": "images/pelafalan/ic_mulut.png",
     "category": "konsonan_m"
   },
   {
     "word": "meja",
     "pronunciation": "me-ja",
-    "imageRes": "ic_meja",
+    "imageRes": "images/pelafalan/ic_meja.png",
     "category": "konsonan_m"
   },
   {
     "word": "mobil",
     "pronunciation": "mo-bil",
-    "imageRes": "ic_mobil",
+    "imageRes": "images/pelafalan/ic_mobil.png",
     "category": "konsonan_m"
   },
   {
     "word": "mangga",
     "pronunciation": "mang-ga",
-    "imageRes": "ic_mangga",
+    "imageRes": "images/pelafalan/ic_mangga.png",
     "category": "konsonan_m"
   },
   {
     "word": "mie",
     "pronunciation": "mi",
-    "imageRes": "ic_mie",
-    "category": "konsonan_m"
-  },
-  {
-    "word": "matahari",
-    "pronunciation": "ma-ta-ha-ri",
-    "imageRes": "ic_matahari",
+    "imageRes": "images/pelafalan/ic_mie.png",
     "category": "konsonan_m"
   },
   {
     "word": "monyet",
     "pronunciation": "mo-nyet",
-    "imageRes": "ic_monyet",
-    "category": "konsonan_m"
-  },
-  {
-    "word": "majalah",
-    "pronunciation": "ma-ja-lah",
-    "imageRes": "ic_majalah",
+    "imageRes": "images/pelafalan/ic_monyet.png",
     "category": "konsonan_m"
   }
 ]

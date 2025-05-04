@@ -72,14 +72,14 @@ fun KosakataExerciseDetailPage(
     viewModel: KosakataExerciseViewModel = viewModel(
         factory = KosakataExerciseViewModelFactory(
             application = LocalContext.current.applicationContext as Application
-        ))
+        )
+    )
 ) {
     val currentFlashcards by viewModel.currentFlashcards.collectAsState()
     val currentIndex by viewModel.currentIndex.collectAsState()
     val isExerciseCompleted by viewModel.isExerciseCompleted.collectAsState()
     val score by viewModel.score.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    var debugMessage by remember { mutableStateOf("") }
 
     var isLoading by remember { mutableStateOf(true) }
     var isFlipped by remember { mutableStateOf(false) }

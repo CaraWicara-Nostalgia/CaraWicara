@@ -25,6 +25,8 @@ class DataInitializer(
                     Log.d("DataInitializer", "Loaded ${kosakata.size} kosakata dari JSON")
 
                     val pelafalan = JsonDataUtil.loadPelafalan(context)
+                    Log.d("DataInitializer", "Loaded ${pelafalan.size} pelafalan dari JSON")
+
                     val sequence = JsonDataUtil.loadSequence(context)
 
                     // Insert data dengan exception handling
@@ -53,7 +55,9 @@ class DataInitializer(
                     // Verifikasi data
                     val categoryCount = repository.getCategoryCount()
                     val kosakataCount = repository.getKosakataCount()
+                    val pelafalanCount = repository.getPelafalanCount()
                     Log.d("DataInitializer", "Database setelah inisialisasi - Kategori: $categoryCount, Kosakata: $kosakataCount")
+                    Log.d("DataInitializer", "Database setelah inisialisasi - Kategori: $categoryCount, Pelafalan: $pelafalanCount")
                 } else {
                     Log.d("DataInitializer", "Database sudah diinisialisasi")
                 }

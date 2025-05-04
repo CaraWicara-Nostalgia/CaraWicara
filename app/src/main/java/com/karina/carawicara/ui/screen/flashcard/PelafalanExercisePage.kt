@@ -1,5 +1,7 @@
 package com.karina.carawicara.ui.screen.flashcard
 
+import android.app.Application
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +43,9 @@ import com.karina.carawicara.ui.component.ExerciseItemCard
 @Composable
 fun PelafalanExercisePage(
     navController: NavController,
-    viewModel: PelafalanExerciseViewModel = viewModel(factory = PelafalanExerciseViewModelFactory())
+    viewModel: PelafalanExerciseViewModel = viewModel(factory = PelafalanExerciseViewModelFactory(
+        application = LocalContext.current.applicationContext as Application,
+    ))
 ){
     val categories by viewModel.categories.collectAsState()
 
@@ -90,7 +95,7 @@ fun PelafalanExercisePage(
                         tint = Color.Gray
                     )
                     Text(
-                        text = "1 Exercise",
+                        text = "${categories.size} exercise",
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -104,9 +109,11 @@ fun PelafalanExercisePage(
                     title = category.title,
                     progressPercentage = category.progressPercentage,
                     onClick = {
-                        // Set kategori aktif sebelum navigasi
-                        viewModel.setCurrentCategory(category.title)
-                        navController.navigate("pelafalanExerciseDetailPage/${category.title}")
+                        val categoryId = category.id
+                        Log.d("PelafalanExercisePage", "Category ID: $categoryId")
+
+                        viewModel.setCurrentCategory(categoryId)
+                        navController.navigate("pelafalanExerciseDetailPage/$categoryId")
                     }
                 )
 

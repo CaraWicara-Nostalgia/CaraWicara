@@ -27,6 +27,7 @@ import com.karina.carawicara.ui.screen.flashcard.KosakataExercisePage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExerciseViewModelFactory
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExercisePage
+import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseViewModelFactory
 import com.karina.carawicara.ui.screen.flashcard.SequenceExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.SequenceExercisePage
 import com.karina.carawicara.ui.screen.flashcard.TherapyResultPage
@@ -123,18 +124,19 @@ fun AppNavHost(navController: NavHostController) {
         composable("pelafalanExercisePage") { PelafalanExercisePage(navController) }
 
         composable(
-            route = "pelafalanExerciseDetailPage/{categoryTitle}",
-            arguments = listOf(
-                navArgument("categoryTitle") {
-                    type = NavType.StringType
-                    nullable = true
-                }
-            )
-        ) { entry ->
-            val category = entry.arguments?.getString("categoryTitle")
+            route = "pelafalanExerciseDetailPage/{category}",
+            arguments = listOf(navArgument("category") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category")
+            val context = LocalContext.current
             PelafalanExerciseDetailPage(
                 navController = navController,
-                category = category
+                category = category,
+                viewModel = viewModel(
+                    factory = PelafalanExerciseViewModelFactory(
+                        application = context.applicationContext as Application,
+                    )
+                )
             )
         }
 

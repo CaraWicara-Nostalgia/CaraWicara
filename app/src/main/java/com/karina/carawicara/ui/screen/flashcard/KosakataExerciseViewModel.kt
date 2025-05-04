@@ -30,7 +30,7 @@ class KosakataExerciseViewModel(
     val categories: StateFlow<List<KosakataExerciseCategory>> = _categories
 
     // Kategori yang sedang aktif
-    private val _currentCategory = MutableStateFlow<String>("")
+    private val _currentCategory = MutableStateFlow("")
     val currentCategory: StateFlow<String> = _currentCategory
 
     // Flashcard yang sedang aktif dalam kategori
@@ -159,7 +159,6 @@ class KosakataExerciseViewModel(
                     _currentFlashcards.value = emptyList()
                     return@launch
                 }
-
                 // Lanjutkan dengan kode yang ada...
                 repository.getKosakataByCategory(category)
                     .catch { e ->
@@ -210,28 +209,6 @@ class KosakataExerciseViewModel(
         }
     }
 
-    private fun processDbKosakata(entityList: List<KosakataEntity>) {
-        val flashcardItems = entityList.map { entity ->
-            FlashcardKosakataItem(
-                id = entity.id,
-                imageRes = entity.imageRes,
-                word = entity.word,
-                pronunciation = entity.pronunciation,
-                category = entity.categoryId
-            )
-        }
-
-        // Limit to 10 random flashcards if there are more than 10
-        val limitedItems = if (flashcardItems.size > 10) {
-            flashcardItems.shuffled().take(10)
-        } else {
-            flashcardItems
-        }
-
-        _currentFlashcards.value = limitedItems
-        Log.d("KosakataExerciseViewModel", "SUKSES: Loaded ${limitedItems.size} flashcards dari database")
-    }
-
     private fun loadFlashcardsFromJson(category: String) {
         try {
             // Try multiple potential file paths
@@ -243,8 +220,6 @@ class KosakataExerciseViewModel(
                     assetManager.open("database/kosakata.json").bufferedReader().use { it.readText() }
                 } catch (e2: Exception) {
                     Log.e("KosakataExerciseViewModel", "Failed to find flashcard JSON in expected locations", e2)
-                    // Last resort - if we have pre-loaded data in kosakata.json in the repository but they are in a different format
-                    // we can try to convert from your repositories format
                     loadDummyFlashcards(category)
                     return
                 }
@@ -377,27 +352,10 @@ class KosakataExerciseViewModel(
         }
     }
 
-    // Fungsi untuk mengganti flashcard saat ini
-    fun setCurrentIndex(index: Int) {
-        if (index >= 0 && index < currentFlashcards.value.size) {
-            _currentIndex.value = index
-        }
-    }
-
     // Acak kartu dalam kategori saat ini
     fun shuffleCards() {
         _currentFlashcards.value = currentFlashcards.value.shuffled()
         _currentIndex.value = 0
-    }
-
-    // Fungsi untuk pindah ke flashcard berikutnya
-    fun nextCard() {
-        if (currentIndex.value < currentFlashcards.value.size - 1) {
-            _currentIndex.value += 1
-        } else {
-            // All cards completed
-            _isExerciseCompleted.value = true
-        }
     }
 
     // Fungsi untuk menangani jawaban benar

@@ -15,6 +15,9 @@ interface PelafalanDao {
     @Query("SELECT * FROM pelafalan WHERE categoryId = :categoryId")
     fun getPelafalanByCategory(categoryId: String): Flow<List<PelafalanEntity>>
 
+    @Query("SELECT * FROM pelafalan WHERE categoryId = :categoryId")
+    suspend fun getPelafalanByCategoryDirect(categoryId: String): List<PelafalanEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPelafalan(pelafalan: PelafalanEntity)
 
@@ -23,4 +26,10 @@ interface PelafalanDao {
 
     @Query("SELECT COUNT(*) FROM pelafalan")
     suspend fun getPelafalanCount(): Int
+
+    @Query("SELECT COUNT(*) FROM pelafalan WHERE categoryId = :categoryId")
+    suspend fun countPelafalanInCategory(categoryId: String): Int
+
+    @Query("SELECT * FROM pelafalan WHERE categoryId = :categoryId LIMIT 1")
+    suspend fun getSamplePelafalan(categoryId: String): PelafalanEntity?
 }

@@ -95,6 +95,14 @@ class MainActivity : ComponentActivity() {
                 } else {
                     Log.e("MainActivity", "kosakata.json tidak ditemukan!")
                 }
+
+                // Cek file pelafalan.json
+                if (dbAssets?.contains("pelafalan.json") == true) {
+                    val json = assets.open("database/pelafalan.json").bufferedReader().use { it.readText() }
+                    Log.d("MainActivity", "Pelafalan JSON: ${json.take(100)}...")
+                } else {
+                    Log.e("MainActivity", "pelafalan.json tidak ditemukan!")
+                }
             } else {
                 Log.e("MainActivity", "Folder database tidak ditemukan dalam assets!")
             }
