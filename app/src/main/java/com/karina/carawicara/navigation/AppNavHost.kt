@@ -49,7 +49,11 @@ import com.karina.carawicara.ui.screen.susunKata.SusunKataPage
 @Composable
 fun AppNavHost(navController: NavHostController) {
 
-    val patientViewModel: PatientViewModel = viewModel(factory = PatientViewModelFactory())
+    val patientViewModel: PatientViewModel = viewModel(
+        factory = PatientViewModelFactory(
+            application = LocalContext.current.applicationContext as Application
+        )
+    )
 
     NavHost(navController, startDestination = "splashScreen") {
 
@@ -72,13 +76,15 @@ fun AppNavHost(navController: NavHostController) {
         composable("addPatientPage") {
             AddPatientPage(
                 navController = navController,
-                viewModel = patientViewModel)
+                viewModel = patientViewModel
+            )
         }
 
         composable("languageAbilityPage") {
             LanguageAbilityPage(
                 navController = navController,
-                viewModel = patientViewModel)
+                viewModel = patientViewModel
+            )
         }
 
         composable(

@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.screen.patient
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,13 +47,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.karina.carawicara.R
 import com.karina.carawicara.data.Patient
+import com.karina.carawicara.ui.component.BottomNavBar
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PatientPage(
     navController: NavController,
-    viewModel: PatientViewModel = viewModel(factory = PatientViewModelFactory())
+    viewModel: PatientViewModel = viewModel(
+        factory = PatientViewModelFactory(
+            application = LocalContext.current.applicationContext as Application
+        )
+    )
 ) {
     val patients by viewModel.patients.collectAsState()
 
@@ -91,6 +98,9 @@ fun PatientPage(
                     }
                 }
             )
+        },
+        bottomBar = {
+            BottomNavBar(navController = navController)
         }
     ){ paddingValues ->
         LazyColumn(

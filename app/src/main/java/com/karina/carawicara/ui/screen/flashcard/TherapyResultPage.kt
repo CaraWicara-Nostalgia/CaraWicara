@@ -70,7 +70,7 @@ fun TherapyResultPage(
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
+                    IconButton(onClick = {navController.navigate("flashcardPage")}) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
@@ -218,7 +218,7 @@ fun TherapyResultPage(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             OutlinedButton(
                 onClick = { },
@@ -226,7 +226,7 @@ fun TherapyResultPage(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, Color.Gray)
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
                 Text(
                     text = "Ulangi Terapi",
@@ -244,7 +244,7 @@ fun TherapyResultPage(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, Color.Gray)
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
                 Text(
                     text = "Simpan Capaian",

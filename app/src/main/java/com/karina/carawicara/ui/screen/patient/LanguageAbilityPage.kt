@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.screen.patient
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -46,7 +47,11 @@ import com.karina.carawicara.data.LanguageAbility
 @Composable
 fun LanguageAbilityPage(
     navController: NavController,
-    viewModel: PatientViewModel = viewModel(factory = PatientViewModelFactory())
+    viewModel: PatientViewModel = viewModel(
+        factory = PatientViewModelFactory(
+            application = LocalContext.current.applicationContext as Application
+        )
+    )
 ){
     val languageAbilities by viewModel.languageAbilities.collectAsState()
     val newPatientAge by viewModel.newPatientAge.collectAsState()

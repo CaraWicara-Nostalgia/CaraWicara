@@ -56,8 +56,10 @@ class DataInitializer(
                     val categoryCount = repository.getCategoryCount()
                     val kosakataCount = repository.getKosakataCount()
                     val pelafalanCount = repository.getPelafalanCount()
+                    val sequenceCount = repository.getSequenceCount()
                     Log.d("DataInitializer", "Database setelah inisialisasi - Kategori: $categoryCount, Kosakata: $kosakataCount")
                     Log.d("DataInitializer", "Database setelah inisialisasi - Kategori: $categoryCount, Pelafalan: $pelafalanCount")
+                    Log.d("DataInitializer", "Database setelah inisialisasi - Kategori: $categoryCount, Sequence: $sequenceCount")
                 } else {
                     Log.d("DataInitializer", "Database sudah diinisialisasi")
                 }

@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.screen.patient
 
+import android.app.Application
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.os.Build
@@ -53,7 +54,11 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AddPatientPage(
     navController: NavController,
-    viewModel: PatientViewModel = viewModel(factory = PatientViewModelFactory())
+    viewModel: PatientViewModel = viewModel(
+        factory = PatientViewModelFactory(
+            application = LocalContext.current.applicationContext as Application
+        )
+    )
 ) {
     val newPatientName by viewModel.newPatientName.collectAsState()
     val newPatientBirthDate by viewModel.newPatientBirthDate.collectAsState()
