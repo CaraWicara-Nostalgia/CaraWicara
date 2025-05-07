@@ -81,7 +81,7 @@ fun HomePage(
                     item {
                         Column {
                             CardHome(
-                                onClick = { navController.navigate("flashcardPage") },
+                                onClick = { navController.navigate("patientSelectionForTherapy/flashcardPage") },
                                 title = "Flashcard",
                                 description = "Belajar kata melalui gambar"
                             )

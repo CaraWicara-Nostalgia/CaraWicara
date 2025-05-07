@@ -1,4 +1,4 @@
-package com.karina.carawicara.ui.navigation
+package com.karina.carawicara.navigation
 
 import android.app.Application
 import android.os.Build
@@ -37,8 +37,10 @@ import com.karina.carawicara.ui.screen.patient.DevelopmentDetailPage
 import com.karina.carawicara.ui.screen.patient.LanguageAbilityPage
 import com.karina.carawicara.ui.screen.patient.PatientPage
 import com.karina.carawicara.ui.screen.patient.PatientProfilePage
+import com.karina.carawicara.ui.screen.patient.PatientSelectionPage
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
+import com.karina.carawicara.ui.screen.patient.TherapyPreparationPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage
@@ -115,6 +117,85 @@ fun AppNavHost(navController: NavHostController) {
             DevelopmentDetailPage(
                 navController = navController,
                 patientId = patientId,
+                viewModel = patientViewModel
+            )
+        }
+
+        composable(
+            route = "patientSelectionForTherapy/{nextRoute}",
+            arguments = listOf(
+                navArgument("nextRoute") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            val nextRoute = entry.arguments?.getString("nextRoute") ?: "flashcardPage"
+            PatientSelectionPage(
+                navController = navController,
+                viewModel = patientViewModel,
+                nextRoute = "therapyPreparationPage/$nextRoute"
+            )
+        }
+
+        composable(
+            route = "therapyPreparation/{nextRoute}/{patientId}",
+            arguments = listOf(
+                navArgument("nextRoute") {
+                    type = NavType.StringType
+                },
+                navArgument("patientId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            val nextRoute = entry.arguments?.getString("nextRoute") ?: "flashcardPage"
+            val patientId = entry.arguments?.getString("patientId") ?: ""
+            TherapyPreparationPage(
+                navController = navController,
+                patientId = patientId,
+                nextRoute = nextRoute,
+                viewModel = patientViewModel
+            )
+        }
+
+        composable(
+            route = "therapyPreparation/kenaliAkuPage/{message}/{patientId}",
+            arguments = listOf(
+                navArgument("message") {
+                    type = NavType.StringType
+                },
+                navArgument("patientId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            val message = entry.arguments?.getString("message") ?: "No message"
+            val patientId = entry.arguments?.getString("patientId") ?: ""
+            TherapyPreparationPage(
+                navController = navController,
+                patientId = patientId,
+                nextRoute = "kenaliAkuPage/$message",
+                viewModel = patientViewModel
+            )
+        }
+
+        composable(
+            route = "therapyPreparation/susunKataPage/{index}/{patientId}",
+            arguments = listOf(
+                navArgument("index") {
+                    type = NavType.StringType
+                },
+                navArgument("patientId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            val index = entry.arguments?.getString("index") ?: "0"
+            val patientId = entry.arguments?.getString("patientId") ?: ""
+            TherapyPreparationPage(
+                navController = navController,
+                patientId = patientId,
+                nextRoute = "susunKataPage/$index",
                 viewModel = patientViewModel
             )
         }
