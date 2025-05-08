@@ -41,7 +41,6 @@ import com.karina.carawicara.ui.screen.patient.PatientProfilePage
 import com.karina.carawicara.ui.screen.patient.PatientSelectionPage
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
-import com.karina.carawicara.ui.screen.patient.TherapyPreparationPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage

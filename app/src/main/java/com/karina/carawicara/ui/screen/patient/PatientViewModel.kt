@@ -134,9 +134,14 @@ class PatientViewModel(
         }
     }
 
-    fun deletePatient(patientId: Patient) {
+    fun deletePatient(patientId: String) {
         viewModelScope.launch {
-            repository.deletePatient(patientId.toString())
+            try {
+                repository.deletePatient(patientId)
+                Log.d("PatientViewModel", "Patient deleted successfully")
+            } catch (e: Exception) {
+                Log.e("PatientViewModel", "Error deleting patient: ${e.message}", e)
+            }
         }
     }
 

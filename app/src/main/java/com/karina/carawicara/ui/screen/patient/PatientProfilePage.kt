@@ -1,7 +1,6 @@
 package com.karina.carawicara.ui.screen.patient
 
 import android.os.Build
-import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -24,8 +23,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -37,6 +38,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,13 +59,11 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.airbnb.lottie.animation.content.RoundedCornersContent
 import com.karina.carawicara.R
 import com.karina.carawicara.data.TherapyHistory
 import java.time.format.DateTimeFormatter
@@ -92,6 +92,39 @@ fun PatientProfilePage(
         return
     }
 
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmDialog = false },
+            title = { Text("Konfirmasi Hapus") },
+            text = { Text("Apakah Anda yakin ingin menghapus pasien ini? Tindakan ini tidak dapat dibatalkan.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmDialog = false
+                        viewModel.deletePatient(patientId)
+                        navController.navigate("patientPage") {
+                            popUpTo("patientPage") { inclusive = true }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    )
+                ) {
+                    Text("Hapus", color = Color.White)
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { showDeleteConfirmDialog = false }
+                ) {
+                    Text("Batal")
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -105,6 +138,16 @@ fun PatientProfilePage(
                     }
                 },
                 actions = {
+                    IconButton(
+                        onClick = {
+                            showDeleteConfirmDialog = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete"
+                        )
+                    }
                     IconButton(onClick = { /* Edit patient profile */ }) {
                         Icon(
                             imageVector = Icons.Default.Edit,
