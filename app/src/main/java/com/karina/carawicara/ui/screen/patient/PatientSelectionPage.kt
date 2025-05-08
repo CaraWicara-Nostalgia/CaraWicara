@@ -1,6 +1,7 @@
 package com.karina.carawicara.ui.screen.patient
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -92,7 +94,7 @@ fun PatientSelectionPage(
                 placeholder = { Text("Cari pasien...") },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Search,
+                        imageVector = Icons.Outlined.Search,
                         contentDescription = "Search"
                     )
                 },
@@ -136,8 +138,30 @@ fun PatientSelectionPage(
                         PatientSelectionItem(
                             patient = patient,
                             onClick = {
-                                navController.navigate("$nextRoute/${patient.id}")
-                            }
+                                Log.d("PatientSelectionPage", "Selected patient: ${patient.name}")
+
+                                try {
+                                    viewModel.setSelectedPatientId(patient.id)
+
+                                    val route = when {
+                                        nextRoute.startsWith("kenaliAkuPage/") -> {
+                                            val message = nextRoute.substringAfter("kenaliAkuPage/")
+                                            "kenaliAkuPage/$message"
+                                        }
+                                        nextRoute.startsWith("susunKataPage/") -> {
+                                            val index = nextRoute.substringAfter("susunKataPage/")
+                                            "susunKataPage/$index"
+                                        }
+                                        else -> {
+                                            nextRoute
+                                        }
+                                    }
+                                    navController.navigate(route)
+                                } catch (e: Exception) {
+                                    Log.e("PatientSelectionPage", "Error navigating to $nextRoute: ${e.message}")
+                                }
+                            },
+                            viewModel = viewModel
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -156,17 +180,22 @@ fun PatientSelectionPage(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PatientSelectionItem(
     patient: Patient,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    viewModel: PatientViewModel
 ) {
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
+            .clickable {
+                viewModel.setSelectedPatientId(patient.id)
+                onClick()
+            }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ){

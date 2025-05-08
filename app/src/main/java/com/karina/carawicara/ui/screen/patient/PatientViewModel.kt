@@ -2,6 +2,7 @@ package com.karina.carawicara.ui.screen.patient
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -51,6 +52,12 @@ class PatientViewModel(
 
     private val _languageAbilities = MutableStateFlow<List<LanguageAbility>>(emptyList())
     val languageAbilities: StateFlow<List<LanguageAbility>> = _languageAbilities
+
+    private val _selectedPatientId = MutableStateFlow<String?>(null)
+    val selectedPatientId: StateFlow<String?> = _selectedPatientId
+
+    private val _selectedPatient = MutableStateFlow<Patient?>(null)
+    val selectedPatient: StateFlow<Patient?> = _selectedPatient
 
     fun updateNewPatientName(name: String) {
         _newPatientName.value = name
@@ -158,6 +165,28 @@ class PatientViewModel(
         viewModelScope.launch {
             repository.insertTherapyHistory(therapyHistory)
         }
+    }
+
+    fun setSelectedPatientId(patientId: String) {
+        _selectedPatientId.value = patientId
+
+        viewModelScope.launch {
+            try {
+                val patient = repository.getPatientById(patientId)
+                _selectedPatient.value = patient
+            } catch (e: Exception) {
+                Log.e("PatientViewModel", "Error loading selected patient: ${e.message}", e)
+            }
+        }
+    }
+
+    fun getSelectedPatient(): Patient? {
+        return _selectedPatient.value
+    }
+
+    fun clearSelectedPatient() {
+        _selectedPatientId.value = null
+        _selectedPatient.value = null
     }
 }
 

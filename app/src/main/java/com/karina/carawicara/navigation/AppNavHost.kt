@@ -2,6 +2,7 @@ package com.karina.carawicara.navigation
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -130,73 +131,11 @@ fun AppNavHost(navController: NavHostController) {
             )
         ) { entry ->
             val nextRoute = entry.arguments?.getString("nextRoute") ?: "flashcardPage"
+            Log.d("AppNavHost", "Navigating to patientSelectionForTherapy with nextRoute: $nextRoute")
             PatientSelectionPage(
                 navController = navController,
                 viewModel = patientViewModel,
-                nextRoute = "therapyPreparationPage/$nextRoute"
-            )
-        }
-
-        composable(
-            route = "therapyPreparation/{nextRoute}/{patientId}",
-            arguments = listOf(
-                navArgument("nextRoute") {
-                    type = NavType.StringType
-                },
-                navArgument("patientId") {
-                    type = NavType.StringType
-                }
-            )
-        ) { entry ->
-            val nextRoute = entry.arguments?.getString("nextRoute") ?: "flashcardPage"
-            val patientId = entry.arguments?.getString("patientId") ?: ""
-            TherapyPreparationPage(
-                navController = navController,
-                patientId = patientId,
-                nextRoute = nextRoute,
-                viewModel = patientViewModel
-            )
-        }
-
-        composable(
-            route = "therapyPreparation/kenaliAkuPage/{message}/{patientId}",
-            arguments = listOf(
-                navArgument("message") {
-                    type = NavType.StringType
-                },
-                navArgument("patientId") {
-                    type = NavType.StringType
-                }
-            )
-        ) { entry ->
-            val message = entry.arguments?.getString("message") ?: "No message"
-            val patientId = entry.arguments?.getString("patientId") ?: ""
-            TherapyPreparationPage(
-                navController = navController,
-                patientId = patientId,
-                nextRoute = "kenaliAkuPage/$message",
-                viewModel = patientViewModel
-            )
-        }
-
-        composable(
-            route = "therapyPreparation/susunKataPage/{index}/{patientId}",
-            arguments = listOf(
-                navArgument("index") {
-                    type = NavType.StringType
-                },
-                navArgument("patientId") {
-                    type = NavType.StringType
-                }
-            )
-        ) { entry ->
-            val index = entry.arguments?.getString("index") ?: "0"
-            val patientId = entry.arguments?.getString("patientId") ?: ""
-            TherapyPreparationPage(
-                navController = navController,
-                patientId = patientId,
-                nextRoute = "susunKataPage/$index",
-                viewModel = patientViewModel
+                nextRoute = nextRoute
             )
         }
 

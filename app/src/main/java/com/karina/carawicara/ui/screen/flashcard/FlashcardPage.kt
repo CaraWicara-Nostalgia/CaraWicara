@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.screen.flashcard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,7 +66,7 @@ fun FlashcardPage(
                progress = "2/5 exercise",
                progressValue = 0.4f,
                onClick = {
-                   navController.navigate("PelafalanExercisePage")
+                   navController.navigate("pelafalanExercisePage")
                }
            )
 
@@ -76,7 +78,7 @@ fun FlashcardPage(
                 progress = "3/5 exercise",
                 progressValue = 0.6f,
                 onClick = {
-                    navController.navigate("KosakataExercisePage")
+                    navController.navigate("kosakataExercisePage")
                 }
             )
 
@@ -88,7 +90,7 @@ fun FlashcardPage(
                 progress = "1/5 exercise",
                 progressValue = 0.2f,
                 onClick = {
-                    navController.navigate("SequenceExercisePage")
+                    navController.navigate("sequenceExercisePage")
                 }
             )
         }

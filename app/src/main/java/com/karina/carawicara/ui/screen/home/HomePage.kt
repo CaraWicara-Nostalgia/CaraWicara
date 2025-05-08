@@ -87,25 +87,25 @@ fun HomePage(
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             CardHome(
-                                onClick = { navController.navigate("paduGambarPage") },
+                                onClick = { navController.navigate("patientSelectionForTherapy/paduGambarPage") },
                                 title = "Padu Gambar",
                                 description = "Mencocokkan gambar yang sesuai"
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             CardHome(
-                                onClick = { navController.navigate("kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!") },
+                                onClick = { navController.navigate("patientSelectionForTherapy/kenaliAkuPage/Coba tirukan gerakan wajah seperti contoh diatas!") },
                                 title = "Kenali Aku",
                                 description = "Mengekspresikan suasana hati"
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             CardHome(
-                                onClick = { navController.navigate("susunKataPage/0") },
+                                onClick = { navController.navigate("patientSelectionForTherapy/susunKataPage/0") },
                                 title = "Susun Kata",
                                 description = "Merangkai kata menjadi kalimat"
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             CardHome(
-                                onClick = { navController.navigate("suaraPintarPage") },
+                                onClick = { navController.navigate("patientSelectionForTherapy/suaraPintarPage") },
                                 title = "Suara Pintar",
                                 description = "Latihan pelafalan kalimat sederhana"
                             )
