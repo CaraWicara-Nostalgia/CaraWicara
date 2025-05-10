@@ -3,8 +3,8 @@ package com.karina.carawicara.data
 data class SequenceExerciseItem(
     val id: Int,
     val title: String,
-    val images: List<Int>,
-    val correctOrder: List<Int>,
+    val images: List<String>,
+    val correctOrder: Map<Int, Int>,
     val category: String
 )
 

@@ -74,6 +74,10 @@ class FlashcardRepository(private val database: CaraWicaraDatabase) {
         return database.pelafalanDao().getPelafalanCount()
     }
 
+    suspend fun getSequenceCount(): Int {
+        return database.sequenceDao().getSequenceCount()
+    }
+
     suspend fun getCategoryById(categoryId: String): CategoryEntity? {
         return database.categoryDao().getCategoryById(categoryId)
     }
@@ -84,6 +88,10 @@ class FlashcardRepository(private val database: CaraWicaraDatabase) {
 
     suspend fun countPelafalanInCategory(categoryId: String): Int {
         return database.pelafalanDao().countPelafalanInCategory(categoryId)
+    }
+
+    suspend fun countSequenceInCategory(categoryId: String): Int {
+        return database.sequenceDao().countSequenceInCategory(categoryId)
     }
 
     suspend fun getSampleKosakata(categoryId: String): KosakataEntity? {
@@ -120,6 +128,10 @@ class FlashcardRepository(private val database: CaraWicaraDatabase) {
 
     suspend fun getPelafalanByCategoryDirect(categoryId: String): List<PelafalanEntity> {
         return database.pelafalanDao().getPelafalanByCategoryDirect(categoryId)
+    }
+
+    suspend fun getSequenceByCategoryDirect(categoryId: String): List<SequenceEntity> {
+        return database.sequenceDao().getSequenceByCategoryDirect(categoryId)
     }
 
     // Metode untuk ekspos akses database langsung untuk debugging

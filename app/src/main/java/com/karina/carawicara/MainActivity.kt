@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.karina.carawicara.data.DataInitializer
 import com.karina.carawicara.di.AppModule
-import com.karina.carawicara.ui.navigation.AppNavHost
+import com.karina.carawicara.navigation.AppNavHost
 import com.karina.carawicara.ui.theme.CaraWicaraTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -46,10 +46,16 @@ class DataInitializer(
 
                     try {
                         repository.insertAllPelafalan(pelafalan)
-                        repository.insertAllSequence(sequence)
-                        Log.d("DataInitializer", "Pelafalan dan sequence berhasil dimasukkan")
+                        Log.d("DataInitializer", "Pelafalan berhasil dimasukkan")
                     } catch (e: Exception) {
-                        Log.e("DataInitializer", "Error memasukkan pelafalan/sequence", e)
+                        Log.e("DataInitializer", "Error memasukkan pelafalan", e)
+                    }
+
+                    try {
+                        repository.insertAllSequence(sequence)
+                        Log.d("DataInitializer", "Sequence berhasil dimasukkan ke database")
+                    } catch (e: Exception) {
+                        Log.e("DataInitializer", "Error memasukkan sequence", e)
                     }
 
                     // Verifikasi data

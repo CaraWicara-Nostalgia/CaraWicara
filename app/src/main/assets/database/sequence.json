@@ -1,20 +1,20 @@
 [
   {
-    "title": "Urutan Daur Hidup Katak",
+    "title": "Pilih gambar sesuai urutan: Sikat Gigi",
     "correctOrder": [0, 1, 2, 3],
-    "imageResources": ["ic_berudu", "ic_telurpenyu", "ic_anakpenyu", "ic_penyu"],
+    "imageResources": ["images/sequence/brush_teeth_1.png", "images/sequence/brush_teeth_2.png", "images/sequence/brush_teeth_3.png", "images/sequence/brush_teeth_4.png"],
     "category": "aktivitas_urutan"
   },
   {
-    "title": "Urutan Daur Hidup Ayam",
+    "title": "Pilih gambar sesuai urutan: Cuci Tangan",
     "correctOrder": [0, 1, 2, 3],
-    "imageResources": ["ic_telurayam", "ic_anakayam", "ic_ayammuda", "ic_ayamdewasa"],
+    "imageResources": ["images/sequence/wash_hand_1.png", "images/sequence/wash_hand_2.png", "images/sequence/wash_hand_3.png", "images/sequence/wash_hand_4.png"],
     "category": "aktivitas_urutan"
   },
   {
-    "title": "Urutan Daur Hidup Kupu-Kupu",
+    "title": "Pilih gambar sesuai urutan: Makan",
     "correctOrder": [0, 1, 2, 3],
-    "imageResources": ["ic_telur", "ic_ulat", "ic_kepompong", "ic_kupukupu"],
+    "imageResources": ["images/sequence/eating_1.png", "images/sequence/eating_2.png", "images/sequence/eating_3.png", "images/sequence/eating_4.png"],
     "category": "aktivitas_urutan"
   }
 ]

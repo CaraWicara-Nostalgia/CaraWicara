@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -178,7 +179,7 @@ fun LanguageAbilityPage(
                 languageAbilities.forEach { ability ->
                     LanguageAbilityItem(
                         ability = ability,
-                        onToggle = { viewModel.toggleLanguageAbility(ability.id) }
+                        onChecked = { viewModel.toggleLanguageAbility(ability.id) }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -192,7 +193,7 @@ fun LanguageAbilityPage(
 @Composable
 fun LanguageAbilityItem(
     ability: LanguageAbility,
-    onToggle: () -> Unit
+    onChecked: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -200,9 +201,9 @@ fun LanguageAbilityItem(
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(
-            selected = ability.isSelected,
-            onClick = onToggle
+        Checkbox(
+            checked = ability.isSelected,
+            onCheckedChange = onChecked
         )
 
         Text(
