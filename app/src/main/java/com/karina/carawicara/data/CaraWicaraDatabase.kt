@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.karina.carawicara.BooleanConverter
 import com.karina.carawicara.DateConverter
 import com.karina.carawicara.data.dao.CategoryDao
 import com.karina.carawicara.data.dao.KosakataDao
@@ -13,6 +14,7 @@ import com.karina.carawicara.data.dao.PatientDao
 import com.karina.carawicara.data.dao.PelafalanDao
 import com.karina.carawicara.data.dao.SequenceDao
 import com.karina.carawicara.data.dao.TherapyHistoryDao
+import com.karina.carawicara.data.dao.UserDao
 import com.karina.carawicara.data.entity.CategoryEntity
 import com.karina.carawicara.data.entity.KosakataEntity
 import com.karina.carawicara.data.entity.LanguageAbilityEntity
@@ -20,6 +22,7 @@ import com.karina.carawicara.data.entity.PatientEntity
 import com.karina.carawicara.data.entity.PelafalanEntity
 import com.karina.carawicara.data.entity.SequenceEntity
 import com.karina.carawicara.data.entity.TherapyHistoryEntity
+import com.karina.carawicara.data.entity.UserEntity
 
 @Database(
     entities = [
@@ -29,12 +32,13 @@ import com.karina.carawicara.data.entity.TherapyHistoryEntity
         SequenceEntity::class,
         PatientEntity::class,
         LanguageAbilityEntity::class,
-        TherapyHistoryEntity::class
+        TherapyHistoryEntity::class,
+        UserEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
-@TypeConverters(DateConverter::class)
+@TypeConverters(DateConverter::class, BooleanConverter::class)
 abstract class CaraWicaraDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun kosakataDao(): KosakataDao
@@ -43,6 +47,7 @@ abstract class CaraWicaraDatabase : RoomDatabase() {
     abstract fun patientDao(): PatientDao
     abstract fun languageAbilityDao(): LanguageAbilityDao
     abstract fun therapyHistoryDao(): TherapyHistoryDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile

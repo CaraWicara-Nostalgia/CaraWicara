@@ -59,7 +59,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.BuildConfig
 import com.karina.carawicara.R
 import kotlinx.coroutines.delay
 import java.io.IOException
@@ -241,17 +240,15 @@ fun PelafalanExerciseDetailPage(
                             Text("Coba Lagi")
                         }
 
-                        if (BuildConfig.DEBUG) {
-                            Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                            Button(
-                                onClick = { viewModel.logDebugInfo() },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Gray
-                                )
-                            ) {
-                                Text("Debug Info (Dev Only)")
-                            }
+                        Button(
+                            onClick = { viewModel.logDebugInfo() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Gray
+                            )
+                        ) {
+                            Text("Debug Info (Dev Only)")
                         }
                     }
                 }

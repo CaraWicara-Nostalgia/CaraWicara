@@ -4,11 +4,13 @@ import android.content.Context
 import com.karina.carawicara.data.CaraWicaraDatabase
 import com.karina.carawicara.data.repository.FlashcardRepository
 import com.karina.carawicara.data.repository.PatientRepository
+import com.karina.carawicara.data.repository.UserRepository
 
 object AppModule {
     private lateinit var database: CaraWicaraDatabase
     private lateinit var flashcardRepository: FlashcardRepository
     private lateinit var patientRepository: PatientRepository
+    private lateinit var userRepository: UserRepository
 
     fun provideDatabase(context: Context): CaraWicaraDatabase {
         if (!::database.isInitialized) {
@@ -29,5 +31,12 @@ object AppModule {
             patientRepository = PatientRepository(provideDatabase(context))
         }
         return patientRepository
+    }
+
+    fun provideUserRepository(context: Context): UserRepository {
+        if (!::userRepository.isInitialized) {
+            userRepository = UserRepository(provideDatabase(context))
+        }
+        return userRepository
     }
 }

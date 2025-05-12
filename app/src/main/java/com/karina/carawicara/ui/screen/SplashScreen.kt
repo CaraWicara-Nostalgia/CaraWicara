@@ -17,29 +17,48 @@ import com.karina.carawicara.R
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.karina.carawicara.ui.screen.auth.AuthViewModel
+import com.karina.carawicara.ui.screen.auth.AuthViewModelFactory
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
     navHostController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    authViewModel: AuthViewModel = viewModel(
+        factory = AuthViewModelFactory(
+            application = LocalContext.current.applicationContext as android.app.Application
+        )
+    )
 ) {
     var navigationStarted by remember { mutableStateOf(false) }
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
-    // LaunchedEffect untuk menunda navigasi ke home screen setelah 2 detik
-    LaunchedEffect(navigationStarted) {
+    LaunchedEffect(Unit) {
         delay(3000L)
         navigationStarted = true
-        navHostController.navigate("onboardingPage")
+
+        if (isLoggedIn) {
+            navHostController.navigate("homePage") {
+                popUpTo("splashScreen") { inclusive = true }
+            }
+        } else {
+            navHostController.navigate("onboardingPage") {
+                popUpTo("splashScreen") { inclusive = true }
+            }
+        }
     }
 
     Box(

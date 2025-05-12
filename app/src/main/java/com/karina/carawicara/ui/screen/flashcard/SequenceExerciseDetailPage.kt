@@ -64,7 +64,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.BuildConfig
 import com.karina.carawicara.data.SequenceExerciseItem
 import java.io.IOException
 
@@ -220,7 +219,7 @@ fun SequenceExerciseDetailPage(
                         Text("Coba Lagi")
                     }
 
-                    if (BuildConfig.DEBUG) {
+                    if (true) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
@@ -268,7 +267,6 @@ fun SequenceExerciseDetailPage(
                     }
                 }
             }
-            // Content with sequence items
             else if (currentIndex < sequenceItems.size) {
                 val currentItem = sequenceItems[currentIndex]
 
@@ -279,8 +277,7 @@ fun SequenceExerciseDetailPage(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Debug info in debug builds
-                    if (BuildConfig.DEBUG) {
+                    if (true) {
                         OutlinedButton(
                             onClick = {
                                 viewModel.debugImagePaths()
