@@ -25,7 +25,7 @@ class DataInitializer(
                     Log.d("DataInitializer", "Loaded ${kosakata.size} kosakata dari JSON")
 
                     val pelafalan = JsonDataUtil.loadPelafalan(context)
-                    Log.d("DataInitializer", "Loaded ${pelafalan.size} pelafalan dari JSON")
+                    Log.d("DataInitializer", "Loaded ${pelafalan.size} konsonan_m dari JSON")
 
                     val sequence = JsonDataUtil.loadSequence(context)
 
@@ -48,7 +48,7 @@ class DataInitializer(
                         repository.insertAllPelafalan(pelafalan)
                         Log.d("DataInitializer", "Pelafalan berhasil dimasukkan")
                     } catch (e: Exception) {
-                        Log.e("DataInitializer", "Error memasukkan pelafalan", e)
+                        Log.e("DataInitializer", "Error memasukkan konsonan_m", e)
                     }
 
                     try {

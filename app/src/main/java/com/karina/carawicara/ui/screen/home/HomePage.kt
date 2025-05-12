@@ -107,7 +107,7 @@ fun HomePage(
                             CardHome(
                                 onClick = { navController.navigate("patientSelectionForTherapy/suaraPintarPage") },
                                 title = "Suara Pintar",
-                                description = "Latihan pelafalan kalimat sederhana"
+                                description = "Latihan konsonan_m kalimat sederhana"
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                         }

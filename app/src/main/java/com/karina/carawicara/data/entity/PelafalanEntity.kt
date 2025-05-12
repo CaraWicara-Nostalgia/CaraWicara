@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "pelafalan",
+    tableName = "konsonan_m",
     foreignKeys = [
         ForeignKey(
             entity = CategoryEntity::class,

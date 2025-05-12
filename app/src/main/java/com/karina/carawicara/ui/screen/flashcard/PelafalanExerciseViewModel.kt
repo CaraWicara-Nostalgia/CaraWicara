@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.karina.carawicara.data.FlashcardKosakataItem
 import com.karina.carawicara.data.FlashcardPelafalanItem
 import com.karina.carawicara.data.PelafalanExerciseCategory
 import com.karina.carawicara.data.entity.PelafalanEntity
@@ -61,12 +60,12 @@ class PelafalanExerciseViewModel(
 
                 if (categoryCount > 0) {
                     // Database sudah berisi data
-                    repository.getCategoriesByType("pelafalan").collect { dbCategories ->
-                        Log.d("PelafalanExerciseViewModel", "Dapat ${dbCategories.size} kategori pelafalan")
+                    repository.getCategoriesByType("konsonan_m").collect { dbCategories ->
+                        Log.d("PelafalanExerciseViewModel", "Dapat ${dbCategories.size} kategori konsonan_m")
 
                         val uiCategories = dbCategories.map { category ->
                             val pelafalanCount = repository.countPelafalanInCategory(category.id)
-                            Log.d("PelafalanExerciseViewModel", "Kategori ${category.id} memiliki $pelafalanCount pelafalan")
+                            Log.d("PelafalanExerciseViewModel", "Kategori ${category.id} memiliki $pelafalanCount konsonan_m")
 
                             PelafalanExerciseCategory(
                                 id = category.id,
@@ -79,7 +78,7 @@ class PelafalanExerciseViewModel(
                         }
 
                         if (uiCategories.isEmpty()) {
-                            Log.w("PelafalanExerciseViewModel", "Dapat 0 kategori pelafalan, menggunakan data dummy")
+                            Log.w("PelafalanExerciseViewModel", "Dapat 0 kategori konsonan_m, menggunakan data dummy")
                             loadDummyCategories()
                         } else {
                             _categories.value = uiCategories
@@ -124,13 +123,13 @@ class PelafalanExerciseViewModel(
 
         viewModelScope.launch {
             try {
-                // Log jumlah pelafalan di kategori ini
+                // Log jumlah konsonan_m di kategori ini
                 val count = repository.countPelafalanInCategory(category)
-                Log.d("PelafalanExerciseViewModel", "Jumlah pelafalan dalam kategori $category: $count")
+                Log.d("PelafalanExerciseViewModel", "Jumlah konsonan_m dalam kategori $category: $count")
 
                 // Jika kosong, set pesan error yang jelas
                 if (count == 0) {
-                    _errorMessage.value = "Tidak ada pelafalan dalam kategori '$category'"
+                    _errorMessage.value = "Tidak ada konsonan_m dalam kategori '$category'"
                     _currentFlashcards.value = emptyList()
                     return@launch
                 }
@@ -142,7 +141,7 @@ class PelafalanExerciseViewModel(
                         loadFlashcardsFromJson(category)
                     }
                     .collect { entityList ->
-                        Log.d("PelafalanExerciseViewModel", "Database returned ${entityList.size} pelafalan")
+                        Log.d("PelafalanExerciseViewModel", "Database returned ${entityList.size} konsonan_m")
 
                         if (entityList.isNotEmpty()) {
                             val flashcardItems = entityList.map { entity ->
@@ -267,14 +266,14 @@ class PelafalanExerciseViewModel(
     fun loadDummyFlashcards(category: String) {
         val dummyFlashcards = when (category) {
             "konsonan_m" -> listOf(
-                FlashcardPelafalanItem(1, "images/pelafalan/ic_masker.png", "MASKER", "masker", "konsonan_m"),
-                FlashcardPelafalanItem(2, "images/pelafalan/ic_mata.png", "MATA", "mata", "konsonan_m"),
-                FlashcardPelafalanItem(3, "images/pelafalan/ic_mulut.png", "MULUT", "mulut", "konsonan_m"),
-                FlashcardPelafalanItem(4, "images/pelafalan/ic_meja.png", "MEJA", "meja", "konsonan_m"),
-                FlashcardPelafalanItem(5, "images/pelafalan/ic_mobil.png", "MOBIL", "mobil", "konsonan_m"),
-                FlashcardPelafalanItem(6, "images/pelafalan/ic_mangga.png", "MANGGA", "mangga", "konsonan_m"),
-                FlashcardPelafalanItem(7, "images/pelafalan/ic_mie.png", "MIE", "mie", "konsonan_m"),
-                FlashcardPelafalanItem(8, "images/pelafalan/ic_monyet.png", "MONYET", "monyet", "konsonan_m"),
+                FlashcardPelafalanItem(1, "images/konsonan_m/ic_masker.png", "MASKER", "masker", "konsonan_m"),
+                FlashcardPelafalanItem(2, "images/konsonan_m/ic_mata.png", "MATA", "mata", "konsonan_m"),
+                FlashcardPelafalanItem(3, "images/konsonan_m/ic_mulut.png", "MULUT", "mulut", "konsonan_m"),
+                FlashcardPelafalanItem(4, "images/konsonan_m/ic_meja.png", "MEJA", "meja", "konsonan_m"),
+                FlashcardPelafalanItem(5, "images/konsonan_m/ic_mobil.png", "MOBIL", "mobil", "konsonan_m"),
+                FlashcardPelafalanItem(6, "images/konsonan_m/ic_mangga.png", "MANGGA", "mangga", "konsonan_m"),
+                FlashcardPelafalanItem(7, "images/konsonan_m/ic_mie.png", "MIE", "mie", "konsonan_m"),
+                FlashcardPelafalanItem(8, "images/konsonan_m/ic_monyet.png", "MONYET", "monyet", "konsonan_m"),
             ).shuffled().take(8)
             else -> emptyList()
         }
@@ -409,7 +408,7 @@ class PelafalanExerciseViewModel(
             if (assetManager.list("")?.contains("images") == true) {
                 Log.d("PelafalanExerciseViewModel", "Image Assets:")
                 assetManager.list("images")?.forEach {
-                    Log.d("PelafalanExerciseViewModel", "- images/pelafalan/$it")
+                    Log.d("PelafalanExerciseViewModel", "- images/konsonan_m/$it")
                 }
             }
         } catch (e: Exception) {

@@ -2,49 +2,121 @@
   {
     "word": "masker",
     "pronunciation": "mas-ker",
-    "imageRes": "images/pelafalan/ic_masker.png",
+    "imageRes": "images/konsonan_m/ic_masker.png",
     "category": "konsonan_m"
   },
   {
     "word": "mata",
     "pronunciation": "ma-ta",
-    "imageRes": "images/pelafalan/ic_mata.png",
+    "imageRes": "images/konsonan_m/ic_mata.png",
     "category": "konsonan_m"
   },
   {
     "word": "mulut",
     "pronunciation": "mu-lut",
-    "imageRes": "images/pelafalan/ic_mulut.png",
+    "imageRes": "images/konsonan_m/ic_mulut.png",
     "category": "konsonan_m"
   },
   {
     "word": "meja",
     "pronunciation": "me-ja",
-    "imageRes": "images/pelafalan/ic_meja.png",
+    "imageRes": "images/konsonan_m/ic_meja.png",
     "category": "konsonan_m"
   },
   {
     "word": "mobil",
     "pronunciation": "mo-bil",
-    "imageRes": "images/pelafalan/ic_mobil.png",
+    "imageRes": "images/konsonan_m/ic_mobil.png",
     "category": "konsonan_m"
   },
   {
     "word": "mangga",
     "pronunciation": "mang-ga",
-    "imageRes": "images/pelafalan/ic_mangga.png",
+    "imageRes": "images/konsonan_m/ic_mangga.png",
     "category": "konsonan_m"
   },
   {
     "word": "mie",
     "pronunciation": "mi",
-    "imageRes": "images/pelafalan/ic_mie.png",
+    "imageRes": "images/konsonan_m/ic_mie.png",
     "category": "konsonan_m"
   },
   {
     "word": "monyet",
     "pronunciation": "mo-nyet",
-    "imageRes": "images/pelafalan/ic_monyet.png",
+    "imageRes": "images/konsonan_m/ic_monyet.png",
     "category": "konsonan_m"
+  },
+  {
+    "word": "mainan",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_m/ic_mainan.png",
+    "category": "konsonan_m"
+  },
+  {
+    "word": "mangkuk",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_m/ic_mangkuk.png",
+    "category": "konsonan_m"
+  },
+  {
+    "word": "baju",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_baju.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "balon",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_balon.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "bantal",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_bantal.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "bel",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_bel.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "bis",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_bis.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "bola",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_bola.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "boneka",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_boneka.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "botol",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_botol.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "buku",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_buku.png",
+    "category": "konsonan_b"
+  },
+  {
+    "word": "bunga",
+    "pronunciation": "mo-nyet",
+    "imageRes": "images/konsonan_b/ic_bunga.png",
+    "category": "konsonan_b"
   }
 ]

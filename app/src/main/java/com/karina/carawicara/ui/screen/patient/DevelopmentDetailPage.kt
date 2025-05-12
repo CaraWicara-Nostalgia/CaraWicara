@@ -430,7 +430,7 @@ private fun ProgressChartDetail(
                     // Not implementing actual text drawing as it requires custom implementation
                 }
 
-                // Draw pelafalan line chart
+                // Draw konsonan_m line chart
                 if (pelafalanData.isNotEmpty()) {
                     val path = Path()
                     val pointsPerWeek = width / (pelafalanData.size - 1)

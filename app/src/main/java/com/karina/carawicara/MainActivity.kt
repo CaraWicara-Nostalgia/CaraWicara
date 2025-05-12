@@ -96,12 +96,12 @@ class MainActivity : ComponentActivity() {
                     Log.e("MainActivity", "kosakata.json tidak ditemukan!")
                 }
 
-                // Cek file pelafalan.json
-                if (dbAssets?.contains("pelafalan.json") == true) {
+                // Cek file konsonan_m.json
+                if (dbAssets?.contains("konsonan_m.json") == true) {
                     val json = assets.open("database/pelafalan.json").bufferedReader().use { it.readText() }
                     Log.d("MainActivity", "Pelafalan JSON: ${json.take(100)}...")
                 } else {
-                    Log.e("MainActivity", "pelafalan.json tidak ditemukan!")
+                    Log.e("MainActivity", "konsonan_m.json tidak ditemukan!")
                 }
 
                 // Cek file sequence.json

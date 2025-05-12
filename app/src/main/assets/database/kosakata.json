@@ -60,6 +60,66 @@
     "category": "buah"
   },
   {
+    "word": "BELIMBING",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_belimbing.png",
+    "category": "buah"
+  },
+  {
+    "word": "BUAH NAGA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_buah_naga.png",
+    "category": "buah"
+  },
+  {
+    "word": "CERI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_ceri.png",
+    "category": "buah"
+  },
+  {
+    "word": "DURIAN",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_durian.png",
+    "category": "buah"
+  },
+  {
+    "word": "KIWI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_kiwi.png",
+    "category": "buah"
+  },
+  {
+    "word": "LEMON",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_lemon.png",
+    "category": "buah"
+  },
+  {
+    "word": "MANGGIS",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_manggis.png",
+    "category": "buah"
+  },
+  {
+    "word": "PEPAYA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_pepaya.png",
+    "category": "buah"
+  },
+  {
+    "word": "PIR",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_pir.png",
+    "category": "buah"
+  },
+  {
+    "word": "RAMBUTAN",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/buah/ic_rambutan.png",
+    "category": "buah"
+  },
+  {
     "word": "KUCING",
     "pronunciation": "aŋɡur",
     "imageRes": "images/hewan/ic_kucing.png",
@@ -150,6 +210,36 @@
     "category": "hewan"
   },
   {
+    "word": "HARIMAU",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_harimau.png",
+    "category": "hewan"
+  },
+  {
+    "word": "KATAK",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_katak.png",
+    "category": "hewan"
+  },
+  {
+    "word": "KELINCI",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_kelinci.png",
+    "category": "hewan"
+  },
+  {
+    "word": "KUDA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_kuda.png",
+    "category": "hewan"
+  },
+  {
+    "word": "KURA-KURA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/hewan/ic_kura_kura.png",
+    "category": "hewan"
+  },
+  {
     "word": "CELANA",
     "pronunciation": "aŋɡur",
     "imageRes": "images/pakaian/ic_celana.png",
@@ -195,6 +285,42 @@
     "word": "PAMPERS",
     "pronunciation": "aŋɡur",
     "imageRes": "images/pakaian/ic_diapers.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "IKAT PINGGANG",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_ikat_pinggang.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "JAS HUJAN",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_jas_hujan.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "KACAMATA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_kacamata.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "KEMEJA",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_kemeja.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "ROK",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_rok.png",
+    "category": "pakaian"
+  },
+  {
+    "word": "SARUNG TANGAN",
+    "pronunciation": "aŋɡur",
+    "imageRes": "images/pakaian/ic_sarung_tangan.png",
     "category": "pakaian"
   },
   {
