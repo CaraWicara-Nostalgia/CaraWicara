@@ -342,8 +342,7 @@ fun PelafalanExerciseDetailPage(
                                                 contentDescription = "Flashcard image",
                                                 contentScale = ContentScale.Fit,
                                                 modifier = Modifier
-                                                    .size(300.dp)
-                                                    .padding(24.dp)
+                                                    .fillMaxWidth()
                                             )
                                         } ?: run {
                                             Column(

@@ -45,6 +45,15 @@
     "total": 5
   },
   {
+    "id": "konsonan_b",
+    "title": "Melafalkan konsonan 'b'",
+    "description": "Berlatih mengucapkan huruf 'b' dengan benar",
+    "type": "pelafalan",
+    "progress": 0,
+    "progressPercentage": 0,
+    "total": 5
+  },
+  {
     "id": "aktivitas_urutan",
     "title": "Mengurutkan aktivitas",
     "description": "Belajar mengurutkan aktivitas sehari-hari",

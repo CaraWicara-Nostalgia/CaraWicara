@@ -85,6 +85,31 @@ class PelafalanExerciseViewModel(
                             Log.d("PelafalanExerciseViewModel", "Berhasil memuat ${uiCategories.size} kategori dari database")
                         }
                     }
+                    repository.getCategoriesByType("konsonan_b").collect { dbCategories ->
+                        Log.d("PelafalanExerciseViewModel", "Dapat ${dbCategories.size} kategori konsonan_b")
+
+                        val uiCategories = dbCategories.map { category ->
+                            val pelafalanCount = repository.countPelafalanInCategory(category.id)
+                            Log.d("PelafalanExerciseViewModel", "Kategori ${category.id} memiliki $pelafalanCount konsonan_b")
+
+                            PelafalanExerciseCategory(
+                                id = category.id,
+                                title = category.title,
+                                description = category.description,
+                                total = category.total,
+                                progress = category.progress,
+                                progressPercentage = category.progressPercentage
+                            )
+                        }
+
+                        if (uiCategories.isEmpty()) {
+                            Log.w("PelafalanExerciseViewModel", "Dapat 0 kategori konsonan_b, menggunakan data dummy")
+                            loadDummyCategories()
+                        } else {
+                            _categories.value = uiCategories
+                            Log.d("PelafalanExerciseViewModel", "Berhasil memuat ${uiCategories.size} kategori dari database")
+                        }
+                    }
                 } else {
                     // Database kosong
                     Log.w("PelafalanExerciseViewModel", "Database kosong atau belum terinisialisasi, menggunakan data dummy")
@@ -103,6 +128,12 @@ class PelafalanExerciseViewModel(
                 id = "konsonan_m",
                 title = "Melafalkan konsonan 'm'",
                 description = "Belajar melafalkan konsonan 'm' dengan benar.",
+                total = 5
+            ),
+            PelafalanExerciseCategory(
+                id = "konsonan_b",
+                title = "Melafalkan konsonan 'b'",
+                description = "Belajar melafalkan konsonan 'b' dengan benar.",
                 total = 5
             ),
         )
@@ -274,7 +305,21 @@ class PelafalanExerciseViewModel(
                 FlashcardPelafalanItem(6, "images/konsonan_m/ic_mangga.png", "MANGGA", "mangga", "konsonan_m"),
                 FlashcardPelafalanItem(7, "images/konsonan_m/ic_mie.png", "MIE", "mie", "konsonan_m"),
                 FlashcardPelafalanItem(8, "images/konsonan_m/ic_monyet.png", "MONYET", "monyet", "konsonan_m"),
-            ).shuffled().take(8)
+                FlashcardPelafalanItem(9, "images/konsonan_m/ic_mainan.png", "MAINAN", "mainan", "konsonan_m"),
+                FlashcardPelafalanItem(10, "images/konsonan_m/ic_mangkuk.png", "MANGKUK", "mangkuk", "konsonan_m"),
+            ).shuffled().take(10)
+            "konsonan_b" -> listOf(
+                FlashcardPelafalanItem(1, "images/konsonan_m/ic_baju.png", "BAJU", "baju", "konsonan_b"),
+                FlashcardPelafalanItem(2, "images/konsonan_m/ic_balon.png", "BALON", "balon", "konsonan_b"),
+                FlashcardPelafalanItem(3, "images/konsonan_m/ic_bantal.png", "BANTAL", "bantal", "konsonan_b"),
+                FlashcardPelafalanItem(4, "images/konsonan_m/ic_bel.png", "BEL", "bel", "konsonan_b"),
+                FlashcardPelafalanItem(5, "images/konsonan_m/ic_bis.png", "BIS", "bis", "konsonan_b"),
+                FlashcardPelafalanItem(6, "images/konsonan_m/ic_bola.png", "BOLA", "bola", "konsonan_b"),
+                FlashcardPelafalanItem(7, "images/konsonan_m/ic_boneka.png", "BONEKA", "boneka", "konsonan_b"),
+                FlashcardPelafalanItem(8, "images/konsonan_m/ic_botol.png", "BOTOL", "botol", "konsonan_b"),
+                FlashcardPelafalanItem(9, "images/konsonan_m/ic_buku.png", "BUKU", "buku", "konsonan_b"),
+                FlashcardPelafalanItem(10, "images/konsonan_m/ic_bunga.png", "BUNGA", "bunga", "konsonan_b"),
+            ).shuffled().take(10)
             else -> emptyList()
         }
 
