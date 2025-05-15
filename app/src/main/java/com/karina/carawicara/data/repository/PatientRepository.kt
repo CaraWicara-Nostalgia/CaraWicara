@@ -1,134 +1,65 @@
 package com.karina.carawicara.data.repository
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.karina.carawicara.data.CaraWicaraDatabase
 import com.karina.carawicara.data.LanguageAbility
 import com.karina.carawicara.data.Patient
 import com.karina.carawicara.data.TherapyHistory
-import com.karina.carawicara.data.entity.LanguageAbilityEntity
 import com.karina.carawicara.data.entity.PatientEntity
-import com.karina.carawicara.data.entity.PatientWithLanguageAbilities
 import com.karina.carawicara.data.entity.TherapyHistoryEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.Period
-import java.util.UUID
 
 class PatientRepository (private val database: CaraWicaraDatabase){
-    private fun Patient.toEntity(): PatientEntity {
-        return PatientEntity(
-            id = this.id,
-            name = this.name,
-            birthDate = this.birthDate,
-            address = this.address
-        )
+    @RequiresApi(Build.VERSION_CODES.O)
+    val allPatients: Flow<List<Patient>> = database.patientDao().getAllPatients().map { entities ->
+        entities.map { it.toPatient() }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun PatientEntity.toDomainModel(languageAbilities: List<LanguageAbility>): Patient {
-        return Patient(
-            id = this.id,
-            name = this.name,
-            birthDate = this.birthDate,
-            age = calculateAge(this.birthDate),
-            address = this.address,
-            languageAbilities = languageAbilities
-        )
-    }
-
-    private fun LanguageAbility.toEntity(patientId: String): LanguageAbilityEntity {
-        return LanguageAbilityEntity(
-            id = this.id,
-            description = this.description,
-            patientId = patientId
-        )
-    }
-
-    private fun LanguageAbilityEntity.toDomainModel(): LanguageAbility {
-        return LanguageAbility(
-            id = this.id,
-            description = this.description
-        )
-    }
-
-    private fun TherapyHistory.toEntity(): TherapyHistoryEntity {
-        return TherapyHistoryEntity(
-            id = this.id,
-            patientId = this.patientId,
-            date = this.date,
-            therapyType = this.therapyType,
-            progressPercentage = this.progressPercentage,
-            notes = this.notes
-        )
-    }
-
-    private fun TherapyHistoryEntity.toDomainModel(): TherapyHistory {
-        return TherapyHistory(
-            id = this.id,
-            patientId = this.patientId,
-            date = this.date,
-            therapyType = this.therapyType,
-            progressPercentage = this.progressPercentage,
-            notes = this.notes
-        )
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun calculateAge(birthDate: LocalDate): Int {
-        return Period.between(birthDate, LocalDate.now()).years
-    }
-
-    // Database operations
-    @RequiresApi(Build.VERSION_CODES.O)
-    val allPatients: Flow<List<Patient>> = database.patientDao().getPatientsWithLanguageAbilities()
-        .map { patientWithAbilitiesList ->
-            patientWithAbilitiesList.map { patientWithAbilities ->
-                val languageAbilities = patientWithAbilities.languageAbilities.map { it.toDomainModel() }
-                patientWithAbilities.patient.toDomainModel(languageAbilities)
-            }
-        }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getPatientById(patientId: String): Patient? {
-        val patientWithAbilities = database.patientDao().getPatientWithLanguageAbilities(patientId)
-        return patientWithAbilities?.let {
-            val languageAbilities = it.languageAbilities.map { entity -> entity.toDomainModel() }
-            it.patient.toDomainModel(languageAbilities)
-        }
-    }
-
     suspend fun insertPatient(patient: Patient) {
-        // Insert patient
-        database.patientDao().insertPatient(patient.toEntity())
-
-        // Insert language abilities
-        val languageAbilityEntities = patient.languageAbilities.map { it.toEntity(patient.id) }
-        database.languageAbilityDao().insertAllLanguageAbilities(languageAbilityEntities)
+        withContext(Dispatchers.IO) {
+            val patientEntity = PatientEntity(
+                id = patient.id,
+                name = patient.name,
+                birthDate = patient.birthDate,
+                address = patient.address,
+                languageAbilitiesJson = patient.languageAbilitiesToJson()
+            )
+            database.patientDao().insertPatient(patientEntity)
+        }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun updatePatient(patient: Patient) {
-        // Update patient
-        database.patientDao().updatePatient(patient.toEntity())
-
-        // Delete existing language abilities and insert new ones
-        database.languageAbilityDao().deleteLanguageAbilitiesByPatient(patient.id)
-        val languageAbilityEntities = patient.languageAbilities.map { it.toEntity(patient.id) }
-        database.languageAbilityDao().insertAllLanguageAbilities(languageAbilityEntities)
+        withContext(Dispatchers.IO) {
+            val patientEntity = PatientEntity(
+                id = patient.id,
+                name = patient.name,
+                birthDate = patient.birthDate,
+                address = patient.address,
+                languageAbilitiesJson = patient.languageAbilitiesToJson()
+            )
+            database.patientDao().updatePatient(patientEntity)
+        }
     }
 
     suspend fun deletePatient(patientId: String) {
-        database.patientDao().deletePatientById(patientId)
+        withContext(Dispatchers.IO) {
+            database.patientDao().deletePatientById(patientId)
+        }
     }
 
-    suspend fun getTherapyHistoriesByPatient(patientId: String): Flow<List<TherapyHistory>> {
-        return database.therapyHistoryDao().getTherapyHistoriesByPatient(patientId)
-            .map { entities -> entities.map { it.toDomainModel() } }
-    }
-
-    suspend fun insertTherapyHistory(therapyHistory: TherapyHistory) {
-        database.therapyHistoryDao().insertTherapyHistory(therapyHistory.toEntity())
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getPatientById(patientId: String): Patient? {
+        return withContext(Dispatchers.IO) {
+            database.patientDao().getPatientById(patientId)?.toPatient()
+        }
     }
 
     suspend fun generateLanguageAbilitiesByAge(ageYears: Int, ageMonths: Int): List<LanguageAbility> {
@@ -326,6 +257,149 @@ class PatientRepository (private val database: CaraWicaraDatabase){
     }
 
     private fun generateLanguageAbilitiesForOlderChildren(): List<LanguageAbility> {
+        return emptyList()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getAllTherapyHistories(): Flow<List<TherapyHistory>> {
+        return database.therapyHistoryDao().getAllTherapyHistories().map { entities ->
+            entities.map { it.toTherapyHistory() }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTherapyHistoriesForPatient(patientId: String): Flow<List<TherapyHistory>> {
+        return database.therapyHistoryDao().getTherapyHistoriesForPatient(patientId).map { entities ->
+            entities.map { it.toTherapyHistory() }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getTherapyHistoryById(historyId: String): TherapyHistory? {
+        return withContext(Dispatchers.IO) {
+            val entity = database.therapyHistoryDao().getTherapyHistoryById(historyId)
+            entity?.toTherapyHistory()
+        }
+    }
+
+    suspend fun insertTherapyHistory(therapyHistory: TherapyHistory) {
+        withContext(Dispatchers.IO) {
+            val therapyHistoryEntity = TherapyHistoryEntity(
+                id = therapyHistory.id,
+                patientId = therapyHistory.patientId,
+                therapyType = therapyHistory.therapyType,
+                date = therapyHistory.date,
+                score = therapyHistory.score,
+                totalQuestions = therapyHistory.totalQuestions,
+                progressPercentage = therapyHistory.progressPercentage,
+                notes = therapyHistory.notes,
+                categoryId = therapyHistory.categoryId
+            )
+            database.therapyHistoryDao().insertTherapyHistory(therapyHistoryEntity)
+        }
+    }
+
+    suspend fun deleteTherapyHistory(historyId: String) {
+        withContext(Dispatchers.IO) {
+            database.therapyHistoryDao().deleteTherapyHistory(historyId)
+        }
+    }
+
+    suspend fun deleteTherapyHistoriesForPatient(patientId: String) {
+        withContext(Dispatchers.IO) {
+            database.therapyHistoryDao().deleteTherapyHistoriesForPatient(patientId)
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun PatientEntity.toPatient(): Patient {
+    val languageAbilities = try {
+        languageAbilitiesFromJson(this.languageAbilitiesJson)
+    } catch (e: Exception) {
+        Log.e("PatientRepository", "Error parsing language abilities for patient ${this.id}", e)
+        emptyList()
+    }
+
+    return Patient(
+        id = this.id,
+        name = this.name,
+        birthDate = this.birthDate,
+        age = calculateAge(this.birthDate),
+        address = this.address,
+        languageAbilities = languageAbilities
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun TherapyHistoryEntity.toTherapyHistory(): TherapyHistory {
+    return TherapyHistory(
+        id = this.id,
+        patientId = this.patientId,
+        therapyType = this.therapyType,
+        date = this.date,
+        score = this.score,
+        totalQuestions = this.totalQuestions,
+        progressPercentage = this.progressPercentage,
+        notes = this.notes,
+        categoryId = this.categoryId,
+        showLine = true // Default to true, can be updated if needed
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun calculateAge(birthDate: LocalDate): Int {
+    return java.time.Period.between(birthDate, LocalDate.now()).years
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun Patient.languageAbilitiesToJson(): String {
+    val jsonArray = StringBuilder("[")
+    languageAbilities.forEachIndexed { index, ability ->
+        jsonArray.append("""{"id":"${ability.id}","description":"${ability.description}","isSelected":${ability.isSelected}}""")
+        if (index < languageAbilities.size - 1) {
+            jsonArray.append(",")
+        }
+    }
+    jsonArray.append("]")
+    return jsonArray.toString()
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun languageAbilitiesFromJson(json: String): List<LanguageAbility> {
+    if (json.isEmpty() || json == "null") {
+        return emptyList()
+    }
+
+    try {
+        val abilities = mutableListOf<LanguageAbility>()
+        val jsonArray = json.trim()
+        if (jsonArray.startsWith("[") && jsonArray.endsWith("]")) {
+            val items = jsonArray.substring(1, jsonArray.length - 1).split("},")
+
+            items.forEach { item ->
+                val cleanItem = if (item.endsWith("}")) item else "$item}"
+
+                val idMatch = Regex(""""id":"([^"]+)"""").find(cleanItem)
+                val descMatch = Regex(""""description":"([^"]+)"""").find(cleanItem)
+                val selectedMatch = Regex(""""isSelected":(true|false)""").find(cleanItem)
+
+                if (idMatch != null && descMatch != null && selectedMatch != null) {
+                    val id = idMatch.groupValues[1]
+                    val description = descMatch.groupValues[1]
+                    val isSelected = selectedMatch.groupValues[1].toBoolean()
+
+                    abilities.add(LanguageAbility(
+                        id = id,
+                        description = description,
+                        isSelected = isSelected
+                    ))
+                }
+            }
+        }
+        return abilities
+    } catch (e: Exception) {
+        Log.e("PatientRepository", "Error parsing language abilities JSON: $json", e)
         return emptyList()
     }
 }

@@ -16,13 +16,3 @@ data class LanguageAbility(
     val description: String,
     val isSelected: Boolean = false
 )
-
-data class TherapyHistory(
-    val id: String,
-    val patientId: String,
-    val date: LocalDate,
-    val therapyType: String,
-    val progressPercentage: Int,
-    val notes: String,
-    val showLine: Boolean = true
-)

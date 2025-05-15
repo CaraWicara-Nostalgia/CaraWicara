@@ -58,11 +58,18 @@ fun PatientSelectionPage(
     var searchQuery by remember { mutableStateOf("") }
     val patients by viewModel.patients.collectAsState()
 
-    var filteredPatients = if (searchQuery.isEmpty()) {
+    val filteredPatients = if (searchQuery.isEmpty()) {
         patients
     } else {
         patients.filter {
             it.name.contains(searchQuery, ignoreCase = true)
+        }
+    }
+
+    val onPatientSelected = { patientId: String ->
+        viewModel.setSelectedPatientId(patientId)
+        navController.navigate(nextRoute) {
+            popUpTo("patientSelectionForTherapy/{nextRoute}") { inclusive = true}
         }
     }
 

@@ -47,6 +47,7 @@ fun SequenceExercisePage(
     navController: NavController,
     viewModel: SequenceExerciseViewModel = viewModel(
         factory = SequenceExerciseViewModelFactory(
+            navController = navController,
             application = LocalContext.current.applicationContext as Application
         )
     )

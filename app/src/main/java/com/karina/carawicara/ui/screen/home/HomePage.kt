@@ -30,11 +30,13 @@ import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.BottomNavBar
 import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.CardHome
+import com.karina.carawicara.ui.screen.patient.PatientViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(
-    navController: NavController
+    navController: NavController,
+    patientViewModel: PatientViewModel
 ) {
     Scaffold (
         bottomBar = {
@@ -81,7 +83,13 @@ fun HomePage(
                     item {
                         Column {
                             CardHome(
-                                onClick = { navController.navigate("patientSelectionForTherapy/flashcardPage") },
+                                onClick = {
+                                    val selectedPatient = patientViewModel.selectedPatient.value
+                                    if (selectedPatient != null) {
+                                        navController.navigate("flashcardPage")
+                                    } else {
+                                        navController.navigate("patientSelectionForTherapy/flashcardPage")
+                                    } },
                                 title = "Flashcard",
                                 description = "Belajar kata melalui gambar"
                             )

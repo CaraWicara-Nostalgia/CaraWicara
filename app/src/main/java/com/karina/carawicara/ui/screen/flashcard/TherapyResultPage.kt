@@ -1,5 +1,8 @@
 package com.karina.carawicara.ui.screen.flashcard
 
+import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,35 +32,52 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.karina.carawicara.R
+import com.karina.carawicara.data.TherapyHistory
+import com.karina.carawicara.ui.screen.patient.PatientViewModel
+import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TherapyResultPage(
     navController: NavController,
-    score: Int = 3,
+    score: Int = 0,
     totalQuestions: Int = 10,
-){
+    patientViewModel: PatientViewModel
+) {
+    val previousRoute = remember {
+        navController.previousBackStackEntry?.destination?.route ?: ""
+    }
+
     var withHelp by remember { mutableStateOf(false) }
     var independent by remember { mutableStateOf(false) }
     var needsRepetition by remember { mutableStateOf(false) }
@@ -65,12 +87,51 @@ fun TherapyResultPage(
 
     var additionalNotes by remember { mutableStateOf("") }
 
-    Scaffold (
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    val selectedPatient by patientViewModel.selectedPatient.collectAsState()
+
+    // Get category ID from previous route
+    val categoryId = remember {
+        when {
+            previousRoute.contains("kosakataExerciseDetailPage") -> {
+                navController.previousBackStackEntry?.arguments?.getString("category") ?: ""
+            }
+            previousRoute.contains("pelafalanExerciseDetailPage") -> {
+                navController.previousBackStackEntry?.arguments?.getString("category") ?: ""
+            }
+            previousRoute.contains("sequenceExerciseDetailPage") -> {
+                navController.previousBackStackEntry?.arguments?.getString("categoryTitle") ?: ""
+            }
+            else -> ""
+        }
+    }
+
+    val therapyTpye = remember {
+        when {
+            previousRoute.contains("kosakataExerciseDetailPage") -> "Kosakata"
+            previousRoute.contains("pelafalanExerciseDetailPage") -> "Pelafalan"
+            previousRoute.contains("sequenceExerciseDetailPage") -> "Urutan"
+            else -> ""
+        }
+    }
+
+    val therapyName = remember {
+        when {
+            therapyTpye == "Kosakata" -> "Latihan Kosakata: ${getCategoryName(categoryId)}"
+            therapyTpye == "Pelafalan" -> "Latihan Pelafalan: ${getCategoryName(categoryId)}"
+            therapyTpye == "Urutan" -> "Latihan Urutan: ${getCategoryName(categoryId)}"
+            else -> "Terapi: $categoryId"
+        }
+    }
+
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = {navController.navigate("flashcardPage")}) {
+                    IconButton(onClick = { navController.navigate("flashcardPage") }) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
@@ -78,8 +139,9 @@ fun TherapyResultPage(
                     }
                 }
             )
-        }
-    ){ paddingValues ->
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -117,10 +179,10 @@ fun TherapyResultPage(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Column (
+            Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
-            ){
+            ) {
                 Text(
                     text = "Quick Notes",
                     fontSize = 16.sp,
@@ -206,7 +268,7 @@ fun TherapyResultPage(
                 OutlinedTextField(
                     value = additionalNotes,
                     onValueChange = { additionalNotes = it },
-                    placeholder = { Text("Tambahkan catatan detail di sini ...")},
+                    placeholder = { Text("Tambahkan catatan detail di sini ...") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp),
@@ -220,8 +282,71 @@ fun TherapyResultPage(
 
             Spacer(modifier = Modifier.height(40.dp))
 
+            selectedPatient?.let { patient ->
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = "Pasien: ${patient.name}",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    OutlinedButton(
+                        onClick = { navController.navigate("patientSelectionForTherapy/flashcardPage")},
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text("Ganti")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+            } ?: run {
+                OutlinedButton(
+                    onClick = { navController.navigate("patientSelectionForTherapy/flashcardPage")},
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = "Pilih Pasien",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
             OutlinedButton(
-                onClick = { },
+                onClick = {
+                    when {
+                        previousRoute.contains("kosakataExerciseDetailPage") -> {
+                            navController.navigate("kosakataExerciseDetailPage/$categoryId") {
+                                popUpTo("therapyResultPage") { inclusive = true }
+                            }
+                        }
+                        previousRoute.contains("pelafalanExerciseDetailPage") -> {
+                            navController.navigate("pelafalanExerciseDetailPage/$categoryId") {
+                                popUpTo("therapyResultPage") { inclusive = true }
+                            }
+                        }
+                        previousRoute.contains("sequenceExerciseDetailPage") -> {
+                            navController.navigate("sequenceExerciseDetailPage/$categoryId") {
+                                popUpTo("therapyResultPage") { inclusive = true }
+                            }
+                        }
+                        else -> {
+                            navController.navigate("flashcardPage") {
+                                popUpTo("therapyResultPage") { inclusive = true }
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -238,19 +363,67 @@ fun TherapyResultPage(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedButton(
-                onClick = {},
+            Button(
+                onClick = {
+                    if (selectedPatient == null) {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Pilih pasien terlebih dahulu")
+                        }
+                        return@Button
+                    }
+
+                    val notesBuilder = StringBuilder()
+                    if (withHelp) notesBuilder.append("Dapat melafalkan dengan bantuan\n")
+                    if (independent) notesBuilder.append("Dapat melafalkan mandiri\n")
+                    if (needsRepetition) notesBuilder.append("Butuh pengulangan >3x\n")
+                    if (fullSpirit) notesBuilder.append("Penuh semangat\n")
+
+                    if (selectedMood != null) {
+                        notesBuilder.append("Mood Anak: $selectedMood\n")
+                    }
+
+                    if (additionalNotes.isNotBlank()) {
+                        notesBuilder.append("Catatan Tambahan: $additionalNotes\n")
+                    }
+
+                    val progressPercentage = (score * 100) / totalQuestions
+
+                    val therapyHistory = TherapyHistory(
+                        id = UUID.randomUUID().toString(),
+                        patientId = selectedPatient!!.id,
+                        therapyType = therapyTpye,
+                        date = LocalDate.now(),
+                        score = score,
+                        totalQuestions = totalQuestions,
+                        progressPercentage = progressPercentage,
+                        notes = notesBuilder.toString(),
+                        categoryId = categoryId,
+                        showLine = true
+                    )
+
+                    patientViewModel.addTherapyHistory(therapyHistory)
+
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Hasil terapi berhasil disimpan")
+                    }
+
+                    navController.navigate("flashcardPage") {
+                        popUpTo("therapyResultPage") { inclusive = true }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text(
-                    text = "Simpan Capaian",
+                    text = "Simpan Hasil Terapi",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Black
+                    color = Color.White
                 )
             }
 
@@ -332,12 +505,15 @@ fun MoodOption(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TherapyResultScreenPreview() {
-    TherapyResultPage(
-        navController = rememberNavController(),
-        score = 7,
-        totalQuestions = 10
-    )
+fun getCategoryName(categoryId: String): String {
+    return when (categoryId) {
+        "buah" -> "Buah-buahan"
+        "hewan" -> "Hewan"
+        "pakaian" -> "Pakaian"
+        "aktivitas" -> "Aktivitas"
+        "konsonan_m" -> "Konsonan M"
+        "konsonan_b" -> "Konsonan B"
+        "aktivitas_urutan" -> "Urutan Aktivitas"
+        else -> categoryId.replaceFirstChar { it.uppercase() }
+    }
 }

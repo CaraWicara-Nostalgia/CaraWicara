@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +18,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -67,6 +68,8 @@ import androidx.navigation.NavController
 import com.karina.carawicara.R
 import com.karina.carawicara.data.TherapyHistory
 import java.time.format.DateTimeFormatter
+import java.time.LocalDate
+import java.time.Month
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -77,9 +80,24 @@ fun PatientProfilePage(
     viewModel: PatientViewModel
 ) {
     val patients by viewModel.patients.collectAsState()
+    val therapyHistories by viewModel.getTherapyHistoriesForPatient(patientId).collectAsState(initial = emptyList())
+
+    // Track if we should show all therapy histories or just recent ones
+    var showAllHistories by remember { mutableStateOf(false) }
+
+    // Track selected month for filtering therapy histories
+    var selectedMonth by remember { mutableStateOf(LocalDate.now().month) }
 
     // Cari pasien berdasarkan ID
     val patient = patients.find { it.id == patientId }
+
+    // Filter therapy histories based on selected month
+    val filteredHistories = therapyHistories.filter {
+        it.date.month == selectedMonth
+    }.sortedByDescending { it.date }
+
+    // Show only recent histories if not showing all
+    val displayedHistories = if (showAllHistories) filteredHistories else filteredHistories.take(3)
 
     // Jika pasien tidak ditemukan, tampilkan pesan error dan kembali
     if (patient == null) {
@@ -158,235 +176,282 @@ fun PatientProfilePage(
             )
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Profile Image
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .border(1.dp, Color.LightGray, CircleShape)
-                    .background(Color.White),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_profile), // Ganti dengan icon profil default
-                    contentDescription = "Profile Photo",
-                    modifier = Modifier.size(60.dp),
-                    contentScale = ContentScale.Fit
-                )
-            }
+            // Profile Section
+            item {
+                // Profile Image
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .border(1.dp, Color.LightGray, CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_profile), // Ganti dengan icon profil default
+                        contentDescription = "Profile Photo",
+                        modifier = Modifier.size(60.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Patient Name
-            Text(
-                text = patient.name,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Patient Age and Address
-            Text(
-                text = "${patient.age} Tahun",
-                fontSize = 14.sp,
-                color = Color.Gray
-            )
-            Text(
-                text = patient.address,
-                fontSize = 14.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Language Ability Section
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                // Patient Name
                 Text(
-                    text = "Kemampuan Bahasa",
-                    fontSize = 16.sp,
+                    text = patient.name,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            // Language Abilities List
-            if (patient.languageAbilities.isEmpty()) {
+                // Patient Age and Address
                 Text(
-                    text = "Belum ada data kemampuan bahasa",
+                    text = "${patient.age} Tahun",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+                Text(
+                    text = patient.address,
                     fontSize = 14.sp,
                     color = Color.Gray,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    textAlign = TextAlign.Center
                 )
-            } else {
-                patient.languageAbilities.forEach { ability ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = "•",
-                            fontSize = 14.sp,
-                            color = Color.Gray,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = ability.description,
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    }
-                }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Development Section
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Perkembangan",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                var monthDropdownExpanded by remember { mutableStateOf(false) }
-
-                TextButton(
-                    onClick = { navController.navigate("developmentDetailPage/{patientId}") }
+            // Language Ability Section
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Detail")
+                    Text(
+                        text = "Kemampuan Bahasa",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
-                TextButton(
-                    onClick = { monthDropdownExpanded = true }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Language Abilities List
+                if (patient.languageAbilities.isEmpty()) {
+                    Text(
+                        text = "Belum ada data kemampuan bahasa",
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                } else {
+                    Column {
+                        patient.languageAbilities.forEach { ability ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = "•",
+                                    fontSize = 14.sp,
+                                    color = Color.Gray,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(
+                                    text = ability.description,
+                                    fontSize = 14.sp,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            // Development Section
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Januari")
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Select Month",
-                        modifier = Modifier.size(16.dp)
+                    Text(
+                        text = "Perkembangan",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
                     )
 
-                    DropdownMenu(
-                        expanded = monthDropdownExpanded,
-                        onDismissRequest = { monthDropdownExpanded = false }
+                    var monthDropdownExpanded by remember { mutableStateOf(false) }
+
+                    TextButton(
+                        onClick = { navController.navigate("developmentDetailPage/$patientId") }
                     ) {
-                        listOf("Januari", "Februari", "Maret", "April", "Mei", "Juni").forEach { month ->
-                            DropdownMenuItem(
-                                text = { Text(text = month) },
-                                onClick = {
-                                    // Handle month selection
-                                    monthDropdownExpanded = false
-                                }
+                        Text("Detail")
+                    }
+
+                    TextButton(
+                        onClick = { monthDropdownExpanded = true }
+                    ) {
+                        Text(formatMonth(selectedMonth))
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Select Month",
+                            modifier = Modifier.size(16.dp)
+                        )
+
+                        DropdownMenu(
+                            expanded = monthDropdownExpanded,
+                            onDismissRequest = { monthDropdownExpanded = false }
+                        ) {
+                            Month.values().forEach { month ->
+                                DropdownMenuItem(
+                                    text = { Text(formatMonth(month)) },
+                                    onClick = {
+                                        selectedMonth = month
+                                        monthDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // If we have therapy histories, calculate progress data for the chart
+                if (therapyHistories.isNotEmpty()) {
+                    // Group therapies by type and calculate average progress
+                    val kosakataData = calculateProgressData(therapyHistories, "Kosakata")
+                    val pelafalanData = calculateProgressData(therapyHistories, "Pelafalan")
+                    val sequenceData = calculateProgressData(therapyHistories, "Sequence")
+
+                    ProgressChart(
+                        pelafalanData = pelafalanData,
+                        kosakataData = kosakataData,
+                        sequenceData = sequenceData
+                    )
+                } else {
+                    // Empty Progress Chart
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Belum ada data perkembangan",
+                                fontSize = 14.sp,
+                                color = Color.Gray
                             )
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Empty Progress Chart
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Belum ada data perkembangan",
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             // Therapy History Section
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Riwayat Terapi",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                TextButton(
-                    onClick = { /* View all history */ }
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Lihat semua")
+                    Text(
+                        text = "Riwayat Terapi",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    TextButton(
+                        onClick = { showAllHistories = !showAllHistories }
+                    ) {
+                        Text(if (showAllHistories) "Lihat lebih sedikit" else "Lihat semua")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // Therapy History Items
+            if (displayedHistories.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Belum ada riwayat terapi",
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+            } else {
+                items(displayedHistories) { history ->
+                    TherapyHistoryItem(
+                        history = history,
+                        onClick = {
+                            // Navigate to therapy detail page
+                            navController.navigate("therapyHistoryDetailPage/${history.id}")
+                        }
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Empty Therapy History
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Belum ada riwayat terapi",
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             // Therapy Now Button
-            Button(
-                onClick = {
-                    // Navigate to home page
-                    navController.navigate("homePage") {
-                        popUpTo("patientPage") { inclusive = false }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text(
-                    text = "Terapi Sekarang",
-                    fontSize = 16.sp
-                )
-            }
+            item {
+                Button(
+                    onClick = {
+                        // Set this patient as selected
+                        viewModel.setSelectedPatientId(patientId)
 
-            Spacer(modifier = Modifier.height(32.dp))
+                        // Navigate to home page
+                        navController.navigate("homePage") {
+                            popUpTo("patientPage") { inclusive = false }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(
+                        text = "Terapi Sekarang",
+                        fontSize = 16.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+            }
         }
     }
 }
@@ -395,11 +460,13 @@ fun PatientProfilePage(
 @Composable
 fun TherapyHistoryItem(
     history: TherapyHistory,
+    onClick: () -> Unit = {}
 ){
     Column (
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .clickable { onClick() }
     ){
         Row (
             verticalAlignment = Alignment.CenterVertically
@@ -408,7 +475,7 @@ fun TherapyHistoryItem(
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
-                    .background(Color.LightGray),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -450,7 +517,7 @@ fun TherapyHistoryItem(
                 modifier = Modifier.padding(12.dp)
             ) {
                 Text(
-                    text = "Progress: ${history.progressPercentage}%",
+                    text = "Score: ${history.score}/${history.totalQuestions} (${history.progressPercentage}%)",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -460,7 +527,9 @@ fun TherapyHistoryItem(
                 Text(
                     text = history.notes,
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    modifier = Modifier.padding(top = 4.dp),
+                    lineHeight = 16.sp
                 )
             }
         }
@@ -471,7 +540,7 @@ fun TherapyHistoryItem(
                     .padding(start = 12.dp)
                     .width(2.dp)
                     .height(24.dp)
-                    .background(Color.LightGray)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
             )
         }
     }
@@ -497,7 +566,7 @@ fun ProgressChart(
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val width = size.width
-                val height = size.height
+                val height = size.height - 40f // Reserve space for legend and labels
 
                 val gridLines = 5
                 for (i in 0..gridLines) {
@@ -514,31 +583,9 @@ fun ProgressChart(
 
                 if (pelafalanData.isNotEmpty()) {
                     val path = Path()
-                    val pointsPerWeek = width / (pelafalanData.size - 1)
+                    val pointsPerWeek = width / (pelafalanData.size - 1).coerceAtLeast(1)
 
                     pelafalanData.forEachIndexed { index, value ->
-                        val x = index * pointsPerWeek
-                        val y = height * (1 - value / 100f)
-
-                        if (index == 0) {
-                            path.moveTo(x, y)
-                        } else {
-                            path.lineTo(x, y)
-                        }
-                    }
-
-                   drawPath(
-                       path = path,
-                       color = Color.Blue,
-                       style = Stroke(width = 2f, cap = StrokeCap.Round)
-                   )
-                }
-
-                if (kosakataData.isNotEmpty()) {
-                    val path = Path()
-                    val pointsPerWeek = width / (kosakataData.size - 1)
-
-                    kosakataData.forEachIndexed { index, value ->
                         val x = index * pointsPerWeek
                         val y = height * (1 - value / 100f)
 
@@ -556,9 +603,31 @@ fun ProgressChart(
                     )
                 }
 
+                if (kosakataData.isNotEmpty()) {
+                    val path = Path()
+                    val pointsPerWeek = width / (kosakataData.size - 1).coerceAtLeast(1)
+
+                    kosakataData.forEachIndexed { index, value ->
+                        val x = index * pointsPerWeek
+                        val y = height * (1 - value / 100f)
+
+                        if (index == 0) {
+                            path.moveTo(x, y)
+                        } else {
+                            path.lineTo(x, y)
+                        }
+                    }
+
+                    drawPath(
+                        path = path,
+                        color = Color.Green,
+                        style = Stroke(width = 2f, cap = StrokeCap.Round)
+                    )
+                }
+
                 if (sequenceData.isNotEmpty()) {
                     val path = Path()
-                    val pointsPerWeek = width / (sequenceData.size - 1)
+                    val pointsPerWeek = width / (sequenceData.size - 1).coerceAtLeast(1)
 
                     sequenceData.forEachIndexed { index, value ->
                         val x = index * pointsPerWeek
@@ -573,7 +642,7 @@ fun ProgressChart(
 
                     drawPath(
                         path = path,
-                        color = Color.Blue,
+                        color = Color.Red,
                         style = Stroke(width = 2f, cap = StrokeCap.Round)
                     )
                 }
@@ -591,11 +660,11 @@ fun ProgressChart(
                     text = "Pelafalan"
                 )
                 LegendItem(
-                    color = Color.Blue,
+                    color = Color.Green,
                     text = "Kosakata"
                 )
                 LegendItem(
-                    color = Color.Blue,
+                    color = Color.Red,
                     text = "Sequence"
                 )
             }
@@ -638,3 +707,57 @@ fun LegendItem(color: Color, text: String) {
     }
 }
 
+// Helper function to format month name in Indonesian
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatMonth(month: Month): String {
+    return when (month) {
+        Month.JANUARY -> "Januari"
+        Month.FEBRUARY -> "Februari"
+        Month.MARCH -> "Maret"
+        Month.APRIL -> "April"
+        Month.MAY -> "Mei"
+        Month.JUNE -> "Juni"
+        Month.JULY -> "Juli"
+        Month.AUGUST -> "Agustus"
+        Month.SEPTEMBER -> "September"
+        Month.OCTOBER -> "Oktober"
+        Month.NOVEMBER -> "November"
+        Month.DECEMBER -> "Desember"
+    }
+}
+
+// Helper function to calculate progress data for charts
+@RequiresApi(Build.VERSION_CODES.O)
+fun calculateProgressData(histories: List<TherapyHistory>, therapyType: String): List<Float> {
+    // Filter to only include the therapy type we want
+    val filteredHistories = histories.filter { it.therapyType.contains(therapyType, ignoreCase = true) }
+
+    if (filteredHistories.isEmpty()) {
+        return emptyList()
+    }
+
+    // Create weekly data points (4 weeks)
+    val weeklyData = Array(4) { 0f }.toMutableList()
+    val weeklyCount = Array(4) { 0 }.toMutableList()
+
+    // Current date and the start of the month
+    val today = LocalDate.now()
+    val startOfMonth = today.withDayOfMonth(1)
+
+    // Calculate week for each therapy and accumulate progress
+    filteredHistories.forEach { history ->
+        if (history.date.month == today.month) {
+            // Calculate which week of the month (0-3)
+            val dayDifference = history.date.dayOfMonth - 1
+            val weekIndex = (dayDifference / 7).coerceIn(0, 3)
+
+            weeklyData[weekIndex] = weeklyData[weekIndex] + history.progressPercentage
+            weeklyCount[weekIndex] = weeklyCount[weekIndex] + 1
+        }
+    }
+
+    // Calculate averages for each week
+    return weeklyData.mapIndexed { index, sum ->
+        if (weeklyCount[index] > 0) sum / weeklyCount[index] else 0f
+    }
+}

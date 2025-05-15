@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.karina.carawicara.data.SequenceExerciseCategory
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class SequenceExerciseViewModel(
+    private val navController: NavController,
     application: Application,
     private val repository: FlashcardRepository
 ) : AndroidViewModel(application) {
@@ -696,7 +698,6 @@ class SequenceExerciseViewModel(
         }
 
         if (_currentIndex.value < _sequenceItems.value.size - 1) {
-            // Lanjut ke soal berikutnya
             _currentIndex.value += 1
             resetSelections()
             Log.d(
@@ -706,10 +707,14 @@ class SequenceExerciseViewModel(
         } else {
             // Latihan selesai
             _isExerciseCompleted.value = true
-            Log.d(
-                "SequenceExerciseViewModel",
-                "Latihan selesai. Skor akhir: ${_score.value}/${_sequenceItems.value.size}"
-            )
+
+            try {
+                // Navigasi hanya dengan parameter yang diperlukan dan hapus ID pasien dari rute
+                navController.navigate("therapyResultPage/${_score.value}/${_sequenceItems.value.size}")
+            } catch (e: Exception) {
+                // Tambahkan penanganan kesalahan dan logging
+                Log.e("SequenceExercise", "Error navigasi: ${e.message}", e)
+            }
 
             // Update progress untuk kategori ini
             updateCategoryProgress()
@@ -897,12 +902,14 @@ class SequenceExerciseViewModel(
 }
 
 class SequenceExerciseViewModelFactory(
+    private val navController: NavController,
     private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SequenceExerciseViewModel::class.java)) {
             return SequenceExerciseViewModel(
+                navController,
                 application,
                 AppModule.provideFlashcardRepository(application)
             ) as T

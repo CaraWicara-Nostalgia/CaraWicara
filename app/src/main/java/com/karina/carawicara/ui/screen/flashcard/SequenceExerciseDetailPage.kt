@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.screen.flashcard
 
+import android.app.Application
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -65,6 +66,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.karina.carawicara.data.SequenceExerciseItem
+import com.karina.carawicara.ui.screen.patient.PatientViewModel
+import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
 import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +77,8 @@ fun SequenceExerciseDetailPage(
     categoryTitle: String? = null,
     viewModel: SequenceExerciseViewModel = viewModel(
         factory = SequenceExerciseViewModelFactory(
-            application = LocalContext.current.applicationContext as android.app.Application
+            navController = navController,
+            application = LocalContext.current.applicationContext as Application
         )
     )
 ){

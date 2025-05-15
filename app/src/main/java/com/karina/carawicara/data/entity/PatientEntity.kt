@@ -14,4 +14,5 @@ data class PatientEntity(
     val name: String,
     val birthDate: LocalDate,
     val address: String,
+    val languageAbilitiesJson: String = "[]",
 )

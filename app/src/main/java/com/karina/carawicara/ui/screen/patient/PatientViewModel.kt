@@ -13,9 +13,12 @@ import com.karina.carawicara.data.Patient
 import com.karina.carawicara.data.TherapyHistory
 import com.karina.carawicara.data.repository.PatientRepository
 import com.karina.carawicara.di.AppModule
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -34,6 +37,9 @@ class PatientViewModel(
             started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
+
+    // Therapy histories need to be cached per patient
+    private val therapyHistoriesCache = mutableMapOf<String, Flow<List<TherapyHistory>>>()
 
     private val _newPatientName = MutableStateFlow("")
     val newPatientName: StateFlow<String> = _newPatientName
@@ -58,6 +64,21 @@ class PatientViewModel(
 
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
     val selectedPatient: StateFlow<Patient?> = _selectedPatient
+
+    private val _allTherapyHistories = MutableStateFlow<List<TherapyHistory>>(emptyList())
+
+    init {
+        // Load all therapy histories when the view model is initialized
+        viewModelScope.launch {
+            try {
+                repository.getAllTherapyHistories().collect { histories ->
+                    _allTherapyHistories.value = histories
+                }
+            } catch (e: Exception) {
+                Log.e("PatientViewModel", "Error loading therapy histories: ${e.message}", e)
+            }
+        }
+    }
 
     fun updateNewPatientName(name: String) {
         _newPatientName.value = name
@@ -137,8 +158,16 @@ class PatientViewModel(
     fun deletePatient(patientId: String) {
         viewModelScope.launch {
             try {
+                // Delete all therapy histories for this patient first
+                repository.deleteTherapyHistoriesForPatient(patientId)
+
+                // Then delete the patient
                 repository.deletePatient(patientId)
-                Log.d("PatientViewModel", "Patient deleted successfully")
+
+                // Clear the cache for this patient
+                therapyHistoriesCache.remove(patientId)
+
+                Log.d("PatientViewModel", "Patient and their therapy histories deleted successfully")
             } catch (e: Exception) {
                 Log.e("PatientViewModel", "Error deleting patient: ${e.message}", e)
             }
@@ -168,8 +197,30 @@ class PatientViewModel(
 
     fun addTherapyHistory(therapyHistory: TherapyHistory) {
         viewModelScope.launch {
-            repository.insertTherapyHistory(therapyHistory)
+            try {
+                repository.insertTherapyHistory(therapyHistory)
+
+                // Update the cache
+                val patientId = therapyHistory.patientId
+                therapyHistoriesCache.remove(patientId)
+
+                Log.d("PatientViewModel", "Therapy history added successfully")
+            } catch (e: Exception) {
+                Log.e("PatientViewModel", "Error adding therapy history: ${e.message}", e)
+            }
         }
+    }
+
+    fun getTherapyHistoriesForPatient(patientId: String): Flow<List<TherapyHistory>> {
+        // Check cache first
+        if (therapyHistoriesCache.containsKey(patientId)) {
+            return therapyHistoriesCache[patientId]!!
+        }
+
+        // Not in cache, fetch from repository
+        val historiesFlow = repository.getTherapyHistoriesForPatient(patientId)
+        therapyHistoriesCache[patientId] = historiesFlow
+        return historiesFlow
     }
 
     fun setSelectedPatientId(patientId: String) {
@@ -192,6 +243,26 @@ class PatientViewModel(
     fun clearSelectedPatient() {
         _selectedPatientId.value = null
         _selectedPatient.value = null
+    }
+
+    suspend fun getTherapyHistoryById(historyId: String): TherapyHistory? {
+        return repository.getTherapyHistoryById(historyId)
+    }
+
+    fun deleteTherapyHistory(historyId: String) {
+        viewModelScope.launch {
+            try {
+                repository.deleteTherapyHistory(historyId)
+
+                // Clear all cache since we don't know which patient this belongs to
+                // In a real app, you would maintain a more efficient cache invalidation strategy
+                therapyHistoriesCache.clear()
+
+                Log.d("PatientViewModel", "Therapy history deleted successfully")
+            } catch (e: Exception) {
+                Log.e("PatientViewModel", "Error deleting therapy history: ${e.message}", e)
+            }
+        }
     }
 }
 

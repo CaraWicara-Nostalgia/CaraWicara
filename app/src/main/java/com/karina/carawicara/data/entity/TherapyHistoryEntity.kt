@@ -1,5 +1,7 @@
 package com.karina.carawicara.data.entity
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.ForeignKey
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -24,8 +26,12 @@ data class TherapyHistoryEntity(
     @PrimaryKey
     val id: String,
     val patientId: String,
-    val date: LocalDate,
     val therapyType: String,
+    @RequiresApi(Build.VERSION_CODES.O)
+    val date: LocalDate,
+    val score: Int,
+    val totalQuestions: Int,
     val progressPercentage: Int,
     val notes: String,
+    val categoryId: String = ""
 )

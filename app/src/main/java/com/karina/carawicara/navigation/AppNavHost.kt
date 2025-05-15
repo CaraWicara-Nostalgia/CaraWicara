@@ -41,6 +41,7 @@ import com.karina.carawicara.ui.screen.patient.PatientProfilePage
 import com.karina.carawicara.ui.screen.patient.PatientSelectionPage
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
+import com.karina.carawicara.ui.screen.patient.TherapyHistoryDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage
@@ -65,7 +66,11 @@ fun AppNavHost(navController: NavHostController) {
 
         // ----- Home Routes -----
 
-        composable("homePage") { HomePage(navController) }
+        composable("homePage") {
+            HomePage(
+                navController = navController,
+                patientViewModel = patientViewModel)
+        }
 
         // ----- Patient Routes -----
 
@@ -135,6 +140,18 @@ fun AppNavHost(navController: NavHostController) {
                 navController = navController,
                 viewModel = patientViewModel,
                 nextRoute = nextRoute
+            )
+        }
+
+        composable(
+            route = "therapyHistoryDetailPage/{historyId}",
+            arguments = listOf(navArgument("historyId") { type = NavType.StringType })
+        ) { entry ->
+            val historyId = entry.arguments?.getString("historyId") ?: ""
+            TherapyHistoryDetailPage(
+                navController = navController,
+                therapyHistoryId = historyId,
+                viewModel = patientViewModel
             )
         }
 
@@ -220,28 +237,30 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        composable("therapyResultPage") { TherapyResultPage(navController) }
+        composable("therapyResultPage") {
+            TherapyResultPage(
+                navController = navController,
+                patientViewModel = patientViewModel
+            )
+        }
 
         composable(
             "therapyResultPage/{score}/{totalQuestions}",
             arguments = listOf(
-                navArgument("score") {
-                    type = NavType.IntType
-                    defaultValue = 0
-                },
-                navArgument("totalQuestions") {
-                    type = NavType.IntType
-                    defaultValue = 10
-                }
+                navArgument("score") { type = NavType.IntType; defaultValue = 0 },
+                navArgument("totalQuestions") { type = NavType.IntType; defaultValue = 10 },
+                navArgument("patientId") { type = NavType.StringType; defaultValue = "none" }
             )
         ) { backStackEntry ->
             val score = backStackEntry.arguments?.getInt("score") ?: 0
             val totalQuestions = backStackEntry.arguments?.getInt("totalQuestions") ?: 10
+            val patientId = backStackEntry.arguments?.getString("patientId") ?: "none"
 
             TherapyResultPage(
                 navController = navController,
                 score = score,
-                totalQuestions = totalQuestions
+                totalQuestions = totalQuestions,
+                patientViewModel = patientViewModel
             )
         }
 
