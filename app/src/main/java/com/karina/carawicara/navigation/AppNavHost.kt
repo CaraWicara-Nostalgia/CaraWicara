@@ -31,7 +31,7 @@ import com.karina.carawicara.ui.screen.flashcard.PelafalanExercisePage
 import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseViewModelFactory
 import com.karina.carawicara.ui.screen.flashcard.SequenceExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.SequenceExercisePage
-import com.karina.carawicara.ui.screen.flashcard.TherapyResultPage
+import com.karina.carawicara.ui.screen.therapyHistory.TherapyResultPage
 import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
 import com.karina.carawicara.ui.screen.patient.AddPatientPage
 import com.karina.carawicara.ui.screen.patient.DevelopmentDetailPage
@@ -47,6 +47,7 @@ import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarRecordPage
 import com.karina.carawicara.ui.screen.susunKata.SusunKataPage
+import com.karina.carawicara.ui.screen.therapyHistory.TherapyHistoryListPage
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -151,6 +152,22 @@ fun AppNavHost(navController: NavHostController) {
             TherapyHistoryDetailPage(
                 navController = navController,
                 therapyHistoryId = historyId,
+                viewModel = patientViewModel
+            )
+        }
+
+        composable(
+            route = "therapyHistoryListPage/{patientId}",
+            arguments = listOf(
+                navArgument("patientId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { entry ->
+            val patientId = entry.arguments?.getString("patientId") ?: ""
+            TherapyHistoryListPage(
+                navController = navController,
+                patientId = patientId,
                 viewModel = patientViewModel
             )
         }

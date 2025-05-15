@@ -1,6 +1,5 @@
-package com.karina.carawicara.ui.screen.flashcard
+package com.karina.carawicara.ui.screen.therapyHistory
 
-import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -39,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,18 +47,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.karina.carawicara.R
 import com.karina.carawicara.data.TherapyHistory
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
-import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.UUID

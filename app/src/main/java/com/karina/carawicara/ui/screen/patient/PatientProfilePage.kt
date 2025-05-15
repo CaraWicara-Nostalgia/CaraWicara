@@ -381,17 +381,18 @@ fun PatientProfilePage(
                     )
 
                     TextButton(
-                        onClick = { showAllHistories = !showAllHistories }
+                        onClick = {
+                            navController.navigate("therapyHistoryListPage/$patientId")
+                        }
                     ) {
-                        Text(if (showAllHistories) "Lihat lebih sedikit" else "Lihat semua")
+                        Text("Lihat semua")
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // Therapy History Items
-            if (displayedHistories.isEmpty()) {
+            if (filteredHistories.isEmpty()) {
                 item {
                     Box(
                         modifier = Modifier
@@ -409,11 +410,10 @@ fun PatientProfilePage(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             } else {
-                items(displayedHistories) { history ->
+                items(filteredHistories.take(3)) { history ->
                     TherapyHistoryItem(
                         history = history,
                         onClick = {
-                            // Navigate to therapy detail page
                             navController.navigate("therapyHistoryDetailPage/${history.id}")
                         }
                     )
