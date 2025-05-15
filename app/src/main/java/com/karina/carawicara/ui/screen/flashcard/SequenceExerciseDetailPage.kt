@@ -25,8 +25,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,6 +36,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -145,7 +148,7 @@ fun SequenceExerciseDetailPage(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = categoryTitle ?: "Sequence Exercise") },
+                title = { Text(text = "Urutan Aktivitas") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -281,56 +284,6 @@ fun SequenceExerciseDetailPage(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (true) {
-                        OutlinedButton(
-                            onClick = {
-                                viewModel.debugImagePaths()
-                                viewModel.fixCurrentSequenceImagesIfNeeded()
-                                viewModel.shuffleCurrentSequence()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color.Red
-                            )
-                        ) {
-                            Text("Force Refresh Images")
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .background(Color.LightGray.copy(alpha = 0.2f))
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                text = "Debug Info",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
-                            )
-
-                            Text(
-                                text = "Current item: ${currentItem.title}",
-                                fontSize = 10.sp
-                            )
-
-                            Text(
-                                text = "Image paths:",
-                                fontSize = 10.sp
-                            )
-
-                            currentItem.images.forEachIndexed { index, path ->
-                                Text(
-                                    text = "[$index] $path",
-                                    fontSize = 8.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                    }
 
                     // Progress counter
                     Row(
@@ -740,9 +693,9 @@ fun SequenceSlot(
                     .size(24.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Clear,
+                    imageVector = Icons.Default.Star,
                     contentDescription = "Clear selection",
-                    tint = Color.Red,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(16.dp)
                 )
             }

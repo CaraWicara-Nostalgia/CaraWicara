@@ -664,24 +664,18 @@ class SequenceExerciseViewModel(
             Log.d("SequenceExerciseViewModel", "Pilihan user: ${currentSelections.joinToString()}")
             Log.d("SequenceExerciseViewModel", "Urutan benar: ${currentItem.correctOrder}")
 
-            for (i in currentSelections.indices) {
-                val selectedImageIndex = currentSelections[i] ?: continue
+            for (slotIndex in currentSelections.indices) {
+                val selectedImageIndex = currentSelections[slotIndex] ?: continue
 
-                val originalIndex = currentItem.correctOrder[selectedImageIndex]
-
-                if (originalIndex != i) {
+                if (selectedImageIndex != slotIndex) {
                     Log.d(
                         "SequenceExerciseViewModel",
-                        "Urutan salah pada slot $i: $selectedImageIndex != $originalIndex"
+                        "Urutan salah pada slot $slotIndex: $selectedImageIndex"
                     )
                     return false
                 }
-
-                Log.d(
-                    "SequenceExerciseViewModel",
-                    "Urutan benar pada slot $i: $selectedImageIndex == $originalIndex"
-                )
             }
+            Log.d("SequenceExerciseViewModel", "Urutan benar!")
             return true
         } catch (e: Exception) {
             Log.e("SequenceExerciseViewModel", "Error saat memeriksa urutan", e)
