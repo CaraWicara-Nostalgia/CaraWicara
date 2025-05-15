@@ -40,7 +40,7 @@ fun CardHome(
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .border(1.dp, Color.Gray, RoundedCornerShape(16.dp))
-            .padding(24.dp)
+            .padding(16.dp)
     ) {
         Row (
             modifier = Modifier.fillMaxWidth(),
