@@ -1,7 +1,5 @@
 package com.karina.carawicara.ui.screen.patient
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -72,7 +70,6 @@ import java.time.LocalDate
 import java.time.Month
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PatientProfilePage(
     navController: NavController,
@@ -82,24 +79,18 @@ fun PatientProfilePage(
     val patients by viewModel.patients.collectAsState()
     val therapyHistories by viewModel.getTherapyHistoriesForPatient(patientId).collectAsState(initial = emptyList())
 
-    // Track if we should show all therapy histories or just recent ones
     var showAllHistories by remember { mutableStateOf(false) }
 
-    // Track selected month for filtering therapy histories
     var selectedMonth by remember { mutableStateOf(LocalDate.now().month) }
 
-    // Cari pasien berdasarkan ID
     val patient = patients.find { it.id == patientId }
 
-    // Filter therapy histories based on selected month
     val filteredHistories = therapyHistories.filter {
         it.date.month == selectedMonth
     }.sortedByDescending { it.date }
 
-    // Show only recent histories if not showing all
     val displayedHistories = if (showAllHistories) filteredHistories else filteredHistories.take(3)
 
-    // Jika pasien tidak ditemukan, tampilkan pesan error dan kembali
     if (patient == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -456,7 +447,6 @@ fun PatientProfilePage(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TherapyHistoryItem(
     history: TherapyHistory,
@@ -707,8 +697,6 @@ fun LegendItem(color: Color, text: String) {
     }
 }
 
-// Helper function to format month name in Indonesian
-@RequiresApi(Build.VERSION_CODES.O)
 fun formatMonth(month: Month): String {
     return when (month) {
         Month.JANUARY -> "Januari"
@@ -726,8 +714,6 @@ fun formatMonth(month: Month): String {
     }
 }
 
-// Helper function to calculate progress data for charts
-@RequiresApi(Build.VERSION_CODES.O)
 fun calculateProgressData(histories: List<TherapyHistory>, therapyType: String): List<Float> {
     // Filter to only include the therapy type we want
     val filteredHistories = histories.filter { it.therapyType.contains(therapyType, ignoreCase = true) }

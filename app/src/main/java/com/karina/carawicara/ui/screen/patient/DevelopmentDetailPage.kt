@@ -1,10 +1,7 @@
 package com.karina.carawicara.ui.screen.patient
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,13 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -41,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,15 +48,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.karina.carawicara.data.TherapyHistory
 import java.time.LocalDate
+import java.time.Month
 import java.time.format.DateTimeFormatter
-import kotlin.random.Random
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DevelopmentDetailPage(
@@ -68,62 +66,42 @@ fun DevelopmentDetailPage(
     patientId: String,
     viewModel: PatientViewModel
 ){
+    val therapyHistories by viewModel.getTherapyHistoriesForPatient(patientId).collectAsState(initial = emptyList())
+    val patients by viewModel.patients.collectAsState()
+    val patient = patients.find { it.id == patientId }
+
+    val kosakataData = calculateProgressData(therapyHistories, "Kosakata")
+    val pelafalanData = calculateProgressData(therapyHistories, "Pelafalan")
+    val sequenceData = calculateProgressData(therapyHistories, "Sequence")
+
     var monthExpanded by remember { mutableStateOf(false) }
-    var selectedMonth by remember { mutableStateOf("Januari") }
+    var selectedMonth by remember { mutableStateOf(LocalDate.now().month) }
+    var expandedSessionId by remember { mutableStateOf<Int?>(null) }
 
-    val pelafalanData = remember {
-        List(4) { Random.nextDouble(25.0, 75.0).toFloat()}
-    }
-    val kosakataData = remember {
-        List(4) { Random.nextDouble(25.0, 75.0).toFloat()}
-    }
-    val sequenceData = remember {
-        List(4) { Random.nextDouble(25.0, 75.0).toFloat()}
+    val weeklySessionData = remember(therapyHistories, selectedMonth) {
+        convertTherapyHistoriesToWeeklySessions(therapyHistories.filter {
+            it.date.month == selectedMonth
+        })
     }
 
-    val weeklySessionData = remember {
-        listOf(
-            WeeklySession(
-                date = LocalDate.of(2025, 12, 12),
-                week = 1,
-                expanded = true,
-                results = mapOf(
-                    "Pelafalan" to "6/10",
-                    "Kosakata" to "0/10",
-                    "Sequence" to "0/10"
-                )
-            ),
-            WeeklySession(
-                date = LocalDate.of(2025, 12, 19),
-                week = 2,
-                expanded = false,
-                results = mapOf(
-                    "Pelafalan" to "6/10",
-                    "Kosakata" to "0/10",
-                    "Sequence" to "0/10"
-                )
-            ),
-            WeeklySession(
-                date = LocalDate.of(2025, 12, 26),
-                week = 3,
-                expanded = false,
-                results = mapOf(
-                    "Pelafalan" to "6/10",
-                    "Kosakata" to "0/10",
-                    "Sequence" to "0/10"
-                )
-            ),
-        )
-    }
-
-    Scaffold (
+    Scaffold(
+        modifier = Modifier.padding(8.dp),
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Perkembangan",
-                        fontWeight = FontWeight.Medium
-                    )
+                    Column {
+                        Text(
+                            text = "Perkembangan",
+                            fontWeight = FontWeight.Medium
+                        )
+                        patient?.let {
+                            Text(
+                                text = it.name,
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
+                        }
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -134,11 +112,11 @@ fun DevelopmentDetailPage(
                     }
                 },
                 actions = {
-                    Box{
+                    Box {
                         TextButton(
-                            onClick = {monthExpanded = !monthExpanded},
+                            onClick = { monthExpanded = !monthExpanded },
                         ) {
-                            Text(selectedMonth)
+                            Text(formatMonth(selectedMonth))
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
                                 contentDescription = "Select Month"
@@ -147,11 +125,11 @@ fun DevelopmentDetailPage(
 
                         DropdownMenu(
                             expanded = monthExpanded,
-                            onDismissRequest = {monthExpanded = false}
+                            onDismissRequest = { monthExpanded = false }
                         ) {
-                            listOf("Januari", "Februari", "Maret", "April", "Mei", "Juni").forEach {month ->
+                            Month.entries.forEach { month ->
                                 DropdownMenuItem(
-                                    text = { Text(month) },
+                                    text = { Text(formatMonth(month)) },
                                     onClick = {
                                         selectedMonth = month
                                         monthExpanded = false
@@ -163,7 +141,7 @@ fun DevelopmentDetailPage(
                 }
             )
         }
-    ){ paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -171,396 +149,507 @@ fun DevelopmentDetailPage(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
         ) {
-            ProgressChartDetail(
-                pelafalanData = pelafalanData,
-                kosakataData = kosakataData,
-                sequenceData = sequenceData,
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(40.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFB7E4C7)
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 0.dp
-                    )
-                ) {
-                    Row (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .background(Color.White, CircleShape)
-                                .border(1.dp, Color.LightGray, CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = "Selected",
-                                tint = Color.Gray,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = "Tanggal",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(40.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFB7E4C7)
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 0.dp
-                    )
-                ) {
-                    Box (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp),
-                        contentAlignment = Alignment.Center
-                    ){
-                        Text(
-                            text = "Waktu",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            weeklySessionData.forEach { session ->
-                WeeklySessionItem (
-                    session = session,
-                    onToggleExpand = {
-
-                    }
-                )
-
-                Divider(thickness = 1.dp, color = Color.LightGray)
-            }
-
-            Row (
+            // Ringkasan
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(MaterialTheme.colorScheme.primary, CircleShape),
-                    contentAlignment = Alignment.Center
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFF5F5F5)
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Session",
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp)
+                    Text(
+                        text = "Ringkasan Perkembangan",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
                     )
-                }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = "12/12/2025",
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun WeeklySessionItem(
-    session: WeeklySession,
-    onToggleExpand: (WeeklySession) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-    ) {
-        // Session header (date and week)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Expand/collapse icon
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .background(
-                        color = if (session.expanded) Color.Gray else MaterialTheme.colorScheme.primary,
-                        shape = CircleShape
-                    )
-                    .clickable { onToggleExpand(session) },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = if (session.expanded) Icons.Default.Delete else Icons.Default.Add,
-                    contentDescription = if (session.expanded) "Collapse" else "Expand",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Date
-            Text(
-                text = session.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Week label
-            Box(
-                modifier = Modifier
-                    .background(Color(0xFFEEEEEE), RoundedCornerShape(16.dp))
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = "Minggu ke-${session.week}",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
-            }
-        }
-
-        // Show results if expanded
-        if (session.expanded) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 40.dp, top = 8.dp)
-            ) {
-                session.results.forEach { (type, score) ->
+                    // Statistik total terapi
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = type,
-                            fontSize = 14.sp
+                        StatisticItem(
+                            label = "Total Terapi",
+                            value = therapyHistories.size.toString(),
+                            color = MaterialTheme.colorScheme.primary
                         )
 
-                        Text(
-                            text = score,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
+                        StatisticItem(
+                            label = "Minggu Ini",
+                            value = countTherapiesInCurrentWeek(therapyHistories).toString(),
+                            color = Color(0xFF4CAF50)
+                        )
+
+                        StatisticItem(
+                            label = "Bulan Ini",
+                            value = therapyHistories.count { it.date.month == LocalDate.now().month }.toString(),
+                            color = Color(0xFF2196F3)
                         )
                     }
                 }
             }
+
+            // Legend at the bottom
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                LegendItemDetail(color = MaterialTheme.colorScheme.primary, text = "Pelafalan")
+                LegendItemDetail(color = Color(0xFF4CAF50), text = "Kosakata")
+                LegendItemDetail(color = Color(0xFF2196F3), text = "Sequence")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Grafik perkembangan - lebih bersih
+            Text(
+                text = "Grafik Perkembangan",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            ImprovedProgressChart(
+                pelafalanData = pelafalanData,
+                kosakataData = kosakataData,
+                sequenceData = sequenceData
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Riwayat Terapi Mingguan
+            Text(
+                text = "Riwayat Terapi Mingguan",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            if (weeklySessionData.isEmpty()) {
+                EmptyStateCard(
+                    message = "Belum ada data terapi untuk bulan ${formatMonth(selectedMonth)}"
+                )
+            } else {
+                // Daftar sesi mingguan yang diperbarui
+                weeklySessionData.forEach { session ->
+                    val isExpanded = session.week == expandedSessionId
+
+                    ImprovedWeeklySessionItem(
+                        session = session.copy(expanded = isExpanded),
+                        onToggleExpand = { toggledSession ->
+                            expandedSessionId = if (isExpanded) null else toggledSession.week
+
+                        }
+                    )
+
+                    Divider(
+                        thickness = 1.dp,
+                        color = Color.LightGray,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
 
 @Composable
-private fun ProgressChartDetail(
-    pelafalanData: List<Float>,
-    kosakataData: List<Float>,
-    sequenceData: List<Float>,
+fun StatisticItem(label: String, value: String, color: Color) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            color = color
+        )
+
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            color = Color.Gray
+        )
+    }
+}
+
+@Composable
+fun EmptyStateCard(message: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF5F5F5)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = message,
+                color = Color.Gray,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun ImprovedWeeklySessionItem(
+    session: WeeklySession,
+    onToggleExpand: (WeeklySession) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(8.dp)
+            .padding(vertical = 4.dp)
+            .clickable { onToggleExpand(session) },
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        )
     ) {
-        Box(
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Date and Week
+                Column {
+                    Text(
+                        text = session.date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp
+                    )
+
+                    Text(
+                        text = "Minggu ke-${session.week}",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
+
+                // Expand/Collapse icon
+                Icon(
+                    imageVector = if (session.expanded) Icons.Default.KeyboardArrowDown else Icons.Default.Add,
+                    contentDescription = if (session.expanded) "Collapse" else "Expand",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            // Results (if expanded)
+            if (session.expanded && session.results.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Divider(color = Color.LightGray)
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Results in grid layout
+                session.results.entries.chunked(2).forEach { rowItems ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        rowItems.forEach { (type, score) ->
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = type,
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+
+                                Text(
+                                    text = score,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+
+                        // Add empty space if odd number of items
+                        if (rowItems.size % 2 != 0) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ImprovedProgressChart(
+    pelafalanData: List<Float>,
+    kosakataData: List<Float>,
+    sequenceData: List<Float>
+) {
+
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val greenColor = Color(0xFF4CAF50)
+    val blueColor = Color(0xFF2196F3)
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val width = size.width
-                val height = size.height
-
-                // Draw horizontal grid lines
-                val gridLines = 5
-                for (i in 0..gridLines) {
-                    val y = height * (1 - i.toFloat() / gridLines)
-                    drawLine(
-                        color = Color.LightGray,
-                        start = Offset(0f, y),
-                        end = Offset(width, y),
-                        strokeWidth = 1f
-                    )
-
-                    // Draw percentage labels
-                    // Not implementing actual text drawing as it requires custom implementation
-                }
-
-                // Draw konsonan_m line chart
-                if (pelafalanData.isNotEmpty()) {
-                    val path = Path()
-                    val pointsPerWeek = width / (pelafalanData.size - 1)
-
-                    pelafalanData.forEachIndexed { index, value ->
-                        val x = index * pointsPerWeek
-                        val y = height * (1 - value / 100f)
-
-                        if (index == 0) {
-                            path.moveTo(x, y)
-                        } else {
-                            path.lineTo(x, y)
-                        }
-                    }
-
-                    drawPath(
-                        path = path,
-                        color = Color.Black,
-                        style = Stroke(width = 2f, cap = StrokeCap.Round)
-                    )
-                }
-
-                // Draw kosakata line chart
-                if (kosakataData.isNotEmpty()) {
-                    val path = Path()
-                    val pointsPerWeek = width / (kosakataData.size - 1)
-
-                    kosakataData.forEachIndexed { index, value ->
-                        val x = index * pointsPerWeek
-                        val y = height * (1 - value / 100f)
-
-                        if (index == 0) {
-                            path.moveTo(x, y)
-                        } else {
-                            path.lineTo(x, y)
-                        }
-                    }
-
-                    drawPath(
-                        path = path,
-                        color = Color.DarkGray,
-                        style = Stroke(width = 2f, cap = StrokeCap.Round)
-                    )
-                }
-
-                // Draw sequence line chart
-                if (sequenceData.isNotEmpty()) {
-                    val path = Path()
-                    val pointsPerWeek = width / (sequenceData.size - 1)
-
-                    sequenceData.forEachIndexed { index, value ->
-                        val x = index * pointsPerWeek
-                        val y = height * (1 - value / 100f)
-
-                        if (index == 0) {
-                            path.moveTo(x, y)
-                        } else {
-                            path.lineTo(x, y)
-                        }
-                    }
-
-                    drawPath(
-                        path = path,
-                        color = Color.Gray,
-                        style = Stroke(width = 2f, cap = StrokeCap.Round)
-                    )
-                }
-            }
-
-            // Draw legend at the bottom
-            Row(
+            Box(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
+                    .weight(1f)
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                LegendItemDetail(color = Color.Black, text = "Pelafalan")
-                LegendItemDetail(color = Color.DarkGray, text = "Kosakata")
-                LegendItemDetail(color = Color.Gray, text = "Sequence")
-            }
+                // Percentage labels on the left (y-axis)
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .fillMaxHeight()
+                        .padding(end = 8.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "100%", fontSize = 10.sp, color = Color.Gray)
+                    Text(text = "75%", fontSize = 10.sp, color = Color.Gray)
+                    Text(text = "50%", fontSize = 10.sp, color = Color.Gray)
+                    Text(text = "25%", fontSize = 10.sp, color = Color.Gray)
+                    Text(text = "0%", fontSize = 10.sp, color = Color.Gray)
+                }
 
-            // Week labels at the bottom
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .padding(top = 32.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "Minggu 1", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "Minggu 2", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "Minggu 3", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "Minggu 4", fontSize = 10.sp, color = Color.Gray)
-            }
+                // Main chart area
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 24.dp, bottom = 20.dp)
+                ) {
+                    val width = size.width
+                    val height = size.height
 
-            // Percentage labels on the left
-            Column(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "100", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "75", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "50", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "25", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "0", fontSize = 10.sp, color = Color.Gray)
+                    // Draw horizontal grid lines
+                    val gridLines = 4
+                    for (i in 0..gridLines) {
+                        val y = height * (1 - i.toFloat() / gridLines)
+                        drawLine(
+                            color = Color.LightGray,
+                            start = Offset(0f, y),
+                            end = Offset(width, y),
+                            strokeWidth = 1f
+                        )
+                    }
+
+                    // Draw Pelafalan line chart (Primary color)
+                    if (pelafalanData.isNotEmpty()) {
+                        val path = Path()
+                        val pointsPerWeek = width / (pelafalanData.size - 1).coerceAtLeast(1)
+
+                        pelafalanData.forEachIndexed { index, value ->
+                            val x = index * pointsPerWeek
+                            val y = height * (1 - value / 100f)
+
+                            if (index == 0) {
+                                path.moveTo(x, y)
+                            } else {
+                                path.lineTo(x, y)
+                            }
+
+                            // Add dots at data points
+                            drawCircle(
+                                color = primaryColor,
+                                radius = 4f,
+                                center = Offset(x, y)
+                            )
+                        }
+
+                        drawPath(
+                            path = path,
+                            color = primaryColor,
+                            style = Stroke(width = 2f, cap = StrokeCap.Round)
+                        )
+                    }
+
+                    // Draw Kosakata line chart (Green)
+                    if (kosakataData.isNotEmpty()) {
+                        val path = Path()
+                        val pointsPerWeek = width / (kosakataData.size - 1).coerceAtLeast(1)
+
+                        kosakataData.forEachIndexed { index, value ->
+                            val x = index * pointsPerWeek
+                            val y = height * (1 - value / 100f)
+
+                            if (index == 0) {
+                                path.moveTo(x, y)
+                            } else {
+                                path.lineTo(x, y)
+                            }
+
+                            // Add dots at data points
+                            drawCircle(
+                                color = greenColor, // Green
+                                radius = 4f,
+                                center = Offset(x, y)
+                            )
+                        }
+
+                        drawPath(
+                            path = path,
+                            color = greenColor, // Green
+                            style = Stroke(width = 2f, cap = StrokeCap.Round)
+                        )
+                    }
+
+                    // Draw Sequence line chart (Blue)
+                    if (sequenceData.isNotEmpty()) {
+                        val path = Path()
+                        val pointsPerWeek = width / (sequenceData.size - 1).coerceAtLeast(1)
+
+                        sequenceData.forEachIndexed { index, value ->
+                            val x = index * pointsPerWeek
+                            val y = height * (1 - value / 100f)
+
+                            if (index == 0) {
+                                path.moveTo(x, y)
+                            } else {
+                                path.lineTo(x, y)
+                            }
+
+                            // Add dots at data points
+                            drawCircle(
+                                color = blueColor, // Blue
+                                radius = 4f,
+                                center = Offset(x, y)
+                            )
+                        }
+
+                        drawPath(
+                            path = path,
+                            color = blueColor, // Blue
+                            style = Stroke(width = 2f, cap = StrokeCap.Round)
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    WeekLabel(1)
+                    WeekLabel(2)
+                    WeekLabel(3)
+                    WeekLabel(4)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    }
+}
+
+private fun countTherapiesInCurrentWeek(histories: List<TherapyHistory>): Int {
+    val now = LocalDate.now()
+    val startOfWeek = now.minusDays(now.dayOfWeek.value - 1L)
+    val endOfWeek = startOfWeek.plusDays(6)
+
+    return histories.count { history ->
+        history.date.isAfter(startOfWeek.minusDays(1)) &&
+                history.date.isBefore(endOfWeek.plusDays(1))
     }
 }
 
 @Composable
 fun LegendItemDetail(color: Color, text: String) {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 4.dp)
     ) {
-        Divider(
+        Box(
             modifier = Modifier
-                .width(16.dp)
-                .height(2.dp),
-            color = color
+                .size(12.dp)
+                .background(color, RoundedCornerShape(2.dp))
         )
 
         Spacer(modifier = Modifier.width(4.dp))
 
         Text(
             text = text,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.Gray
+        )
+    }
+}
+
+private fun convertTherapyHistoriesToWeeklySessions(histories: List<TherapyHistory>): List<WeeklySession> {
+    val groupedByWeek = histories.groupBy { history ->
+        (history.date.dayOfMonth - 1) / 7 + 1
+    }
+
+    return groupedByWeek.map { (week, weekHistories) ->
+        val latestDate = weekHistories.maxByOrNull { it.date }?.date ?: LocalDate.now()
+
+        val results = weekHistories.associate { history ->
+            history.therapyType to "${history.score}/${history.totalQuestions}"
+        }
+
+        WeeklySession(
+            date = latestDate,
+            week = week,
+            expanded = false,
+            results = results
+        )
+    }.sortedBy { it.week }
+}
+
+@Composable
+fun WeekLabel(week: Int) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = week.toString(),
             fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Gray
+        )
+        Text(
+            text = "Minggu",
+            fontSize = 8.sp,
             color = Color.Gray
         )
     }
