@@ -26,7 +26,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.karina.carawicara.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage(
     navController: NavController,
@@ -100,9 +99,9 @@ fun LoginPage(
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = Color.Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     singleLine = true,
                     enabled = authState !is AuthState.Loading
@@ -116,9 +115,9 @@ fun LoginPage(
                     label = { Text("Password") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = Color.Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),

@@ -1,9 +1,7 @@
 package com.karina.carawicara.ui.screen.patient
 
 import android.app.Application
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,15 +15,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Period
 import java.util.UUID
 
-@RequiresApi(Build.VERSION_CODES.O)
 class PatientViewModel(
     application: Application,
     private val repository: PatientRepository
@@ -38,7 +33,6 @@ class PatientViewModel(
             initialValue = emptyList()
         )
 
-    // Therapy histories need to be cached per patient
     private val therapyHistoriesCache = mutableMapOf<String, Flow<List<TherapyHistory>>>()
 
     private val _newPatientName = MutableStateFlow("")
@@ -60,7 +54,6 @@ class PatientViewModel(
     val languageAbilities: StateFlow<List<LanguageAbility>> = _languageAbilities
 
     private val _selectedPatientId = MutableStateFlow<String?>(null)
-    val selectedPatientId: StateFlow<String?> = _selectedPatientId
 
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
     val selectedPatient: StateFlow<Patient?> = _selectedPatient
@@ -149,12 +142,6 @@ class PatientViewModel(
         }
     }
 
-    fun updatePatient(patient: Patient) {
-        viewModelScope.launch {
-            repository.updatePatient(patient)
-        }
-    }
-
     fun deletePatient(patientId: String) {
         viewModelScope.launch {
             try {
@@ -172,10 +159,6 @@ class PatientViewModel(
                 Log.e("PatientViewModel", "Error deleting patient: ${e.message}", e)
             }
         }
-    }
-
-    suspend fun getPatientById(patientId: String): Patient? {
-        return repository.getPatientById(patientId)
     }
 
     private fun resetNewPatientForm() {
@@ -240,11 +223,6 @@ class PatientViewModel(
         return _selectedPatient.value
     }
 
-    fun clearSelectedPatient() {
-        _selectedPatientId.value = null
-        _selectedPatient.value = null
-    }
-
     suspend fun getTherapyHistoryById(historyId: String): TherapyHistory? {
         return repository.getTherapyHistoryById(historyId)
     }
@@ -266,7 +244,6 @@ class PatientViewModel(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 class PatientViewModelFactory(
     private val application: Application
 ) : ViewModelProvider.Factory {

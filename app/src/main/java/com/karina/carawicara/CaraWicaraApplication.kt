@@ -1,7 +1,6 @@
 package com.karina.carawicara
 
 import android.app.Application
-import android.os.Build
 import android.util.Log
 import com.karina.carawicara.di.AppModule
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -36,13 +35,6 @@ class CaraWicaraApplication : Application() {
 
                 Log.d("CaraWicaraApplication", "Database version: ${database.openHelper.readableDatabase.version}")
                 Log.d("CaraWicaraApplication", "Database initialized successfully")
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val patientDao = database.patientDao()
-                    val patientCount = patientDao.getAllPatients().collect { patients ->
-                        Log.d("CaraWicaraApplication", "Number of patients: ${patients.size}")
-                    }
-                }
 
                 Log.d("CaraWicaraApplication", "Database setup completed")
             } catch (e: Exception) {

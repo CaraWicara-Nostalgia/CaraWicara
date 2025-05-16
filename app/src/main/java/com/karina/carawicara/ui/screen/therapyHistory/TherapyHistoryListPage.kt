@@ -1,7 +1,5 @@
 package com.karina.carawicara.ui.screen.therapyHistory
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +21,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +31,6 @@ import androidx.navigation.NavController
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import com.karina.carawicara.ui.screen.patient.TherapyHistoryItem
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TherapyHistoryListPage(
@@ -46,7 +42,7 @@ fun TherapyHistoryListPage(
     val patients by viewModel.patients.collectAsState()
     val patient = patients.find { it.id == patientId }
 
-    var isLoading by remember { mutableStateOf(false) }
+    val isLoading by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {

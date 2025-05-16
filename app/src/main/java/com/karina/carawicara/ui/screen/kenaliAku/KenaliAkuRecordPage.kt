@@ -59,7 +59,6 @@ fun KenaliAkuRecordPage(
         Manifest.permission.CAMERA,
     )
 
-    // Check if all required permissions are granted
     val allPermissionsGranted = hasRequiredPermissions(context, CAMERAX_PERMISSIONS)
 
     Box(

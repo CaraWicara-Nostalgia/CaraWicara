@@ -1,9 +1,7 @@
 package com.karina.carawicara.navigation
 
 import android.app.Application
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,7 +39,7 @@ import com.karina.carawicara.ui.screen.patient.PatientProfilePage
 import com.karina.carawicara.ui.screen.patient.PatientSelectionPage
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
-import com.karina.carawicara.ui.screen.patient.TherapyHistoryDetailPage
+import com.karina.carawicara.ui.screen.therapyHistory.TherapyHistoryDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
 import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarPage
@@ -49,7 +47,6 @@ import com.karina.carawicara.ui.screen.suaraPintar.SuaraPintarRecordPage
 import com.karina.carawicara.ui.screen.susunKata.SusunKataPage
 import com.karina.carawicara.ui.screen.therapyHistory.TherapyHistoryListPage
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(navController: NavHostController) {
 
@@ -271,7 +268,6 @@ fun AppNavHost(navController: NavHostController) {
         ) { backStackEntry ->
             val score = backStackEntry.arguments?.getInt("score") ?: 0
             val totalQuestions = backStackEntry.arguments?.getInt("totalQuestions") ?: 10
-            val patientId = backStackEntry.arguments?.getString("patientId") ?: "none"
 
             TherapyResultPage(
                 navController = navController,

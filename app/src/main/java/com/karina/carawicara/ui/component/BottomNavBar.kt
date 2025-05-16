@@ -31,19 +31,19 @@ sealed class BottomNavBar (
     val icon: Int,
     val title: String
 ){
-    object Home : BottomNavBar(
+    data object Home : BottomNavBar(
         route = "homePage",
         icon = R.drawable.ic_home,
         title = "Home"
     )
 
-    object Patient : BottomNavBar(
+    data object Patient : BottomNavBar(
         route = "patientPage",
         icon = R.drawable.ic_patient,
         title = "Patient"
     )
 
-    object Profile : BottomNavBar(
+    data object Profile : BottomNavBar(
         route = "profilePage",
         icon = R.drawable.ic_profile,
         title = "Profile"

@@ -79,8 +79,6 @@ fun PatientProfilePage(
     val patients by viewModel.patients.collectAsState()
     val therapyHistories by viewModel.getTherapyHistoriesForPatient(patientId).collectAsState(initial = emptyList())
 
-    var showAllHistories by remember { mutableStateOf(false) }
-
     var selectedMonth by remember { mutableStateOf(LocalDate.now().month) }
 
     val patient = patients.find { it.id == patientId }
@@ -88,8 +86,6 @@ fun PatientProfilePage(
     val filteredHistories = therapyHistories.filter {
         it.date.month == selectedMonth
     }.sortedByDescending { it.date }
-
-    val displayedHistories = if (showAllHistories) filteredHistories else filteredHistories.take(3)
 
     if (patient == null) {
         Box(
@@ -174,9 +170,7 @@ fun PatientProfilePage(
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Profile Section
             item {
-                // Profile Image
                 Box(
                     modifier = Modifier
                         .size(100.dp)
@@ -186,7 +180,7 @@ fun PatientProfilePage(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_profile), // Ganti dengan icon profil default
+                        painter = painterResource(id = R.drawable.ic_profile),
                         contentDescription = "Profile Photo",
                         modifier = Modifier.size(60.dp),
                         contentScale = ContentScale.Fit
@@ -195,7 +189,6 @@ fun PatientProfilePage(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Patient Name
                 Text(
                     text = patient.name,
                     fontSize = 20.sp,
@@ -204,7 +197,6 @@ fun PatientProfilePage(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Patient Age and Address
                 Text(
                     text = "${patient.age} Tahun",
                     fontSize = 14.sp,
@@ -220,7 +212,6 @@ fun PatientProfilePage(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // Language Ability Section
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -236,7 +227,6 @@ fun PatientProfilePage(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Language Abilities List
                 if (patient.languageAbilities.isEmpty()) {
                     Text(
                         text = "Belum ada data kemampuan bahasa",
@@ -271,7 +261,6 @@ fun PatientProfilePage(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // Development Section
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -306,7 +295,7 @@ fun PatientProfilePage(
                             expanded = monthDropdownExpanded,
                             onDismissRequest = { monthDropdownExpanded = false }
                         ) {
-                            Month.values().forEach { month ->
+                            Month.entries.forEach { month ->
                                 DropdownMenuItem(
                                     text = { Text(formatMonth(month)) },
                                     onClick = {
@@ -321,9 +310,7 @@ fun PatientProfilePage(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // If we have therapy histories, calculate progress data for the chart
                 if (therapyHistories.isNotEmpty()) {
-                    // Group therapies by type and calculate average progress
                     val kosakataData = calculateProgressData(therapyHistories, "Kosakata")
                     val pelafalanData = calculateProgressData(therapyHistories, "Pelafalan")
                     val sequenceData = calculateProgressData(therapyHistories, "Sequence")
@@ -334,7 +321,6 @@ fun PatientProfilePage(
                         sequenceData = sequenceData
                     )
                 } else {
-                    // Empty Progress Chart
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -358,7 +344,6 @@ fun PatientProfilePage(
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // Therapy History Section
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -415,14 +400,11 @@ fun PatientProfilePage(
                 }
             }
 
-            // Therapy Now Button
             item {
                 Button(
                     onClick = {
-                        // Set this patient as selected
                         viewModel.setSelectedPatientId(patientId)
 
-                        // Navigate to home page
                         navController.navigate("homePage") {
                             popUpTo("patientPage") { inclusive = false }
                         }
@@ -556,7 +538,7 @@ fun ProgressChart(
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val width = size.width
-                val height = size.height - 40f // Reserve space for legend and labels
+                val height = size.height - 40f
 
                 val gridLines = 5
                 for (i in 0..gridLines) {
@@ -567,8 +549,6 @@ fun ProgressChart(
                         end = Offset(width, y),
                         strokeWidth = 1f
                     )
-
-                    val percent = (i * 20).toString() + "%"
                 }
 
                 if (pelafalanData.isNotEmpty()) {
@@ -715,25 +695,19 @@ fun formatMonth(month: Month): String {
 }
 
 fun calculateProgressData(histories: List<TherapyHistory>, therapyType: String): List<Float> {
-    // Filter to only include the therapy type we want
     val filteredHistories = histories.filter { it.therapyType.contains(therapyType, ignoreCase = true) }
 
     if (filteredHistories.isEmpty()) {
         return emptyList()
     }
 
-    // Create weekly data points (4 weeks)
     val weeklyData = Array(4) { 0f }.toMutableList()
     val weeklyCount = Array(4) { 0 }.toMutableList()
 
-    // Current date and the start of the month
     val today = LocalDate.now()
-    val startOfMonth = today.withDayOfMonth(1)
 
-    // Calculate week for each therapy and accumulate progress
     filteredHistories.forEach { history ->
         if (history.date.month == today.month) {
-            // Calculate which week of the month (0-3)
             val dayDifference = history.date.dayOfMonth - 1
             val weekIndex = (dayDifference / 7).coerceIn(0, 3)
 
@@ -742,7 +716,6 @@ fun calculateProgressData(histories: List<TherapyHistory>, therapyType: String):
         }
     }
 
-    // Calculate averages for each week
     return weeklyData.mapIndexed { index, sum ->
         if (weeklyCount[index] > 0) sum / weeklyCount[index] else 0f
     }

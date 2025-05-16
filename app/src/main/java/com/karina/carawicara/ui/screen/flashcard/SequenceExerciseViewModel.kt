@@ -24,18 +24,11 @@ class SequenceExerciseViewModel(
     private val repository: FlashcardRepository
 ) : AndroidViewModel(application) {
 
-    private val _allFlashcards =
-        MutableStateFlow<Map<String, List<SequenceExerciseItem>>>(emptyMap())
-    val allFlashcards: StateFlow<Map<String, List<SequenceExerciseItem>>> = _allFlashcards
-
     private val _categories = MutableStateFlow<List<SequenceExerciseCategory>>(emptyList())
     val categories: StateFlow<List<SequenceExerciseCategory>> = _categories
 
-    private val _currentCategory = MutableStateFlow<String>("")
+    private val _currentCategory = MutableStateFlow("")
     val currentCategory: StateFlow<String> = _currentCategory
-
-    private val _currentFlashcards = MutableStateFlow<List<SequenceExerciseItem>>(emptyList())
-    val currentFlashcards: StateFlow<List<SequenceExerciseItem>> = _currentFlashcards
 
     private val _sequenceItems = MutableStateFlow<List<SequenceExerciseItem>>(emptyList())
     val sequenceItems: StateFlow<List<SequenceExerciseItem>> = _sequenceItems
@@ -63,12 +56,10 @@ class SequenceExerciseViewModel(
         viewModelScope.launch {
             try {
                 Log.d("SequenceExerciseViewModel", "Memulai loadAllCategories")
-                // Coba akses database secara direct terlebih dahulu
                 val categoryCount = repository.getCategoryCount()
                 Log.d("SequenceExerciseViewModel", "Jumlah kategori di database: $categoryCount")
 
                 if (categoryCount > 0) {
-                    // Database sudah berisi data
                     repository.getCategoriesByType("sequence").collect { dbCategories ->
                         Log.d(
                             "SequenceExerciseViewModel",
@@ -107,7 +98,6 @@ class SequenceExerciseViewModel(
                         }
                     }
                 } else {
-                    // Database kosong
                     Log.w(
                         "SequenceExerciseViewModel",
                         "Database kosong atau belum terinisialisasi, menggunakan data dummy"
@@ -141,7 +131,6 @@ class SequenceExerciseViewModel(
         _currentCategory.value = category
         _errorMessage.value = null
 
-        // Reset exercise state
         _currentIndex.value = 0
         _score.value = 0
         _isExerciseCompleted.value = false
@@ -168,11 +157,9 @@ class SequenceExerciseViewModel(
 
     private suspend fun loadSequencesForCategory(category: String) {
         try {
-            // Log jumlah sequence di kategori ini
             val count = repository.countSequenceInCategory(category)
             Log.d("SequenceExerciseViewModel", "Jumlah sequence dalam kategori $category: $count")
 
-            // Jika kosong, set pesan error yang jelas
             if (count == 0) {
                 Log.w("SequenceExerciseViewModel", "No sequences in category: $category")
                 _errorMessage.value = "Tidak ada sequence dalam kategori '$category'"
@@ -194,12 +181,10 @@ class SequenceExerciseViewModel(
                     )
 
                     if (entityList.isNotEmpty()) {
-                        // Map database entities to UI models with careful error handling
                         val sequenceItems = entityList.mapIndexed { index, entity ->
                             try {
                                 val gson = Gson()
 
-                                // Parse image resources with robust type handling
                                 val imageResourcesType = object : TypeToken<List<String>>() {}.type
                                 val imageResources: List<String> =
                                     gson.fromJson(entity.imageResourcesJson, imageResourcesType)
@@ -208,12 +193,10 @@ class SequenceExerciseViewModel(
                                     "Parsed image resources: $imageResources"
                                 )
 
-                                // Parse correct order with robust type handling
                                 val correctOrderType = object : TypeToken<List<Int>>() {}.type
                                 val correctOrderList: List<Int> =
                                     gson.fromJson(entity.correctOrderJson, correctOrderType)
 
-                                // Convert correct order list to map
                                 val correctOrderMap =
                                     correctOrderList.withIndex().associate { (index, value) ->
                                         index to value
@@ -236,18 +219,16 @@ class SequenceExerciseViewModel(
                                     "Error parsing entity: ${entity.title}",
                                     e
                                 )
-                                null // Skip invalid entries
+                                null
                             }
                         }.filterNotNull()
 
-                        // Take up to 5 random items
                         val limitedItems = if (sequenceItems.size > 5) {
                             sequenceItems.shuffled().take(5)
                         } else {
                             sequenceItems
                         }
 
-                        // Set to view model and prepare for display
                         if (limitedItems.isNotEmpty()) {
                             _sequenceItems.value = limitedItems
                             Log.d(
@@ -255,14 +236,11 @@ class SequenceExerciseViewModel(
                                 "Set ${limitedItems.size} sequence items"
                             )
 
-                            // Prepare selection slots
                             val firstItem = limitedItems.first()
                             _selectedImages.value = List(firstItem.images.size) { null }
 
-                            // Apply any needed fixes to image paths
                             fixAllSequenceImages()
 
-                            // Shuffle first sequence immediately
                             shuffleCurrentSequence()
                         } else {
                             Log.w(
@@ -289,10 +267,8 @@ class SequenceExerciseViewModel(
         val category = _currentCategory.value
         Log.d("SequenceExerciseViewModel", "Loading dummy items for category: $category")
 
-        // Create different sets of dummy items based on the category
         val dummyItems = when (category) {
             "aktivitas_urutan" -> {
-                // This is for general daily activities
                 listOf(
                     createDummySequence(
                         id = 1,
@@ -350,7 +326,6 @@ class SequenceExerciseViewModel(
 
         _sequenceItems.value = dummyItems
 
-        // Initialize selectedImages with nulls
         if (dummyItems.isNotEmpty()) {
             val firstItem = dummyItems.first()
             _selectedImages.value = List(firstItem.images.size) { null }
@@ -358,20 +333,17 @@ class SequenceExerciseViewModel(
             _selectedImages.value = List(4) { null }
         }
 
-        // Apply any needed fixes to image paths
         fixAllSequenceImages()
 
         shuffleCurrentSequence()
     }
 
-    // Helper function to create a sequence with default mapping
     private fun createDummySequence(
         id: Int,
         title: String,
         imagePaths: List<String>,
         category: String
     ): SequenceExerciseItem {
-        // Create a default correct order where each image is in its original position
         val correctOrder = imagePaths.indices.associateWith { it }
 
         return SequenceExerciseItem(
@@ -413,7 +385,6 @@ class SequenceExerciseViewModel(
             }
 
             else -> {
-                // Default fallback
                 listOf(
                     "images/sequence/activity_1.png",
                     "images/sequence/activity_2.png",
@@ -425,7 +396,7 @@ class SequenceExerciseViewModel(
     }
 
     private fun fixAllSequenceImages() {
-        val updatedItems = _sequenceItems.value.mapIndexed { index, item ->
+        val updatedItems = _sequenceItems.value.mapIndexed { _, item ->
             val correctImages = getCorrectImagePathsForTitle(item.title)
 
             if (item.images != correctImages) {
@@ -433,13 +404,11 @@ class SequenceExerciseViewModel(
                 Log.d("SequenceExerciseViewModel", "Original images: ${item.images}")
                 Log.d("SequenceExerciseViewModel", "Correct images: $correctImages")
 
-                // Create a new sequence item with the correct images
                 item.copy(
                     images = correctImages,
                     correctOrder = correctImages.indices.associateWith { it }
                 )
             } else {
-                // No changes needed
                 item
             }
         }
@@ -454,14 +423,11 @@ class SequenceExerciseViewModel(
 
         val currentItem = _sequenceItems.value[_currentIndex.value]
 
-        // Check if this is the hand washing sequence with incorrect images
         if (currentItem.title.contains("Cuci Tangan", ignoreCase = true)) {
             Log.d("SequenceExerciseViewModel", "Fixing hand washing sequence images")
 
-            // Use the correct hand washing images
             val correctHandWashingImages = getCorrectImagePathsForTitle(currentItem.title)
 
-            // Create a new sequence item with correct images
             val fixedItem = SequenceExerciseItem(
                 id = currentItem.id,
                 title = currentItem.title,
@@ -470,14 +436,12 @@ class SequenceExerciseViewModel(
                 category = currentItem.category
             )
 
-            // Update the sequence items list
             val updatedItems = _sequenceItems.value.toMutableList()
             updatedItems[_currentIndex.value] = fixedItem
             _sequenceItems.value = updatedItems
 
             Log.d("SequenceExerciseViewModel", "Fixed hand washing sequence images")
 
-            // Reset and shuffle
             resetSelections()
         }
     }
@@ -491,12 +455,10 @@ class SequenceExerciseViewModel(
         try {
             val currentItem = _sequenceItems.value[_currentIndex.value]
 
-            // Log the current state before shuffling
             Log.d("SequenceExerciseViewModel", "BEFORE SHUFFLE:")
             Log.d("SequenceExerciseViewModel", "Images: ${currentItem.images}")
             Log.d("SequenceExerciseViewModel", "CorrectOrder: ${currentItem.correctOrder}")
 
-            // Verify image paths exist
             currentItem.images.forEachIndexed { index, path ->
                 try {
                     val assetManager = getApplication<Application>().assets
@@ -509,7 +471,6 @@ class SequenceExerciseViewModel(
                         e
                     )
 
-                    // Try with simplified path
                     try {
                         val simplePath = path.substringAfterLast("/")
                         val exists =
@@ -524,24 +485,19 @@ class SequenceExerciseViewModel(
                 }
             }
 
-            // Get the original images and create indexed pairs
             val imagePaths = currentItem.images
             val indexedPaths = imagePaths.withIndex().toList()
 
-            // Shuffle the indexed paths
             val shuffledIndexedPaths = indexedPaths.shuffled()
 
-            // Create the new paths array and correctOrder map
             val shuffledPaths = shuffledIndexedPaths.map { it.value }
             val correctOrderMap = mutableMapOf<Int, Int>()
 
-            // For each shuffled position, store the original position
             shuffledIndexedPaths.forEachIndexed { newIndex, indexedValue ->
                 val originalIndex = indexedValue.index
                 correctOrderMap[newIndex] = originalIndex
             }
 
-            // Create a new sequence item with the shuffled data
             val updatedItem = SequenceExerciseItem(
                 id = currentItem.id,
                 title = currentItem.title,
@@ -550,18 +506,15 @@ class SequenceExerciseViewModel(
                 category = currentItem.category
             )
 
-            // Update the sequence items list
             val updatedItems = _sequenceItems.value.toMutableList()
             updatedItems[_currentIndex.value] = updatedItem
             _sequenceItems.value = updatedItems
 
-            // Reset selections when shuffling
             resetSelections()
 
-            // Log the shuffled state
             Log.d("SequenceExerciseViewModel", "AFTER SHUFFLE:")
-            Log.d("SequenceExerciseViewModel", "Shuffled Images: ${shuffledPaths}")
-            Log.d("SequenceExerciseViewModel", "Correct Order Map: ${correctOrderMap}")
+            Log.d("SequenceExerciseViewModel", "Shuffled Images: $shuffledPaths")
+            Log.d("SequenceExerciseViewModel", "Correct Order Map: $correctOrderMap")
             correctOrderMap.forEach { (newPos, origPos) ->
                 Log.d(
                     "SequenceExerciseViewModel",
@@ -580,30 +533,24 @@ class SequenceExerciseViewModel(
 
         val currentItem = _sequenceItems.value[_currentIndex.value]
 
-        // Ensure the image index is valid
         if (imageIndex < 0 || imageIndex >= currentItem.images.size) {
             Log.e("SequenceExerciseViewModel", "Invalid image index: $imageIndex")
             return
         }
 
-        // Get the current selections
         val currentSelections = _selectedImages.value.toMutableList()
 
-        // Find the first empty slot
         val firstEmptySlot = currentSelections.indexOfFirst { it == null }
 
-        // If the image is already selected, ignore
         if (currentSelections.contains(imageIndex)) {
             Log.d("SequenceExerciseViewModel", "Image $imageIndex already selected")
             return
         }
 
-        // If there's an empty slot, place the image there
         if (firstEmptySlot != -1) {
             currentSelections[firstEmptySlot] = imageIndex
             _selectedImages.value = currentSelections
 
-            // Log for debugging
             Log.d(
                 "SequenceExerciseViewModel",
                 "Selected image $imageIndex (${currentItem.images[imageIndex]}) to slot $firstEmptySlot"
@@ -621,7 +568,6 @@ class SequenceExerciseViewModel(
             currentSelections[slotIndex] = null
             _selectedImages.value = currentSelections
 
-            // Log untuk debugging
             Log.d("SequenceExerciseViewModel", "Menghapus pilihan dari slot $slotIndex")
             Log.d(
                 "SequenceExerciseViewModel",
@@ -631,7 +577,6 @@ class SequenceExerciseViewModel(
     }
 
     fun resetSelections() {
-        // Get the number of images from the current sequence item
         val currentItem =
             if (_sequenceItems.value.isNotEmpty() && _currentIndex.value < _sequenceItems.value.size) {
                 _sequenceItems.value[_currentIndex.value]
@@ -642,11 +587,10 @@ class SequenceExerciseViewModel(
         val imageCount = currentItem?.images?.size ?: 4
         _selectedImages.value = List(imageCount) { null }
 
-        // Log untuk debugging
         Log.d("SequenceExerciseViewModel", "Semua seleksi direset, slot kosong: $imageCount")
     }
 
-    fun checkOrder(): Boolean {
+    private fun checkOrder(): Boolean {
         try {
             val currentSelections = _selectedImages.value
 
@@ -699,45 +643,14 @@ class SequenceExerciseViewModel(
                 "Pindah ke soal berikutnya: ${_currentIndex.value + 1}/${_sequenceItems.value.size}"
             )
         } else {
-            // Latihan selesai
             _isExerciseCompleted.value = true
 
             try {
-                // Navigasi hanya dengan parameter yang diperlukan dan hapus ID pasien dari rute
                 navController.navigate("therapyResultPage/${_score.value}/${_sequenceItems.value.size}")
             } catch (e: Exception) {
-                // Tambahkan penanganan kesalahan dan logging
                 Log.e("SequenceExercise", "Error navigasi: ${e.message}", e)
             }
 
-            // Update progress untuk kategori ini
-            updateCategoryProgress()
-        }
-    }
-
-    fun handleCorrectAnswer() {
-        _score.value += 1
-        if (_currentIndex.value < _sequenceItems.value.size - 1) {
-            // Lanjut ke soal berikutnya
-            _currentIndex.value += 1
-            resetSelections()
-        } else {
-            // Latihan selesai
-            _isExerciseCompleted.value = true
-            // Update progress untuk kategori ini
-            updateCategoryProgress()
-        }
-    }
-
-    fun handleWrongAnswer() {
-        if (_currentIndex.value < _sequenceItems.value.size - 1) {
-            // Lanjut ke soal berikutnya
-            _currentIndex.value += 1
-            resetSelections()
-        } else {
-            // Latihan selesai
-            _isExerciseCompleted.value = true
-            // Update progress untuk kategori ini
             updateCategoryProgress()
         }
     }
@@ -745,20 +658,17 @@ class SequenceExerciseViewModel(
     private fun updateCategoryProgress() {
         viewModelScope.launch {
             try {
-                // Find the proper category ID based on the current category value
                 val categoryId = when (currentCategory.value) {
                     "aktivitas_urutan" -> "aktivitas_urutan"
-                    else -> currentCategory.value // Use as-is if not matched
+                    else -> currentCategory.value
                 }
 
-                // Update progress di database
                 repository.updateCategoryProgress(
                     categoryId = categoryId,
                     progress = score.value,
                     total = sequenceItems.value.size
                 )
 
-                // Update juga di UI
                 val updatedCategories = _categories.value.toMutableList()
                 val categoryIndex = updatedCategories.indexOfFirst {
                     it.title.lowercase().contains(currentCategory.value.lowercase())
@@ -767,7 +677,6 @@ class SequenceExerciseViewModel(
                 if (categoryIndex >= 0) {
                     val currentCategory = updatedCategories[categoryIndex]
 
-                    // Hitung persentase baru berdasarkan skor
                     val newPercentage = (_score.value * 100) / sequenceItems.value.size
 
                     updatedCategories[categoryIndex] = currentCategory.copy(
@@ -810,7 +719,6 @@ class SequenceExerciseViewModel(
         )
         Log.d("SequenceExerciseViewModel", "Error Message: ${errorMessage.value}")
 
-        // Lihat item sequence saat ini
         if (sequenceItems.value.isNotEmpty() && currentIndex.value < sequenceItems.value.size) {
             val currentItem = sequenceItems.value[currentIndex.value]
             Log.d("SequenceExerciseViewModel", "Current Sequence Item: ${currentItem.title}")
@@ -818,7 +726,6 @@ class SequenceExerciseViewModel(
             Log.d("SequenceExerciseViewModel", "Correct Order: ${currentItem.correctOrder}")
         }
 
-        // List asset files for debugging
         try {
             val assetManager = getApplication<Application>().assets
             Log.d("SequenceExerciseViewModel", "Root Assets:")
@@ -837,7 +744,6 @@ class SequenceExerciseViewModel(
                     Log.d("SequenceExerciseViewModel", "- images/$it")
                 }
 
-                // Check sequence folder
                 if (assetManager.list("images")?.contains("sequence") == true) {
                     Log.d("SequenceExerciseViewModel", "Sequence Images:")
                     assetManager.list("images/sequence")?.forEach {
@@ -847,50 +753,6 @@ class SequenceExerciseViewModel(
             }
         } catch (e: Exception) {
             Log.e("SequenceExerciseViewModel", "Error listing assets", e)
-        }
-    }
-
-    fun debugImagePaths() {
-        if (_sequenceItems.value.isEmpty() || _currentIndex.value >= _sequenceItems.value.size) {
-            Log.e("DEBUG", "No current sequence item to check")
-            return
-        }
-
-        val currentItem = _sequenceItems.value[_currentIndex.value]
-        Log.d("DEBUG", "Current sequence: ${currentItem.title}")
-
-        // Check if the image paths actually exist in assets
-        currentItem.images.forEachIndexed { index, path ->
-            try {
-                val assetManager = getApplication<Application>().assets
-                assetManager.open(path).use {
-                    Log.d("DEBUG", "Image [$index] $path EXISTS in assets")
-                }
-            } catch (e: Exception) {
-                Log.e("DEBUG", "Image [$index] $path DOES NOT EXIST in assets", e)
-
-                // Try to find a similar file
-                try {
-                    val dir = path.substringBeforeLast("/")
-                    val files = getApplication<Application>().assets.list(dir)
-                    Log.d("DEBUG", "Files in $dir: ${files?.joinToString()}")
-                } catch (e2: Exception) {
-                    Log.e("DEBUG", "Could not list directory", e2)
-                }
-            }
-        }
-
-        // List all sequence images available
-        try {
-            val assetManager = getApplication<Application>().assets
-            if (assetManager.list("")?.contains("images") == true) {
-                if (assetManager.list("images")?.contains("sequence") == true) {
-                    val sequenceFiles = assetManager.list("images/sequence")
-                    Log.d("DEBUG", "All sequence images: ${sequenceFiles?.joinToString()}")
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("DEBUG", "Error listing sequence images", e)
         }
     }
 }

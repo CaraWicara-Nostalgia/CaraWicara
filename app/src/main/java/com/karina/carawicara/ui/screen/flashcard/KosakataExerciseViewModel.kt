@@ -21,35 +21,25 @@ class KosakataExerciseViewModel(
     application: Application,
     private val repository: FlashcardRepository
 ) : AndroidViewModel(application) {
-    // Daftar semua flashcard di semua kategori
-    private val _allFlashcards = MutableStateFlow<Map<String, List<FlashcardKosakataItem>>>(emptyMap())
-    val allFlashcards: StateFlow<Map<String, List<FlashcardKosakataItem>>> = _allFlashcards
 
-    // Daftar kategori untuk tampilan utama
     private val _categories = MutableStateFlow<List<KosakataExerciseCategory>>(emptyList())
     val categories: StateFlow<List<KosakataExerciseCategory>> = _categories
 
-    // Kategori yang sedang aktif
     private val _currentCategory = MutableStateFlow("")
-    val currentCategory: StateFlow<String> = _currentCategory
+    private val currentCategory: StateFlow<String> = _currentCategory
 
-    // Flashcard yang sedang aktif dalam kategori
     private val _currentFlashcards = MutableStateFlow<List<FlashcardKosakataItem>>(emptyList())
     val currentFlashcards: StateFlow<List<FlashcardKosakataItem>> = _currentFlashcards
 
-    // Index flashcard saat ini dalam kategori aktif
     private val _currentIndex = MutableStateFlow(0)
     val currentIndex: StateFlow<Int> = _currentIndex
 
-    // Skor saat ini untuk kategori aktif
     private val _score = MutableStateFlow(0)
     val score: StateFlow<Int> = _score
 
-    // Status penyelesaian latihan
     private val _isExerciseCompleted = MutableStateFlow(false)
     val isExerciseCompleted: StateFlow<Boolean> = _isExerciseCompleted
 
-    // Error state for UI feedback
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
@@ -61,17 +51,14 @@ class KosakataExerciseViewModel(
         viewModelScope.launch {
             try {
                 Log.d("KosakataExerciseViewModel", "Memulai loadAllFlashcards")
-                // Coba akses database secara direct terlebih dahulu
                 val categoryCount = repository.getCategoryCount()
                 Log.d("KosakataExerciseViewModel", "Jumlah kategori di database: $categoryCount")
 
                 if (categoryCount > 0) {
-                    // Database sudah berisi data
                     repository.getCategoriesByType("kosakata").collect { dbCategories ->
                         Log.d("KosakataExerciseViewModel", "Dapat ${dbCategories.size} kategori kosakata")
 
                         val uiCategories = dbCategories.map { category ->
-                            // Cek jumlah kosakata di kategori ini
                             val kosakataCount = repository.countKosakataInCategory(category.id)
                             Log.d("KosakataExerciseViewModel", "Kategori ${category.id} memiliki $kosakataCount kosakata")
 
@@ -94,7 +81,6 @@ class KosakataExerciseViewModel(
                         }
                     }
                 } else {
-                    // Database kosong
                     Log.w("KosakataExerciseViewModel", "Database kosong atau belum terinisialisasi, menggunakan data dummy")
                     loadDummyCategories()
                 }
@@ -108,7 +94,7 @@ class KosakataExerciseViewModel(
     private fun loadDummyCategories() {
         val dummyCategories = listOf(
             KosakataExerciseCategory(
-                id = "buah", // Use string IDs to match database schema
+                id = "buah",
                 title = "Mengenal buah",
                 description = "Belajar nama-nama buah",
                 total = 5
@@ -136,30 +122,25 @@ class KosakataExerciseViewModel(
         Log.d("KosakataExerciseViewModel", "Loaded ${dummyCategories.size} dummy categories")
     }
 
-    // Set kategori saat ini dan ambil flashcard yang sesuai
     fun setCurrentCategory(category: String) {
         Log.d("KosakataExerciseViewModel", "Setting current category: $category")
         _currentCategory.value = category
         _errorMessage.value = null
 
-        // Reset exercise state
         _currentIndex.value = 0
         _score.value = 0
         _isExerciseCompleted.value = false
 
         viewModelScope.launch {
             try {
-                // Log jumlah kosakata di kategori ini
                 val count = repository.countKosakataInCategory(category)
                 Log.d("KosakataExerciseViewModel", "Jumlah kosakata dalam kategori $category: $count")
 
-                // Jika kosong, set pesan error yang jelas
                 if (count == 0) {
                     _errorMessage.value = "Tidak ada kosakata dalam kategori '$category'"
                     _currentFlashcards.value = emptyList()
                     return@launch
                 }
-                // Lanjutkan dengan kode yang ada...
                 repository.getKosakataByCategory(category)
                     .catch { e ->
                         Log.e("KosakataExerciseViewModel", "Error loading from database", e)
@@ -181,7 +162,6 @@ class KosakataExerciseViewModel(
                                 )
                             }
 
-                            // Limit to 10 random flashcards if there are more than 10
                             val limitedItems = if (flashcardItems.size > 10) {
                                 flashcardItems.shuffled().take(10)
                             } else {
@@ -191,7 +171,6 @@ class KosakataExerciseViewModel(
                             _currentFlashcards.value = limitedItems
                             Log.d("KosakataExerciseViewModel", "SUCCESS: Set ${limitedItems.size} flashcards")
 
-                            // Print semua flashcard untuk debugging
                             limitedItems.forEachIndexed { index, item ->
                                 Log.d("KosakataExerciseViewModel", "[$index] ${item.word}, ${item.imageRes}")
                             }
@@ -211,7 +190,6 @@ class KosakataExerciseViewModel(
 
     private fun loadFlashcardsFromJson(category: String) {
         try {
-            // Try multiple potential file paths
             val assetManager = getApplication<Application>().assets
             val jsonString = try {
                 assetManager.open("flashcards.json").bufferedReader().use { it.readText() }
@@ -225,18 +203,14 @@ class KosakataExerciseViewModel(
                 }
             }
 
-            // Parse the JSON
             val gson = Gson()
 
-            // Try different JSON structures
             try {
-                // First attempt - direct FlashcardKosakataItem structure
                 val type = object : TypeToken<List<FlashcardKosakataItem>>() {}.type
                 val allItems: List<FlashcardKosakataItem> = gson.fromJson(jsonString, type)
 
                 val categoryItems = allItems.filter { it.category == category }
                 if (categoryItems.isNotEmpty()) {
-                    // Limit to 10 random flashcards if there are more than 10
                     val limitedItems = if (categoryItems.size > 10) {
                         categoryItems.shuffled().take(10)
                     } else {
@@ -246,13 +220,11 @@ class KosakataExerciseViewModel(
                     _currentFlashcards.value = limitedItems
                     Log.d("KosakataExerciseViewModel", "Loaded ${limitedItems.size} flashcards from JSON (direct format)")
                 } else {
-                    // Try KosakataEntity format
                     val entityType = object : TypeToken<List<KosakataEntity>>() {}.type
                     val entityItems: List<KosakataEntity> = gson.fromJson(jsonString, entityType)
 
                     val filteredItems = entityItems.filter { it.categoryId == category }
                     if (filteredItems.isNotEmpty()) {
-                        // Map to flashcard items
                         val flashcardItems = filteredItems.map { entity ->
                             FlashcardKosakataItem(
                                 id = entity.id,
@@ -263,7 +235,6 @@ class KosakataExerciseViewModel(
                             )
                         }
 
-                        // Limit to 10 random flashcards if there are more than 10
                         val limitedItems = if (flashcardItems.size > 10) {
                             flashcardItems.shuffled().take(10)
                         } else {
@@ -273,7 +244,6 @@ class KosakataExerciseViewModel(
                         _currentFlashcards.value = limitedItems
                         Log.d("KosakataExerciseViewModel", "Loaded ${limitedItems.size} flashcards from JSON (entity format)")
                     } else {
-                        // No matching items found
                         _currentFlashcards.value = emptyList()
                         _errorMessage.value = "Tidak ditemukan flashcard untuk kategori $category"
                         Log.e("KosakataExerciseViewModel", "No flashcards found for category: $category")
@@ -289,8 +259,7 @@ class KosakataExerciseViewModel(
         }
     }
 
-     fun loadDummyFlashcards(category: String) {
-        // Fallback dummy data for testing (limited to 10 items per category)
+     private fun loadDummyFlashcards(category: String) {
         val dummyFlashcards = when (category) {
             "buah" -> listOf(
                 FlashcardKosakataItem(1, "images/buah/ic_anggur.png", "ANGGUR", "aŋɡur", "buah"),
@@ -352,71 +321,56 @@ class KosakataExerciseViewModel(
         }
     }
 
-    // Acak kartu dalam kategori saat ini
     fun shuffleCards() {
         _currentFlashcards.value = currentFlashcards.value.shuffled()
         _currentIndex.value = 0
     }
 
-    // Fungsi untuk menangani jawaban benar
     fun handleCorrectAnswer() {
         _score.value += 1
 
-        // Log untuk debugging
         Log.d("KosakataExerciseViewModel", "Correct answer selected. Current index: ${currentIndex.value}, Score: ${score.value}")
 
         if (currentIndex.value >= currentFlashcards.value.size - 1) {
-            // Ini adalah kartu terakhir
             _isExerciseCompleted.value = true
             Log.d("KosakataExerciseViewModel", "Last card completed, exercise marked as completed")
-            // Update progress untuk kategori ini
             updateCategoryProgress()
         } else {
-            // Masih ada kartu lain, langsung pindah ke kartu berikutnya
             _currentIndex.value += 1
             Log.d("KosakataExerciseViewModel", "Moving to next card. New index: ${currentIndex.value}")
         }
     }
 
-    // Fungsi untuk menangani jawaban salah
     fun handleWrongAnswer() {
-        // Log untuk debugging
         Log.d("KosakataExerciseViewModel", "Wrong answer selected. Current index: ${currentIndex.value}")
 
         if (currentIndex.value >= currentFlashcards.value.size - 1) {
-            // Ini adalah kartu terakhir
             _isExerciseCompleted.value = true
             Log.d("KosakataExerciseViewModel", "Last card completed, exercise marked as completed")
-            // Update progress untuk kategori ini
             updateCategoryProgress()
         } else {
-            // Masih ada kartu lain, langsung pindah ke kartu berikutnya
             _currentIndex.value += 1
             Log.d("KosakataExerciseViewModel", "Moving to next card. New index: ${currentIndex.value}")
         }
     }
 
-    // Update progress kategori
     private fun updateCategoryProgress() {
         viewModelScope.launch {
             try {
-                // Find the proper category ID based on the current category value
                 val categoryId = when (currentCategory.value) {
                     "buah" -> "buah"
                     "hewan" -> "hewan"
                     "pakaian" -> "pakaian"
                     "aktivitas" -> "aktivitas"
-                    else -> currentCategory.value // Use as-is if not matched
+                    else -> currentCategory.value
                 }
 
-                // Update progress di database
                 repository.updateCategoryProgress(
                     categoryId = categoryId,
                     progress = score.value,
                     total = currentFlashcards.value.size
                 )
 
-                // Update juga di UI
                 val updatedCategories = _categories.value.toMutableList()
                 val categoryIndex = updatedCategories.indexOfFirst {
                     it.title.lowercase().contains(currentCategory.value.lowercase())
@@ -425,7 +379,6 @@ class KosakataExerciseViewModel(
                 if (categoryIndex >= 0) {
                     val currentCategory = updatedCategories[categoryIndex]
 
-                    // Hitung persentase baru berdasarkan skor
                     val newPercentage = (_score.value * 100) / currentFlashcards.value.size
 
                     updatedCategories[categoryIndex] = currentCategory.copy(
@@ -449,7 +402,6 @@ class KosakataExerciseViewModel(
         _errorMessage.value = null
     }
 
-    // Debug function to help troubleshoot issues
     fun logDebugInfo() {
         Log.d("KosakataExerciseViewModel", "==== DEBUG INFO ====")
         Log.d("KosakataExerciseViewModel", "Current Category: ${currentCategory.value}")
@@ -459,7 +411,6 @@ class KosakataExerciseViewModel(
         Log.d("KosakataExerciseViewModel", "Current Index: ${currentIndex.value}")
         Log.d("KosakataExerciseViewModel", "Error Message: ${errorMessage.value}")
 
-        // List asset files for debugging
         try {
             val assetManager = getApplication<Application>().assets
             Log.d("KosakataExerciseViewModel", "Root Assets:")
@@ -486,7 +437,6 @@ class KosakataExerciseViewModel(
     }
 }
 
-// Data model for UI - changed to use String ID
 data class KosakataExerciseCategory(
     val id: String,
     val title: String,
@@ -496,7 +446,6 @@ data class KosakataExerciseCategory(
     val total: Int = 0
 )
 
-// Factory untuk membuat instance ViewModel dengan parameter
 class KosakataExerciseViewModelFactory(
     private val application: Application
 ) : ViewModelProvider.Factory {

@@ -46,8 +46,8 @@ class FlashcardViewModel (
 
     private suspend fun loadPelafalanProgress() {
         try {
-            var totalCompleted = 0
-            var totalCategories = 0
+            var totalCompleted: Int
+            var totalCategories: Int
 
             repository.getCategoriesByType("pelafalan").collect { categories ->
                 totalCategories = categories.size
@@ -70,8 +70,8 @@ class FlashcardViewModel (
 
     private suspend fun loadKosakataProgress() {
         try {
-            var totalCompleted = 0
-            var totalCategories = 0
+            var totalCompleted: Int
+            var totalCategories: Int
 
             repository.getCategoriesByType("kosakata").collect { categories ->
                 totalCategories = categories.size
@@ -94,8 +94,8 @@ class FlashcardViewModel (
 
     private suspend fun loadSequenceProgress() {
         try {
-            var totalCompleted = 0
-            var totalCategories = 0
+            var totalCompleted: Int
+            var totalCategories: Int
 
             repository.getCategoriesByType("sequence").collect { categories ->
                 totalCategories = categories.size

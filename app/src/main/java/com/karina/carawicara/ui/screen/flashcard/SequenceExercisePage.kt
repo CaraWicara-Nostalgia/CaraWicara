@@ -131,14 +131,11 @@ fun SequenceExercisePage(
                         title = category.title,
                         progressPercentage = category.progressPercentage,
                         onClick = {
-                            // Get the CategoryID for navigation
-                            // In case the ID is converted to an Int, we need to get the actual string ID
                             val categoryId = when (category.title) {
                                 "Mengurutkan aktivitas" -> "aktivitas_urutan"
                                 else -> category.id.toString()
                             }
 
-                            // Set kategori aktif sebelum navigasi
                             viewModel.setCurrentCategory(categoryId)
                             navController.navigate("sequenceExerciseDetailPage/$categoryId")
                         }

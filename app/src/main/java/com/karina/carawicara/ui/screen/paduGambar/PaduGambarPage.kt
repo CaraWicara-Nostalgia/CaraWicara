@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,7 +30,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.ButtonImage
-import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.ImageSound
 import com.karina.carawicara.ui.component.PopupOverview
 import com.karina.carawicara.ui.component.StageBox
@@ -93,10 +93,10 @@ fun PaduGambarPage(
         )
     )
 
-    val currentSoalIndex = remember { mutableStateOf(0) }
+    val currentSoalIndex = remember { mutableIntStateOf(0) }
     val isPopupVisible = remember { mutableStateOf(false) }
     val isCorrectAnswer = remember { mutableStateOf(false) }
-    val stageBoxStatus = remember { mutableStateOf(0) }
+    val stageBoxStatus = remember { mutableIntStateOf(0) }
     val isEndPopupVisible = remember { mutableStateOf(false) }
 
     fun validateAnswer(isCorrect: Boolean) {
@@ -105,15 +105,15 @@ fun PaduGambarPage(
     }
 
     fun nextSoal() {
-        if (currentSoalIndex.value < soalList.size - 1) {
-            currentSoalIndex.value += 1
-            stageBoxStatus.value += 1
+        if (currentSoalIndex.intValue < soalList.size - 1) {
+            currentSoalIndex.intValue += 1
+            stageBoxStatus.intValue += 1
         } else {
             isEndPopupVisible.value = true
         }
     }
 
-    val currentSoal = soalList[currentSoalIndex.value]
+    val currentSoal = soalList[currentSoalIndex.intValue]
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -142,7 +142,7 @@ fun PaduGambarPage(
                     modifier = Modifier.padding(8.dp)
                 ) {
                     for (i in 0 until 4) {
-                        StageBox(stage = if (i < stageBoxStatus.value) 1 else 0, onClick = { /* Handle click here */ })
+                        StageBox(stage = if (i < stageBoxStatus.intValue) 1 else 0, onClick = { /* Handle click here */ })
                     }
                 }
             }

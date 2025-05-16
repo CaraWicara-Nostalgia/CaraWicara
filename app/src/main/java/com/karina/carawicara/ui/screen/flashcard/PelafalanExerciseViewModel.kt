@@ -22,14 +22,12 @@ class PelafalanExerciseViewModel(
     application: Application,
     private val repository: FlashcardRepository
 ) : AndroidViewModel(application) {
-    private val _allflashcards = MutableStateFlow<Map<String, List<FlashcardPelafalanItem>>>(emptyMap())
-    val allFlashcards: StateFlow<Map<String, List<FlashcardPelafalanItem>>> = _allflashcards
 
     private val _categories = MutableStateFlow<List<PelafalanExerciseCategory>>(emptyList())
     val categories: StateFlow<List<PelafalanExerciseCategory>> = _categories
 
-    private val _currentCategory = MutableStateFlow<String>("")
-    val currentCategory: StateFlow<String> = _currentCategory
+    private val _currentCategory = MutableStateFlow("")
+    private val currentCategory: StateFlow<String> = _currentCategory
 
     private val _currentFlashcards = MutableStateFlow<List<FlashcardPelafalanItem>>(emptyList())
     val currentFlashcards: StateFlow<List<FlashcardPelafalanItem>> = _currentFlashcards
@@ -54,12 +52,10 @@ class PelafalanExerciseViewModel(
         viewModelScope.launch {
             try {
                 Log.d("PelafalanExerciseViewModel", "Memulai loadAllFlashcards")
-                // Coba akses database secara direct terlebih dahulu
                 val categoryCount = repository.getCategoryCount()
                 Log.d("PelafalanExerciseViewModel", "Jumlah kategori di database: $categoryCount")
 
                 if (categoryCount > 0) {
-                    // Database sudah berisi data
                     repository.getCategoriesByType("konsonan_m").collect { dbCategories ->
                         Log.d("PelafalanExerciseViewModel", "Dapat ${dbCategories.size} kategori konsonan_m")
 
@@ -111,7 +107,6 @@ class PelafalanExerciseViewModel(
                         }
                     }
                 } else {
-                    // Database kosong
                     Log.w("PelafalanExerciseViewModel", "Database kosong atau belum terinisialisasi, menggunakan data dummy")
                     loadDummyCategories()
                 }
@@ -141,24 +136,20 @@ class PelafalanExerciseViewModel(
         Log.d("PelafalanExerciseViewModel", "Loaded ${dummyCategories.size} dummy categories")
     }
 
-    // Set kategori saat ini dan ambil flashcard yang sesuai
     fun setCurrentCategory(category: String) {
         Log.d("PelafalanExerciseViewModel", "Setting current category: $category")
         _currentCategory.value = category
         _errorMessage.value = null
 
-        // Reset exercise state
         _currentIndex.value = 0
         _score.value = 0
         _isExerciseCompleted.value = false
 
         viewModelScope.launch {
             try {
-                // Log jumlah konsonan_m di kategori ini
                 val count = repository.countPelafalanInCategory(category)
                 Log.d("PelafalanExerciseViewModel", "Jumlah konsonan_m dalam kategori $category: $count")
 
-                // Jika kosong, set pesan error yang jelas
                 if (count == 0) {
                     _errorMessage.value = "Tidak ada konsonan_m dalam kategori '$category'"
                     _currentFlashcards.value = emptyList()
@@ -186,7 +177,6 @@ class PelafalanExerciseViewModel(
                                 )
                             }
 
-                            // Limit to 10 random flashcards if there are more than 10
                             val limitedItems = if (flashcardItems.size > 10) {
                                 flashcardItems.shuffled().take(10)
                             } else {
@@ -196,7 +186,6 @@ class PelafalanExerciseViewModel(
                             _currentFlashcards.value = limitedItems
                             Log.d("PelafalanExerciseViewModel", "SUCCESS: Set ${limitedItems.size} flashcards")
 
-                            // Print semua flashcard untuk debugging
                             limitedItems.forEachIndexed { index, item ->
                                 Log.d("PelafalanExerciseViewModel", "[$index] ${item.word}, ${item.imageRes}")
                             }
@@ -216,7 +205,6 @@ class PelafalanExerciseViewModel(
 
     private fun loadFlashcardsFromJson(category: String) {
         try {
-            // Try multiple potential file paths
             val assetManager = getApplication<Application>().assets
             val jsonString = try {
                 assetManager.open("flashcards.json").bufferedReader().use { it.readText() }
@@ -230,18 +218,14 @@ class PelafalanExerciseViewModel(
                 }
             }
 
-            // Parse the JSON
             val gson = Gson()
 
-            // Try different JSON structures
             try {
-                // First attempt - direct FlashcardPelafalanItem structure
                 val type = object : TypeToken<List<FlashcardPelafalanItem>>() {}.type
                 val allItems: List<FlashcardPelafalanItem> = gson.fromJson(jsonString, type)
 
                 val categoryItems = allItems.filter { it.category == category }
                 if (categoryItems.isNotEmpty()) {
-                    // Limit to 10 random flashcards if there are more than 10
                     val limitedItems = if (categoryItems.size > 10) {
                         categoryItems.shuffled().take(10)
                     } else {
@@ -251,13 +235,11 @@ class PelafalanExerciseViewModel(
                     _currentFlashcards.value = limitedItems
                     Log.d("PelafalanExerciseViewModel", "Loaded ${limitedItems.size} flashcards from JSON (direct format)")
                 } else {
-                    // Try PelafalanEntity format
                     val entityType = object : TypeToken<List<PelafalanEntity>>() {}.type
                     val entityItems: List<PelafalanEntity> = gson.fromJson(jsonString, entityType)
 
                     val filteredItems = entityItems.filter { it.categoryId == category }
                     if (filteredItems.isNotEmpty()) {
-                        // Map to flashcard items
                         val flashcardItems = filteredItems.map { entity ->
                             FlashcardPelafalanItem(
                                 id = entity.id,
@@ -268,7 +250,6 @@ class PelafalanExerciseViewModel(
                             )
                         }
 
-                        // Limit to 10 random flashcards if there are more than 10
                         val limitedItems = if (flashcardItems.size > 10) {
                             flashcardItems.shuffled().take(10)
                         } else {
@@ -278,7 +259,6 @@ class PelafalanExerciseViewModel(
                         _currentFlashcards.value = limitedItems
                         Log.d("PelafalanExerciseViewModel", "Loaded ${limitedItems.size} flashcards from JSON (entity format)")
                     } else {
-                        // No matching items found
                         _currentFlashcards.value = emptyList()
                         _errorMessage.value = "Tidak ditemukan flashcard untuk kategori $category"
                         Log.e("PelafalanExerciseViewModel", "No flashcards found for category: $category")
@@ -294,7 +274,7 @@ class PelafalanExerciseViewModel(
         }
     }
 
-    fun loadDummyFlashcards(category: String) {
+    private fun loadDummyFlashcards(category: String) {
         val dummyFlashcards = when (category) {
             "konsonan_m" -> listOf(
                 FlashcardPelafalanItem(1, "images/konsonan_m/ic_masker.png", "MASKER", "masker", "konsonan_m"),
@@ -339,62 +319,48 @@ class PelafalanExerciseViewModel(
         _currentIndex.value = 0
     }
 
-    // Fungsi untuk menangani jawaban benar
     fun handleCorrectAnswer() {
         _score.value += 1
 
-        // Log untuk debugging
         Log.d("PelafalanExerciseViewModel", "Correct answer selected. Current index: ${currentIndex.value}, Score: ${score.value}")
 
         if (currentIndex.value >= currentFlashcards.value.size - 1) {
-            // Ini adalah kartu terakhir
             _isExerciseCompleted.value = true
             Log.d("PelafalanExerciseViewModel", "Last card completed, exercise marked as completed")
-            // Update progress untuk kategori ini
             updateCategoryProgress()
         } else {
-            // Masih ada kartu lain, langsung pindah ke kartu berikutnya
             _currentIndex.value += 1
             Log.d("PelafalanExerciseViewModel", "Moving to next card. New index: ${currentIndex.value}")
         }
     }
 
-    // Fungsi untuk menangani jawaban salah
     fun handleWrongAnswer() {
-        // Log untuk debugging
         Log.d("PelafalanExerciseViewModel", "Wrong answer selected. Current index: ${currentIndex.value}")
 
         if (currentIndex.value >= currentFlashcards.value.size - 1) {
-            // Ini adalah kartu terakhir
             _isExerciseCompleted.value = true
             Log.d("PelafalanExerciseViewModel", "Last card completed, exercise marked as completed")
-            // Update progress untuk kategori ini
             updateCategoryProgress()
         } else {
-            // Masih ada kartu lain, langsung pindah ke kartu berikutnya
             _currentIndex.value += 1
             Log.d("PelafalanExerciseViewModel", "Moving to next card. New index: ${currentIndex.value}")
         }
     }
 
-    // Update progress kategori
     private fun updateCategoryProgress() {
         viewModelScope.launch {
             try {
-                // Find the proper category ID based on the current category value
                 val categoryId = when (currentCategory.value) {
                     "konsonan_m" -> "konsonan_m"
-                    else -> currentCategory.value // Use as-is if not matched
+                    else -> currentCategory.value
                 }
 
-                // Update progress di database
                 repository.updateCategoryProgress(
                     categoryId = categoryId,
                     progress = score.value,
                     total = currentFlashcards.value.size
                 )
 
-                // Update juga di UI
                 val updatedCategories = _categories.value.toMutableList()
                 val categoryIndex = updatedCategories.indexOfFirst {
                     it.title.lowercase().contains(currentCategory.value.lowercase())
@@ -403,7 +369,6 @@ class PelafalanExerciseViewModel(
                 if (categoryIndex >= 0) {
                     val currentCategory = updatedCategories[categoryIndex]
 
-                    // Hitung persentase baru berdasarkan skor
                     val newPercentage = (_score.value * 100) / currentFlashcards.value.size
 
                     updatedCategories[categoryIndex] = currentCategory.copy(
@@ -427,7 +392,6 @@ class PelafalanExerciseViewModel(
         _errorMessage.value = null
     }
 
-    // Debug function to help troubleshoot issues
     fun logDebugInfo() {
         Log.d("PelafalanExerciseViewModel", "==== DEBUG INFO ====")
         Log.d("PelafalanExerciseViewModel", "Current Category: ${currentCategory.value}")
@@ -437,7 +401,6 @@ class PelafalanExerciseViewModel(
         Log.d("PelafalanExerciseViewModel", "Current Index: ${currentIndex.value}")
         Log.d("PelafalanExerciseViewModel", "Error Message: ${errorMessage.value}")
 
-        // List asset files for debugging
         try {
             val assetManager = getApplication<Application>().assets
             Log.d("PelafalanExerciseViewModel", "Root Assets:")
@@ -464,17 +427,6 @@ class PelafalanExerciseViewModel(
     }
 }
 
-// Data model for UI - changed to use String ID
-data class PelafalanExerciseCategory(
-    val id: String,
-    val title: String,
-    val description: String = "",
-    val progress: Int = 0,
-    val progressPercentage: Int = 0,
-    val total: Int = 0
-)
-
-// Factory untuk membuat instance ViewModel dengan parameter
 class PelafalanExerciseViewModelFactory(
     private val application: Application
 ) : ViewModelProvider.Factory {

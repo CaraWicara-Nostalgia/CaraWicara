@@ -17,7 +17,6 @@ class DataInitializer(
                 if (repository.isDatabaseEmpty()) {
                     Log.d("DataInitializer", "Database kosong, inisialisasi data...")
 
-                    // Load data dengan verifikasi
                     val categories = JsonDataUtil.loadCategories(context)
                     Log.d("DataInitializer", "Loaded ${categories.size} kategori dari JSON")
 
@@ -29,7 +28,6 @@ class DataInitializer(
 
                     val sequence = JsonDataUtil.loadSequence(context)
 
-                    // Insert data dengan exception handling
                     try {
                         repository.insertAllCategories(categories)
                         Log.d("DataInitializer", "Kategori berhasil dimasukkan ke database")
@@ -58,7 +56,6 @@ class DataInitializer(
                         Log.e("DataInitializer", "Error memasukkan sequence", e)
                     }
 
-                    // Verifikasi data
                     val categoryCount = repository.getCategoryCount()
                     val kosakataCount = repository.getKosakataCount()
                     val pelafalanCount = repository.getPelafalanCount()

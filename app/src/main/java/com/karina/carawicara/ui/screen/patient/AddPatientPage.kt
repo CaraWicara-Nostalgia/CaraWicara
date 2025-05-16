@@ -3,9 +3,7 @@ package com.karina.carawicara.ui.screen.patient
 import android.app.Application
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
-import android.os.Build
 import android.widget.DatePicker
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,7 +47,6 @@ import com.karina.carawicara.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPatientPage(

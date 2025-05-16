@@ -1,7 +1,5 @@
-package com.karina.carawicara.ui.screen.patient
+package com.karina.carawicara.ui.screen.therapyHistory
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,10 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.karina.carawicara.data.TherapyHistory
+import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TherapyHistoryDetailPage(
     navController: NavController,

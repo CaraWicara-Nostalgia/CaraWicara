@@ -1,10 +1,7 @@
 package com.karina.carawicara.data
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 data class TherapyHistory(
     val id: String,
     val patientId: String,

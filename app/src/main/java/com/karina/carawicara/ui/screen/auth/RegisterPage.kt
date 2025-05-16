@@ -43,11 +43,9 @@ fun RegisterPage(
     val authState by viewModel.authState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Handle auth state changes
     LaunchedEffect(authState) {
         when (val currentState = authState) {
             is AuthState.Success -> {
-                // Registration successful, navigate to home
                 navController.navigate("homePage") {
                     popUpTo("registerPage") { inclusive = true }
                 }
@@ -103,9 +101,9 @@ fun RegisterPage(
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = Color.Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     singleLine = true,
                     enabled = authState !is AuthState.Loading,
@@ -120,9 +118,9 @@ fun RegisterPage(
                     label = { Text("Password") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = Color.Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
@@ -138,9 +136,9 @@ fun RegisterPage(
                     label = { Text("Confirm Password") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = Color.Gray,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary
                     ),
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),

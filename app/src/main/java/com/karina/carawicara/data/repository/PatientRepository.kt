@@ -1,8 +1,6 @@
 package com.karina.carawicara.data.repository
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.karina.carawicara.data.CaraWicaraDatabase
 import com.karina.carawicara.data.LanguageAbility
 import com.karina.carawicara.data.Patient
@@ -16,12 +14,10 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class PatientRepository (private val database: CaraWicaraDatabase){
-    @RequiresApi(Build.VERSION_CODES.O)
     val allPatients: Flow<List<Patient>> = database.patientDao().getAllPatients().map { entities ->
         entities.map { it.toPatient() }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun insertPatient(patient: Patient) {
         withContext(Dispatchers.IO) {
             val patientEntity = PatientEntity(
@@ -35,7 +31,6 @@ class PatientRepository (private val database: CaraWicaraDatabase){
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun updatePatient(patient: Patient) {
         withContext(Dispatchers.IO) {
             val patientEntity = PatientEntity(
@@ -55,14 +50,13 @@ class PatientRepository (private val database: CaraWicaraDatabase){
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getPatientById(patientId: String): Patient? {
         return withContext(Dispatchers.IO) {
             database.patientDao().getPatientById(patientId)?.toPatient()
         }
     }
 
-    suspend fun generateLanguageAbilitiesByAge(ageYears: Int, ageMonths: Int): List<LanguageAbility> {
+    fun generateLanguageAbilitiesByAge(ageYears: Int, ageMonths: Int): List<LanguageAbility> {
         val totalMonths = ageYears * 12 + ageMonths
 
         return when {
@@ -260,21 +254,18 @@ class PatientRepository (private val database: CaraWicaraDatabase){
         return emptyList()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getAllTherapyHistories(): Flow<List<TherapyHistory>> {
         return database.therapyHistoryDao().getAllTherapyHistories().map { entities ->
             entities.map { it.toTherapyHistory() }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun getTherapyHistoriesForPatient(patientId: String): Flow<List<TherapyHistory>> {
         return database.therapyHistoryDao().getTherapyHistoriesForPatient(patientId).map { entities ->
             entities.map { it.toTherapyHistory() }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getTherapyHistoryById(historyId: String): TherapyHistory? {
         return withContext(Dispatchers.IO) {
             val entity = database.therapyHistoryDao().getTherapyHistoryById(historyId)
@@ -312,7 +303,6 @@ class PatientRepository (private val database: CaraWicaraDatabase){
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun PatientEntity.toPatient(): Patient {
     val languageAbilities = try {
         languageAbilitiesFromJson(this.languageAbilitiesJson)
@@ -331,7 +321,6 @@ private fun PatientEntity.toPatient(): Patient {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun TherapyHistoryEntity.toTherapyHistory(): TherapyHistory {
     return TherapyHistory(
         id = this.id,
@@ -343,16 +332,14 @@ private fun TherapyHistoryEntity.toTherapyHistory(): TherapyHistory {
         progressPercentage = this.progressPercentage,
         notes = this.notes,
         categoryId = this.categoryId,
-        showLine = true // Default to true, can be updated if needed
+        showLine = true
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun calculateAge(birthDate: LocalDate): Int {
     return java.time.Period.between(birthDate, LocalDate.now()).years
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun Patient.languageAbilitiesToJson(): String {
     val jsonArray = StringBuilder("[")
     languageAbilities.forEachIndexed { index, ability ->
@@ -365,7 +352,6 @@ private fun Patient.languageAbilitiesToJson(): String {
     return jsonArray.toString()
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun languageAbilitiesFromJson(json: String): List<LanguageAbility> {
     if (json.isEmpty() || json == "null") {
         return emptyList()

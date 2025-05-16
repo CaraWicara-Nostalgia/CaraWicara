@@ -36,7 +36,6 @@ import androidx.navigation.NavHostController
 import com.karina.carawicara.R
 import com.karina.carawicara.data.letterSounds
 import com.karina.carawicara.data.libraryData
-import com.karina.carawicara.ui.component.ButtonNav
 import com.karina.carawicara.ui.component.ButtonSpeaker
 import com.karina.carawicara.ui.component.ImageLibrary
 

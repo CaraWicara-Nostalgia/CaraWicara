@@ -25,8 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
@@ -61,7 +59,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -69,8 +66,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.karina.carawicara.data.SequenceExerciseItem
-import com.karina.carawicara.ui.screen.patient.PatientViewModel
-import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
 import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,18 +88,15 @@ fun SequenceExerciseDetailPage(
     val score by viewModel.score.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    // Get context here, outside of any lambda
     val context = LocalContext.current
     val assetManager = context.assets
 
     var isLoading by remember { mutableStateOf(true) }
 
-    // Handle lifecycle events to ensure data is loaded
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                // Check if we need to load category
                 if (currentCategory.isEmpty() && !categoryTitle.isNullOrEmpty()) {
                     viewModel.setCurrentCategory(categoryTitle)
                 }
@@ -131,7 +123,6 @@ fun SequenceExerciseDetailPage(
 
     LaunchedEffect(currentIndex) {
         if (sequenceItems.isNotEmpty() && currentIndex < sequenceItems.size) {
-            // Fix images if needed before shuffling
             viewModel.fixCurrentSequenceImagesIfNeeded()
             viewModel.shuffleCurrentSequence()
         }
@@ -139,7 +130,6 @@ fun SequenceExerciseDetailPage(
 
     LaunchedEffect(isExerciseCompleted) {
         if (isExerciseCompleted) {
-            // Navigate to result page
             navController.navigate("therapyResultPage/$score/${sequenceItems.size}")
             viewModel.resetExercise()
         }
@@ -166,7 +156,6 @@ fun SequenceExerciseDetailPage(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Loading state
             if (isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -175,7 +164,6 @@ fun SequenceExerciseDetailPage(
                     CircularProgressIndicator()
                 }
             }
-            // Error state
             else if (sequenceItems.isEmpty()) {
                 Column(
                     modifier = Modifier
@@ -226,51 +214,49 @@ fun SequenceExerciseDetailPage(
                         Text("Coba Lagi")
                     }
 
-                    if (true) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                        Button(
-                            onClick = { viewModel.logDebugInfo() },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Gray
-                            )
-                        ) {
-                            Text("Debug Info (Dev Only)")
-                        }
+                    Button(
+                        onClick = { viewModel.logDebugInfo() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Gray
+                        )
+                    ) {
+                        Text("Debug Info (Dev Only)")
+                    }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                        Button(
-                            onClick = {
-                                try {
-                                    Log.d("DEBUG", "Root assets: ${assetManager.list("")?.joinToString()}")
+                    Button(
+                        onClick = {
+                            try {
+                                Log.d("DEBUG", "Root assets: ${assetManager.list("")?.joinToString()}")
 
-                                    if (assetManager.list("")?.contains("images") == true) {
-                                        Log.d("DEBUG", "Images directory: ${assetManager.list("images")?.joinToString()}")
+                                if (assetManager.list("")?.contains("images") == true) {
+                                    Log.d("DEBUG", "Images directory: ${assetManager.list("images")?.joinToString()}")
 
-                                        if (assetManager.list("images")?.contains("sequence") == true) {
-                                            Log.d("DEBUG", "Sequence images: ${assetManager.list("images/sequence")?.joinToString()}")
-                                        }
+                                    if (assetManager.list("images")?.contains("sequence") == true) {
+                                        Log.d("DEBUG", "Sequence images: ${assetManager.list("images/sequence")?.joinToString()}")
                                     }
-
-                                    if (assetManager.list("")?.contains("database") == true) {
-                                        Log.d("DEBUG", "Database directory: ${assetManager.list("database")?.joinToString()}")
-
-                                        if (assetManager.list("database")?.contains("sequence.json") == true) {
-                                            val json = assetManager.open("database/sequence.json").bufferedReader().use { it.readText() }
-                                            Log.d("DEBUG", "Sequence.json content: $json")
-                                        }
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e("DEBUG", "Error listing assets", e)
                                 }
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Blue
-                            )
-                        ) {
-                            Text("Debug Assets")
-                        }
+
+                                if (assetManager.list("")?.contains("database") == true) {
+                                    Log.d("DEBUG", "Database directory: ${assetManager.list("database")?.joinToString()}")
+
+                                    if (assetManager.list("database")?.contains("sequence.json") == true) {
+                                        val json = assetManager.open("database/sequence.json").bufferedReader().use { it.readText() }
+                                        Log.d("DEBUG", "Sequence.json content: $json")
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e("DEBUG", "Error listing assets", e)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Blue
+                        )
+                    ) {
+                        Text("Debug Assets")
                     }
                 }
             }
@@ -285,7 +271,6 @@ fun SequenceExerciseDetailPage(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    // Progress counter
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -300,7 +285,6 @@ fun SequenceExerciseDetailPage(
                         )
                     }
 
-                    // Instruction text
                     Text(
                         text = currentItem.title,
                         fontSize = 16.sp,
@@ -308,21 +292,17 @@ fun SequenceExerciseDetailPage(
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
 
-                    // Grid of images options - we'll use a fixed 2x2 grid for 4 images
                     val imageSize = 140.dp
 
-                    // First row of images
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        // Use the corrected image paths
                         val correctedPaths = viewModel.getCorrectImagePathsForTitle(currentItem.title)
 
-                        // First image (top-left)
-                        if (correctedPaths.size > 0) {
+                        if (correctedPaths.isNotEmpty()) {
                             ImageOptionAsset(
                                 imagePath = correctedPaths[0],
                                 isSelected = selectedImages.contains(0),
@@ -333,7 +313,6 @@ fun SequenceExerciseDetailPage(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        // Second image (top-right)
                         if (correctedPaths.size > 1) {
                             ImageOptionAsset(
                                 imagePath = correctedPaths[1],
@@ -344,7 +323,6 @@ fun SequenceExerciseDetailPage(
                         }
                     }
 
-                    // Second row of images
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -353,7 +331,6 @@ fun SequenceExerciseDetailPage(
                     ) {
                         val correctedPaths = viewModel.getCorrectImagePathsForTitle(currentItem.title)
 
-                        // Third image (bottom-left)
                         if (correctedPaths.size > 2) {
                             ImageOptionAsset(
                                 imagePath = correctedPaths[2],
@@ -365,7 +342,6 @@ fun SequenceExerciseDetailPage(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        // Fourth image (bottom-right)
                         if (correctedPaths.size > 3) {
                             ImageOptionAsset(
                                 imagePath = correctedPaths[3],
@@ -378,7 +354,6 @@ fun SequenceExerciseDetailPage(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Row with numbers and selected images
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -390,7 +365,6 @@ fun SequenceExerciseDetailPage(
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                // Number
                                 Text(
                                     text = "${i + 1}",
                                     fontSize = 20.sp,
@@ -399,7 +373,6 @@ fun SequenceExerciseDetailPage(
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
-                                // Selected image slot or empty slot
                                 SequenceSlot(
                                     selectedIndex = selectedImages.getOrNull(i),
                                     currentItem = currentItem,
@@ -413,14 +386,12 @@ fun SequenceExerciseDetailPage(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Row with action buttons
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        // Reset button
                         OutlinedButton(
                             onClick = { viewModel.resetSelections() },
                             modifier = Modifier
@@ -444,13 +415,10 @@ fun SequenceExerciseDetailPage(
                             )
                         }
 
-                        // Next button
                         OutlinedButton(
                             onClick = {
-                                // Check if all slots are filled
                                 val allSlotsFilled = selectedImages.none { it == null }
                                 if (allSlotsFilled) {
-                                    // Check if the order is correct and move to the next question
                                     viewModel.submitAnswer()
                                 }
                             },
@@ -472,7 +440,6 @@ fun SequenceExerciseDetailPage(
                     }
                 }
             } else {
-                // No more items
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -493,7 +460,6 @@ fun ImageOptionAsset(
 ) {
     val context = LocalContext.current
 
-    // Use key to force recomposition when the image path changes
     key(imagePath) {
         Box(
             modifier = modifier
@@ -523,7 +489,6 @@ fun ImageOptionAsset(
                 } catch (e: IOException) {
                     Log.e("SequenceExerciseDetailPage", "Error loading image: $imagePath", e)
 
-                    // Try with simplified path
                     try {
                         val simplePath = imagePath.substringAfterLast("/")
                         Log.d("SequenceExerciseDetailPage", "Trying with simpler path: $simplePath")
@@ -547,7 +512,6 @@ fun ImageOptionAsset(
                         .alpha(if (isSelected) 0.5f else 1f)
                 )
             } ?: run {
-                // Fallback if image couldn't be loaded
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -601,10 +565,8 @@ fun SequenceSlot(
             return@Box
         }
 
-        // Use corrected image paths
         val correctedPaths = viewModel.getCorrectImagePathsForTitle(currentItem.title)
 
-        // Validate the index is within range
         if (selectedIndex < 0 || selectedIndex >= correctedPaths.size) {
             Log.e("SequenceSlot", "Invalid image index: $selectedIndex, max: ${correctedPaths.size-1}")
             Box(
@@ -623,11 +585,9 @@ fun SequenceSlot(
             return@Box
         }
 
-        // Get the correct image path for the selected index
         val imagePath = correctedPaths[selectedIndex]
         Log.d("SequenceSlot", "Showing selected image at index $selectedIndex with path: $imagePath")
 
-        // Try to load the bitmap
         var bitmap: android.graphics.Bitmap? = null
         try {
             val assetManager = context.assets
@@ -641,7 +601,6 @@ fun SequenceSlot(
         } catch (e: IOException) {
             Log.e("SequenceSlot", "Error loading image: $imagePath", e)
 
-            // Try with simplified path
             try {
                 val simplePath = imagePath.substringAfterLast("/")
                 Log.d("SequenceSlot", "Trying with simpler path: $simplePath")
@@ -655,7 +614,6 @@ fun SequenceSlot(
             }
         }
 
-        // Display the bitmap or fallback text
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -685,7 +643,6 @@ fun SequenceSlot(
                 }
             }
 
-            // Clear button
             IconButton(
                 onClick = onClear,
                 modifier = Modifier

@@ -1,7 +1,5 @@
 package com.karina.carawicara.ui.screen.therapyHistory
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,12 +28,12 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -60,7 +58,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.UUID
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TherapyResultPage(
@@ -109,15 +106,6 @@ fun TherapyResultPage(
             previousRoute.contains("pelafalanExerciseDetailPage") -> "Pelafalan"
             previousRoute.contains("sequenceExerciseDetailPage") -> "Urutan"
             else -> ""
-        }
-    }
-
-    val therapyName = remember {
-        when {
-            therapyTpye == "Kosakata" -> "Latihan Kosakata: ${getCategoryName(categoryId)}"
-            therapyTpye == "Pelafalan" -> "Latihan Pelafalan: ${getCategoryName(categoryId)}"
-            therapyTpye == "Urutan" -> "Latihan Urutan: ${getCategoryName(categoryId)}"
-            else -> "Terapi: $categoryId"
         }
     }
 
@@ -268,9 +256,9 @@ fun TherapyResultPage(
                         .fillMaxWidth()
                         .height(100.dp),
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Gray,
                         unfocusedBorderColor = Color.Gray,
-                        focusedBorderColor = Color.Gray
                     )
                 )
             }
@@ -452,7 +440,6 @@ fun CheckboxItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoodOption(
     label: String,
@@ -497,18 +484,5 @@ fun MoodOption(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 4.dp)
         )
-    }
-}
-
-fun getCategoryName(categoryId: String): String {
-    return when (categoryId) {
-        "buah" -> "Buah-buahan"
-        "hewan" -> "Hewan"
-        "pakaian" -> "Pakaian"
-        "aktivitas" -> "Aktivitas"
-        "konsonan_m" -> "Konsonan M"
-        "konsonan_b" -> "Konsonan B"
-        "aktivitas_urutan" -> "Urutan Aktivitas"
-        else -> categoryId.replaceFirstChar { it.uppercase() }
     }
 }

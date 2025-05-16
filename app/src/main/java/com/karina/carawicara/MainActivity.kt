@@ -1,11 +1,9 @@
 package com.karina.carawicara
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,12 +21,10 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CaraWicaraTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -50,14 +46,12 @@ class MainActivity : ComponentActivity() {
                 val repository = AppModule.provideFlashcardRepository(applicationContext)
                 val dataInitializer = DataInitializer(applicationContext, repository)
 
-                // Cek apakah database kosong
                 val isEmpty = repository.isDatabaseEmpty()
                 Log.d("MainActivity", "Database kosong: $isEmpty")
 
                 if (isEmpty) {
                     dataInitializer.initializeDatabase()
-                    // Verifikasi inisialisasi database
-                    delay(500) // Beri waktu untuk operasi database
+                    delay(300)
                     val categoryCount = repository.getCategoryCount()
                     val kosakataCount = repository.getKosakataCount()
                     Log.d("MainActivity", "Database setelah inisialisasi - Kategori: $categoryCount, Kosakata: $kosakataCount")
@@ -72,7 +66,6 @@ class MainActivity : ComponentActivity() {
 
     private fun checkAssets() {
         try {
-            // Check database JSON files
             val assetList = assets.list("")
             Log.d("MainActivity", "Asset root: ${assetList?.joinToString()}")
 
@@ -80,7 +73,6 @@ class MainActivity : ComponentActivity() {
                 val dbAssets = assets.list("database")
                 Log.d("MainActivity", "Database assets: ${dbAssets?.joinToString()}")
 
-                // Cek file categories.json
                 if (dbAssets?.contains("categories.json") == true) {
                     val json = assets.open("database/categories.json").bufferedReader().use { it.readText() }
                     Log.d("MainActivity", "Categories JSON: ${json.take(100)}...")
@@ -88,7 +80,6 @@ class MainActivity : ComponentActivity() {
                     Log.e("MainActivity", "categories.json tidak ditemukan!")
                 }
 
-                // Cek file kosakata.json
                 if (dbAssets?.contains("kosakata.json") == true) {
                     val json = assets.open("database/kosakata.json").bufferedReader().use { it.readText() }
                     Log.d("MainActivity", "Kosakata JSON: ${json.take(100)}...")
@@ -96,7 +87,6 @@ class MainActivity : ComponentActivity() {
                     Log.e("MainActivity", "kosakata.json tidak ditemukan!")
                 }
 
-                // Cek file konsonan_m.json
                 if (dbAssets?.contains("konsonan_m.json") == true) {
                     val json = assets.open("database/pelafalan.json").bufferedReader().use { it.readText() }
                     Log.d("MainActivity", "Pelafalan JSON: ${json.take(100)}...")
@@ -104,7 +94,6 @@ class MainActivity : ComponentActivity() {
                     Log.e("MainActivity", "konsonan_m.json tidak ditemukan!")
                 }
 
-                // Cek file sequence.json
                 if (dbAssets?.contains("sequence.json") == true) {
                     val json = assets.open("database/sequence.json").bufferedReader().use { it.readText() }
                     Log.d("MainActivity", "Sequence JSON: ${json.take(100)}...")
@@ -116,12 +105,10 @@ class MainActivity : ComponentActivity() {
                 Log.e("MainActivity", "Folder database tidak ditemukan dalam assets!")
             }
 
-            // Cek folder images
             if (assetList?.contains("images") == true) {
                 val imageRootAssets = assets.list("images")
                 Log.d("MainActivity", "Image root assets: ${imageRootAssets?.joinToString()}")
 
-                // Cek subfolder buah
                 if (imageRootAssets?.contains("buah") == true) {
                     val buahAssets = assets.list("images/buah")
                     Log.d("MainActivity", "Buah images: ${buahAssets?.joinToString()}")

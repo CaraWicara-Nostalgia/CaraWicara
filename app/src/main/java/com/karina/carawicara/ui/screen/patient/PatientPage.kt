@@ -1,8 +1,6 @@
 package com.karina.carawicara.ui.screen.patient
 
 import android.app.Application
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,7 +47,6 @@ import com.karina.carawicara.R
 import com.karina.carawicara.data.Patient
 import com.karina.carawicara.ui.component.BottomNavBar
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PatientPage(
@@ -171,7 +168,6 @@ fun PatientItem(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PatientPagePreview() {

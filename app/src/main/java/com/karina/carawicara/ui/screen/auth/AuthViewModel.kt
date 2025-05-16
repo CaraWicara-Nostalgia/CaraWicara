@@ -11,10 +11,11 @@ import com.karina.carawicara.di.AppModule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import androidx.core.content.edit
 
 sealed class AuthState{
-    object Idle : AuthState()
-    object Loading : AuthState()
+    data object Idle : AuthState()
+    data object Loading : AuthState()
     data class Success(val userId: Long, val user: UserEntity? = null) : AuthState()
     data class Error(val message: String) : AuthState()
 }
@@ -134,7 +135,7 @@ class AuthViewModel(
 
     private fun saveUserId(userId: Long) {
         val sharedPref = getApplication<Application>().getSharedPreferences("user_pref", Application.MODE_PRIVATE)
-        sharedPref.edit().putLong("user_id", userId).apply()
+        sharedPref.edit { putLong("user_id", userId) }
     }
 
     private fun getSavedUserId(): Long {
@@ -144,7 +145,7 @@ class AuthViewModel(
 
     private fun clearSavedUserId() {
         val sharedPref = getApplication<Application>().getSharedPreferences("user_pref", Application.MODE_PRIVATE)
-        sharedPref.edit().remove("user_id").apply()
+        sharedPref.edit { remove("user_id") }
     }
 }
 

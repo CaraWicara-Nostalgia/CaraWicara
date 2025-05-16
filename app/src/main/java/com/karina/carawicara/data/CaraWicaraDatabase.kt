@@ -1,14 +1,10 @@
 package com.karina.carawicara.data
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.karina.carawicara.BooleanConverter
 import com.karina.carawicara.DateConverter
 import com.karina.carawicara.data.dao.CategoryDao
 import com.karina.carawicara.data.dao.KosakataDao
@@ -26,7 +22,6 @@ import com.karina.carawicara.data.entity.PelafalanEntity
 import com.karina.carawicara.data.entity.SequenceEntity
 import com.karina.carawicara.data.entity.TherapyHistoryEntity
 import com.karina.carawicara.data.entity.UserEntity
-import java.time.LocalDate
 
 @Database(
     entities = [
@@ -42,7 +37,7 @@ import java.time.LocalDate
     version = 4,
     exportSchema = false
 )
-@TypeConverters(DateConverter::class, BooleanConverter::class)
+@TypeConverters(DateConverter::class)
 abstract class CaraWicaraDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun kosakataDao(): KosakataDao
@@ -70,18 +65,5 @@ abstract class CaraWicaraDatabase : RoomDatabase() {
                 instance
             }
         }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-class Converters {
-    @TypeConverter
-    fun fromTimestamp(value: Long?): LocalDate? {
-        return value?.let { LocalDate.ofEpochDay(it) }
-    }
-
-    @TypeConverter
-    fun dateToTimestamp(date: LocalDate?): Long? {
-        return date?.toEpochDay()
     }
 }
