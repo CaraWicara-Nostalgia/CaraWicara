@@ -423,9 +423,9 @@ fun PelafalanExerciseDetailPage(
                                     .weight(1f)
                                     .height(56.dp),
                                 shape = RoundedCornerShape(4.dp),
-                                border = BorderStroke(1.dp, Color.Gray),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                                 colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = MaterialTheme.colorScheme.primary
+                                    contentColor = Color.Black
                                 )
                             ) {
                                 Text(
@@ -443,9 +443,9 @@ fun PelafalanExerciseDetailPage(
                                     .weight(1f)
                                     .height(56.dp),
                                 shape = RoundedCornerShape(4.dp),
-                                border = BorderStroke(1.dp, Color.Gray),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                                 colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = MaterialTheme.colorScheme.primary
+                                    contentColor = Color.Black
                                 )
                             ) {
                                 Text(

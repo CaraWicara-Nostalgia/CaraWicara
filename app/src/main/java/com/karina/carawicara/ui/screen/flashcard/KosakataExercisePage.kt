@@ -108,7 +108,7 @@ fun KosakataExercisePage(
             categories.forEach { category ->
                 ExerciseItemCard(
                     title = category.title,
-                    progressPercentage = category.progressPercentage,
+//                    progressPercentage = category.progressPercentage,
                     onClick = {
                         // Tentukan kategori dari judul
                         val categoryId = category.id

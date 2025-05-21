@@ -1,5 +1,6 @@
 package com.karina.carawicara.ui.component
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -18,25 +19,32 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.karina.carawicara.R
+import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseViewModel
+import com.karina.carawicara.ui.screen.flashcard.PelafalanExerciseViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseCard(
     title: String,
     description: String,
-    progress: String,
-    progressValue: Float,
-    onClick: () -> Unit = {}
+    totalExercise: String,
+//    progress: String,
+//    progressValue: Float,
+    onClick: () -> Unit = {},
 ) {
     Card (
         modifier = Modifier
@@ -75,19 +83,24 @@ fun ExerciseCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = progress,
-                    fontSize = 12.sp,
-                    color = Color.Black
+                    text = totalExercise,
+                    fontSize = 14.sp,
+                    color = Color.Gray
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                LinearProgressIndicator(
-                    progress = progressValue,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp),
-                    color = Color(0xFF4A73B9), // Warna biru
-                    trackColor = Color.LightGray,
-                )
+//                Text(
+//                    text = progress,
+//                    fontSize = 12.sp,
+//                    color = Color.Black
+//                )
+//                Spacer(modifier = Modifier.height(4.dp))
+//                LinearProgressIndicator(
+//                    progress = progressValue,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(6.dp),
+//                    color = Color(0xFF4A73B9), // Warna biru
+//                    trackColor = Color.LightGray,
+//                )
             }
             Spacer(modifier = Modifier.width(32.dp))
             Image(
@@ -106,7 +119,6 @@ fun ExerciseCardPreview(){
     ExerciseCard(
         title = "Pelafalan",
         description = "Belajar mengucap dengan benar",
-        progress = "2/5 exercise",
-        progressValue = 0.4f
+        totalExercise = "5 Exercise",
     )
 }

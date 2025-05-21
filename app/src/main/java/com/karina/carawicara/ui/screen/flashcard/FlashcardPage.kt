@@ -38,12 +38,24 @@ fun FlashcardPage(
         factory = FlashcardViewModelFactory(
             application = LocalContext.current.applicationContext as Application
         )
-    )
+    ),
+    kosakataViewModel: PelafalanExerciseViewModel = viewModel(factory = PelafalanExerciseViewModelFactory(
+        application = LocalContext.current.applicationContext as Application,
+    )),
+    pelafalanViewModel: PelafalanExerciseViewModel = viewModel(factory = PelafalanExerciseViewModelFactory(
+        application = LocalContext.current.applicationContext as Application,
+    )),
+    sequenceViewModel: PelafalanExerciseViewModel = viewModel(factory = PelafalanExerciseViewModelFactory(
+        application = LocalContext.current.applicationContext as Application,
+    ))
 ) {
 
-    val pelafalanProgress by flashcardViewModel.pelafalanProgress.collectAsState()
-    val kosakataProgress by flashcardViewModel.kosakataProgress.collectAsState()
-    val sequenceProgress by flashcardViewModel.sequenceProgress.collectAsState()
+//    val pelafalanProgress by flashcardViewModel.pelafalanProgress.collectAsState()
+//    val kosakataProgress by flashcardViewModel.kosakataProgress.collectAsState()
+//    val sequenceProgress by flashcardViewModel.sequenceProgress.collectAsState()
+    val kosakataCategories by kosakataViewModel.categories.collectAsState()
+    val pelafalanCategories by pelafalanViewModel.categories.collectAsState()
+    val sequenceCategories by sequenceViewModel.categories.collectAsState()
 
     LaunchedEffect(Unit) {
         flashcardViewModel.loadAllProgress()
@@ -81,8 +93,9 @@ fun FlashcardPage(
            ExerciseCard(
                title = "Pelafalan",
                description = "Belajar mengucap dengan benar",
-               progress = "${pelafalanProgress.completed}/${pelafalanProgress.total} exercise",
-               progressValue = pelafalanProgress.ratio,
+               totalExercise = "${pelafalanCategories.size} Exercise",
+//               progress = "${pelafalanProgress.completed}/${pelafalanProgress.total} exercise",
+//               progressValue = pelafalanProgress.ratio,
                onClick = {
                    navController.navigate("pelafalanExercisePage")
                }
@@ -93,8 +106,9 @@ fun FlashcardPage(
             ExerciseCard(
                 title = "Kosakata",
                 description = "Belajar kata yang baru",
-                progress = "${kosakataProgress.completed}/${kosakataProgress.total} exercise",
-                progressValue = kosakataProgress.ratio,
+                totalExercise = "${kosakataCategories.size} Exercise",
+//                progress = "${kosakataProgress.completed}/${kosakataProgress.total} exercise",
+//                progressValue = kosakataProgress.ratio,
                 onClick = {
                     navController.navigate("kosakataExercisePage")
                 }
@@ -105,8 +119,9 @@ fun FlashcardPage(
             ExerciseCard(
                 title = "Sequence",
                 description = "Belajar urutan aktivitas",
-                progress = "${sequenceProgress.completed}/${sequenceProgress.total} exercise",
-                progressValue = sequenceProgress.ratio,
+                totalExercise = "${sequenceCategories.size} Exercise",
+//                progress = "${sequenceProgress.completed}/${sequenceProgress.total} exercise",
+//                progressValue = sequenceProgress.ratio,
                 onClick = {
                     navController.navigate("sequenceExercisePage")
                 }

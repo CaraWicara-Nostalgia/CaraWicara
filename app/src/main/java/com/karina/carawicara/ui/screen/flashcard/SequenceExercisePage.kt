@@ -129,7 +129,7 @@ fun SequenceExercisePage(
                 categories.forEach { category ->
                     ExerciseItemCard(
                         title = category.title,
-                        progressPercentage = category.progressPercentage,
+//                        progressPercentage = category.progressPercentage,
                         onClick = {
                             val categoryId = when (category.title) {
                                 "Mengurutkan aktivitas" -> "aktivitas_urutan"

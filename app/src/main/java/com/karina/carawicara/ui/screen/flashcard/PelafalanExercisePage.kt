@@ -107,7 +107,7 @@ fun PelafalanExercisePage(
             categories.forEach { category ->
                 ExerciseItemCard(
                     title = category.title,
-                    progressPercentage = category.progressPercentage,
+//                    progressPercentage = category.progressPercentage,
                     onClick = {
                         val categoryId = category.id
                         Log.d("PelafalanExercisePage", "Category ID: $categoryId")

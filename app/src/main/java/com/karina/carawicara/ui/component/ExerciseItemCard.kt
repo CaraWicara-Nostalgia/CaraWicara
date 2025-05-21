@@ -35,7 +35,7 @@ import com.karina.carawicara.R
 @Composable
 fun ExerciseItemCard(
     title: String,
-    progressPercentage: Int,
+//    progressPercentage: Int,
     onClick: () -> Unit = {}
 ){
     Card(
@@ -80,23 +80,23 @@ fun ExerciseItemCard(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = "$progressPercentage% correct",
-                        fontSize = 12.sp,
-                        color = Color.Gray
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    LinearProgressIndicator(
-                        progress = progressPercentage / 100f,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(4.dp),
-                        color = Color(0xFF4A73B9),
-                        trackColor = Color.LightGray
-
-                    )
+//                    Text(
+//                        text = "$progressPercentage% correct",
+//                        fontSize = 12.sp,
+//                        color = Color.Gray
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(4.dp))
+//
+//                    LinearProgressIndicator(
+//                        progress = progressPercentage / 100f,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(4.dp),
+//                        color = Color(0xFF4A73B9),
+//                        trackColor = Color.LightGray
+//
+//                    )
                 }
             }
             Spacer(modifier = Modifier.width(24.dp))
@@ -115,7 +115,6 @@ fun ExerciseItemCard(
 @Composable
 fun ExerciseItemCardPreview() {
     ExerciseItemCard(
-        title = "Melafalkan konsonan 'm'",
-        progressPercentage = 75
+        title = "Melafalkan konsonan 'm'"
     )
 }
