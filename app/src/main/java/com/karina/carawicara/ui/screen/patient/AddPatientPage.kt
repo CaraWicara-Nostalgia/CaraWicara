@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,7 +77,15 @@ fun AddPatientPage(
         calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH)
     )
-    var dateText by remember { mutableStateOf(newPatientBirthDate?.format(DateTimeFormatter.ofPattern("dd MM yyyy")) ?: "") }
+    var dateText = newPatientBirthDate?.format(DateTimeFormatter.ofPattern("dd MM yyyy")) ?: ""
+
+    val isFormValid by remember {
+        derivedStateOf {
+            newPatientName.isNotBlank() &&
+            newPatientBirthDate != null &&
+            newPatientAddress.isNotBlank()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -106,9 +115,8 @@ fun AddPatientPage(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Form input pasien baru
             Text(
-                text = "Nama",
+                text = "Nama *",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -116,16 +124,25 @@ fun AddPatientPage(
             OutlinedTextField(
                 value = newPatientName,
                 onValueChange = { viewModel.updateNewPatientName(it) },
-                placeholder = { Text("Cody Fisher") },
+                placeholder = { Text("Nama") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
+                isError = newPatientName.isBlank() && newPatientName.isNotEmpty()
             )
+            if (newPatientName.isBlank() && newPatientName.isNotEmpty()) {
+                Text(
+                    text = "Nama tidak boleh kosong",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 4.dp, start = 16.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Tanggal Lahir",
+                text = "Tanggal Lahir *",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -141,7 +158,7 @@ fun AddPatientPage(
                     } catch (_: Exception) {
                     }
                 },
-                placeholder = { Text("14 12 2018") },
+                placeholder = { Text("DD MM YYYY") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 trailingIcon = {
@@ -153,8 +170,17 @@ fun AddPatientPage(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                }
+                },
+                isError = newPatientBirthDate == null && dateText.isNotEmpty()
             )
+            if (newPatientBirthDate == null && dateText.isNotEmpty()) {
+                Text(
+                    text = "Tanggal lahir harus diisi",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 4.dp, start = 16.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -167,7 +193,7 @@ fun AddPatientPage(
             OutlinedTextField(
                 value = if (newPatientBirthDate != null) "${viewModel.calculateAge(newPatientBirthDate!!)} tahun" else "",
                 onValueChange = { },
-                placeholder = { Text("6 tahun") },
+                placeholder = { Text("Umur") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,
@@ -192,8 +218,17 @@ fun AddPatientPage(
                     .height(120.dp),
                 shape = RoundedCornerShape(8.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                maxLines = 4
+                maxLines = 4,
+                isError = newPatientAddress.isBlank() && newPatientAddress.isNotEmpty()
             )
+            if (newPatientAddress.isBlank() && newPatientAddress.isNotEmpty()) {
+                Text(
+                    text = "Alamat tidak boleh kosong",
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 4.dp, start = 16.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -204,12 +239,17 @@ fun AddPatientPage(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = if (isFormValid) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.outline
+                    },
                     contentColor = Color.White
-                )
+                ),
+                enabled = isFormValid
             ) {
                 Text(
-                    text = "Selanjutnya",
+                    text = if (isFormValid) "Selanjutnya" else "Lengkapi Data Terlebih Dahulu",
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }

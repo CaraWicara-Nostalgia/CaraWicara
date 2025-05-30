@@ -27,12 +27,18 @@ import com.karina.carawicara.R
 import com.karina.carawicara.ui.component.BottomNavBar
 import com.karina.carawicara.ui.component.CardHome
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun HomePage(
     navController: NavController,
     patientViewModel: PatientViewModel
 ) {
+
+    LaunchedEffect(Unit) {
+        patientViewModel.resetSelectedPatient()
+    }
+
     Scaffold (
         bottomBar = {
             BottomNavBar(navController = navController)
@@ -79,12 +85,7 @@ fun HomePage(
                         Column {
                             CardHome(
                                 onClick = {
-                                    val selectedPatient = patientViewModel.selectedPatient.value
-                                    if (selectedPatient != null) {
-                                        navController.navigate("flashcardPage")
-                                    } else {
-                                        navController.navigate("patientSelectionForTherapy/flashcardPage")
-                                    } },
+                                    navController.navigate("patientSelectionForTherapy/flashcardPage")},
                                 title = "Flashcard",
                                 description = "Belajar kata melalui gambar"
                             )

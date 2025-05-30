@@ -124,16 +124,8 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        composable(
-            route = "patientSelectionForTherapy/{nextRoute}",
-            arguments = listOf(
-                navArgument("nextRoute") {
-                    type = NavType.StringType
-                }
-            )
-        ) { entry ->
-            val nextRoute = entry.arguments?.getString("nextRoute") ?: "flashcardPage"
-            Log.d("AppNavHost", "Navigating to patientSelectionForTherapy with nextRoute: $nextRoute")
+        composable("patientSelectionForTherapy/{nextRoute}") { backStackEntry ->
+            val nextRoute = backStackEntry.arguments?.getString("nextRoute") ?: "homePage"
             PatientSelectionPage(
                 navController = navController,
                 viewModel = patientViewModel,
@@ -175,7 +167,7 @@ fun AppNavHost(navController: NavHostController) {
 
         // ----- Flashcard Routes -----
 
-        composable("flashcardPage") { FlashcardPage(navController) }
+        composable("flashcardPage") { FlashcardPage(navController = navController, patientViewModel = patientViewModel) }
 
         composable("pelafalanExercisePage") { PelafalanExercisePage(navController) }
 

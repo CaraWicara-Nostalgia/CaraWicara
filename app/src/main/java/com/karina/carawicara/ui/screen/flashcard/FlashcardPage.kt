@@ -1,6 +1,7 @@
 package com.karina.carawicara.ui.screen.flashcard
 
 import android.app.Application
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,16 +11,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -29,11 +35,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.karina.carawicara.ui.component.ExerciseCard
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.karina.carawicara.ui.screen.patient.PatientViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardPage(
     navController: NavController,
+    patientViewModel: PatientViewModel,
     flashcardViewModel: FlashcardViewModel = viewModel(
         factory = FlashcardViewModelFactory(
             application = LocalContext.current.applicationContext as Application
@@ -56,10 +64,51 @@ fun FlashcardPage(
     val kosakataCategories by kosakataViewModel.categories.collectAsState()
     val pelafalanCategories by pelafalanViewModel.categories.collectAsState()
     val sequenceCategories by sequenceViewModel.categories.collectAsState()
+    val selectedPatient by patientViewModel.selectedPatient.collectAsState()
+
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(selectedPatient) {
+        if (selectedPatient == null) {
+            navController.navigate("patientSelectionForTherapy/flashcardPage") {
+                popUpTo("homePage")
+            }
+        }
+    }
+
+    BackHandler {
+        showExitDialog = true
+    }
 
     LaunchedEffect(Unit) {
         flashcardViewModel.loadAllProgress()
     }
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Keluar dari Sesi Terapi?") },
+            text = { Text("Apakah Anda yakin ingin mengakhiri sesi terapi ini?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        patientViewModel.resetSelectedPatient()
+                        navController.navigate("homePage") {
+                            popUpTo("homePage") { inclusive = true }
+                        }
+                    }
+                ) {
+                    Text("Ya")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) {
+                    Text("Tidak")
+                }
+            }
+        )
+    }
+
 
     Scaffold (
         topBar = {
@@ -128,10 +177,4 @@ fun FlashcardPage(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun FlashCardPagePreview(){
-    FlashcardPage(navController = rememberNavController())
 }

@@ -54,9 +54,13 @@ class PatientViewModel(
     val languageAbilities: StateFlow<List<LanguageAbility>> = _languageAbilities
 
     private val _selectedPatientId = MutableStateFlow<String?>(null)
+    val selectedPatientId: StateFlow<String?> = _selectedPatientId
 
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
     val selectedPatient: StateFlow<Patient?> = _selectedPatient
+
+    private val _isActiveSession = MutableStateFlow(false)
+    val isActiveSession: StateFlow<Boolean> = _isActiveSession
 
     private val _allTherapyHistories = MutableStateFlow<List<TherapyHistory>>(emptyList())
 
@@ -208,11 +212,13 @@ class PatientViewModel(
 
     fun setSelectedPatientId(patientId: String) {
         _selectedPatientId.value = patientId
+        _isActiveSession.value = true
 
         viewModelScope.launch {
             try {
                 val patient = repository.getPatientById(patientId)
                 _selectedPatient.value = patient
+                Log.d("PatientViewModel", "Selected patient: ${patient?.name}")
             } catch (e: Exception) {
                 Log.e("PatientViewModel", "Error loading selected patient: ${e.message}", e)
             }
@@ -241,6 +247,18 @@ class PatientViewModel(
                 Log.e("PatientViewModel", "Error deleting therapy history: ${e.message}", e)
             }
         }
+    }
+
+    fun resetSelectedPatient() {
+        _selectedPatientId.value = null
+        _selectedPatient.value = null
+        _isActiveSession.value = false
+        Log.d("PatientViewModel", "Selected patient has been reset")
+    }
+
+    fun endTherapySession() {
+        _isActiveSession.value = false
+        Log.d("PatientViewModel", "Therapy session ended")
     }
 }
 
