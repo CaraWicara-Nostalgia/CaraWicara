@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,17 +65,31 @@ fun DevelopmentDetailPage(
     patientId: String,
     viewModel: PatientViewModel
 ){
-    val therapyHistories by viewModel.getTherapyHistoriesForPatient(patientId).collectAsState(initial = emptyList())
-    val patients by viewModel.patients.collectAsState()
-    val patient = patients.find { it.id == patientId }
-
-    val kosakataData = calculateProgressData(therapyHistories, "Kosakata")
-    val pelafalanData = calculateProgressData(therapyHistories, "Pelafalan")
-    val sequenceData = calculateProgressData(therapyHistories, "Sequence")
+    LaunchedEffect(patientId) {
+        viewModel.refreshTherapyHistories(patientId)
+    }
 
     var monthExpanded by remember { mutableStateOf(false) }
     var selectedMonth by remember { mutableStateOf(LocalDate.now().month) }
     var expandedSessionId by remember { mutableStateOf<Int?>(null) }
+
+    val therapyHistories by viewModel.getTherapyHistoriesForPatient(patientId).collectAsState(initial = emptyList())
+    val patients by viewModel.patients.collectAsState()
+    val patient = patients.find { it.id == patientId }
+
+    val filteredTherapyHistories = remember(therapyHistories, selectedMonth) {
+        therapyHistories.filter { it.date.month == selectedMonth }
+    }
+
+    val kosakataData = remember(therapyHistories)  {
+        calculateProgressData(therapyHistories, "Kosakata")
+    }
+    val pelafalanData = remember(therapyHistories) {
+        calculateProgressData(therapyHistories, "Pelafalan")
+    }
+    val sequenceData = remember(therapyHistories) {
+        calculateProgressData(therapyHistories, "Sequence")
+    }
 
     val weeklySessionData = remember(therapyHistories, selectedMonth) {
         convertTherapyHistoriesToWeeklySessions(therapyHistories.filter {
@@ -180,30 +195,22 @@ fun DevelopmentDetailPage(
                         )
 
                         StatisticItem(
-                            label = "Minggu Ini",
-                            value = countTherapiesInCurrentWeek(therapyHistories).toString(),
+                            label = if (selectedMonth == LocalDate.now().month) "Minggu Ini" else "Minggu Terakhir",
+                            value = if (selectedMonth == LocalDate.now().month) {
+                                countTherapiesInCurrentWeek(filteredTherapyHistories).toString()
+                            } else {
+                                countTherapiesInLastWeekOfMonth(filteredTherapyHistories, selectedMonth).toString()
+                            },
                             color = Color(0xFF4CAF50)
                         )
 
                         StatisticItem(
-                            label = "Bulan Ini",
-                            value = therapyHistories.count { it.date.month == LocalDate.now().month }.toString(),
+                            label = "Rata-rata/Minggu",
+                            value = calculateAveragePerWeek(filteredTherapyHistories).toString(),
                             color = Color(0xFF2196F3)
                         )
                     }
                 }
-            }
-
-            // Legend at the bottom
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                LegendItemDetail(color = MaterialTheme.colorScheme.primary, text = "Pelafalan")
-                LegendItemDetail(color = Color(0xFF4CAF50), text = "Kosakata")
-                LegendItemDetail(color = Color(0xFF2196F3), text = "Sequence")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -614,16 +621,22 @@ fun LegendItemDetail(color: Color, text: String) {
 }
 
 private fun convertTherapyHistoriesToWeeklySessions(histories: List<TherapyHistory>): List<WeeklySession> {
+    if (histories.isEmpty()) return emptyList()
+
     val groupedByWeek = histories.groupBy { history ->
-        (history.date.dayOfMonth - 1) / 7 + 1
+        val dayOfMonth = history.date.dayOfMonth
+        ((dayOfMonth - 1) / 7) + 1
     }
 
     return groupedByWeek.map { (week, weekHistories) ->
         val latestDate = weekHistories.maxByOrNull { it.date }?.date ?: LocalDate.now()
 
-        val results = weekHistories.associate { history ->
-            history.therapyType to "${history.score}/${history.totalQuestions}"
-        }
+        val results = weekHistories
+            .groupBy { it.therapyType }
+            .mapValues { (_, typeHistories) ->
+                val latest = typeHistories.maxByOrNull { it.date }!!
+                "${latest.score}/${latest.totalQuestions}"
+            }
 
         WeeklySession(
             date = latestDate,
@@ -651,6 +664,29 @@ fun WeekLabel(week: Int) {
             color = Color.Gray
         )
     }
+}
+
+private fun countTherapiesInLastWeekOfMonth(histories: List<TherapyHistory>, month: Month): Int {
+    if (histories.isEmpty()) return 0
+
+    val lastDate = histories.maxByOrNull { it.date }?.date ?: return 0
+    val startOfLastWeek = lastDate.minusDays(6)
+
+    return histories.count { history ->
+        history.date.isAfter(startOfLastWeek.minusDays(1)) &&
+                history.date.isBefore(lastDate.plusDays(1))
+    }
+}
+
+private fun calculateAveragePerWeek(histories: List<TherapyHistory>): Int {
+    if (histories.isEmpty()) return 0
+
+    val weekCount = histories.groupBy { history ->
+        val dayOfMonth = history.date.dayOfMonth
+        ((dayOfMonth - 1) / 7) + 1
+    }.size
+
+    return if (weekCount > 0) histories.size / weekCount else 0
 }
 
 // Data class for weekly sessions

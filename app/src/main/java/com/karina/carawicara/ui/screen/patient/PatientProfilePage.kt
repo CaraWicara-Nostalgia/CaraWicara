@@ -694,29 +694,25 @@ fun formatMonth(month: Month): String {
     }
 }
 
-fun calculateProgressData(histories: List<TherapyHistory>, therapyType: String): List<Float> {
-    val filteredHistories = histories.filter { it.therapyType.contains(therapyType, ignoreCase = true) }
+fun calculateProgressData(
+    therapyHistories: List<TherapyHistory>,
+    therapyType: String
+): List<Float> {
+    val filteredHistories = therapyHistories.filter { it.therapyType == therapyType }
 
     if (filteredHistories.isEmpty()) {
         return emptyList()
     }
 
-    val weeklyData = Array(4) { 0f }.toMutableList()
-    val weeklyCount = Array(4) { 0 }.toMutableList()
-
-    val today = LocalDate.now()
-
-    filteredHistories.forEach { history ->
-        if (history.date.month == today.month) {
-            val dayDifference = history.date.dayOfMonth - 1
-            val weekIndex = (dayDifference / 7).coerceIn(0, 3)
-
-            weeklyData[weekIndex] = weeklyData[weekIndex] + history.progressPercentage
-            weeklyCount[weekIndex] = weeklyCount[weekIndex] + 1
+    val dailyScores = filteredHistories
+        .groupBy { it.date }
+        .mapValues { (_, histories) ->
+            val latest = histories.maxByOrNull { it.date } ?: histories.first()
+            (latest.score.toFloat() / latest.totalQuestions.toFloat()) * 100f
         }
-    }
+        .toList()
+        .sortedBy { it.first }
+        .map { it.second }
 
-    return weeklyData.mapIndexed { index, sum ->
-        if (weeklyCount[index] > 0) sum / weeklyCount[index] else 0f
-    }
+    return dailyScores
 }

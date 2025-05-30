@@ -260,6 +260,12 @@ class PatientViewModel(
         _isActiveSession.value = false
         Log.d("PatientViewModel", "Therapy session ended")
     }
+
+    suspend fun refreshTherapyHistories(patientId: String) {
+        viewModelScope.launch {
+            val freshData = repository.getTherapyHistoriesForPatient(patientId)
+        }
+    }
 }
 
 class PatientViewModelFactory(
