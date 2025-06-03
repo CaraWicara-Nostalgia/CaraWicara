@@ -65,7 +65,6 @@ class PatientViewModel(
     private val _allTherapyHistories = MutableStateFlow<List<TherapyHistory>>(emptyList())
 
     init {
-        // Load all therapy histories when the view model is initialized
         viewModelScope.launch {
             try {
                 repository.getAllTherapyHistories().collect { histories ->
@@ -146,17 +145,35 @@ class PatientViewModel(
         }
     }
 
+    fun updatePatient(updatedPatient: Patient) {
+        viewModelScope.launch {
+            try {
+                repository.updatePatient(updatedPatient)
+
+                if (_selectedPatient.value?.id == updatedPatient.id) {
+                    _selectedPatient.value = updatedPatient
+                }
+
+                Log.d("PatientViewModel", "Patient updated successfully: ${updatedPatient.name}")
+            } catch (e: Exception) {
+                Log.e("PatientViewModel", "Error updating patient: ${e.message}", e)
+                throw e
+            }
+        }
+    }
+
     fun deletePatient(patientId: String) {
         viewModelScope.launch {
             try {
-                // Delete all therapy histories for this patient first
                 repository.deleteTherapyHistoriesForPatient(patientId)
 
-                // Then delete the patient
                 repository.deletePatient(patientId)
 
-                // Clear the cache for this patient
                 therapyHistoriesCache.remove(patientId)
+
+                if (_selectedPatient.value?.id == patientId) {
+                    resetSelectedPatient()
+                }
 
                 Log.d("PatientViewModel", "Patient and their therapy histories deleted successfully")
             } catch (e: Exception) {
@@ -187,7 +204,6 @@ class PatientViewModel(
             try {
                 repository.insertTherapyHistory(therapyHistory)
 
-                // Update the cache
                 val patientId = therapyHistory.patientId
                 therapyHistoriesCache.remove(patientId)
 
@@ -199,12 +215,9 @@ class PatientViewModel(
     }
 
     fun getTherapyHistoriesForPatient(patientId: String): Flow<List<TherapyHistory>> {
-        // Check cache first
         if (therapyHistoriesCache.containsKey(patientId)) {
             return therapyHistoriesCache[patientId]!!
         }
-
-        // Not in cache, fetch from repository
         val historiesFlow = repository.getTherapyHistoriesForPatient(patientId)
         therapyHistoriesCache[patientId] = historiesFlow
         return historiesFlow
@@ -238,8 +251,6 @@ class PatientViewModel(
             try {
                 repository.deleteTherapyHistory(historyId)
 
-                // Clear all cache since we don't know which patient this belongs to
-                // In a real app, you would maintain a more efficient cache invalidation strategy
                 therapyHistoriesCache.clear()
 
                 Log.d("PatientViewModel", "Therapy history deleted successfully")

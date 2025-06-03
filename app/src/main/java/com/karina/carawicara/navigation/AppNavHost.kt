@@ -33,6 +33,7 @@ import com.karina.carawicara.ui.screen.therapyHistory.TherapyResultPage
 import com.karina.carawicara.ui.screen.paduGambar.PaduGambarPage
 import com.karina.carawicara.ui.screen.patient.AddPatientPage
 import com.karina.carawicara.ui.screen.patient.DevelopmentDetailPage
+import com.karina.carawicara.ui.screen.patient.EditPatientPage
 import com.karina.carawicara.ui.screen.patient.LanguageAbilityPage
 import com.karina.carawicara.ui.screen.patient.PatientPage
 import com.karina.carawicara.ui.screen.patient.PatientProfilePage
@@ -102,6 +103,15 @@ fun AppNavHost(navController: NavHostController) {
         ) { entry ->
             val patientId = entry.arguments?.getString("patientId") ?: ""
             PatientProfilePage(
+                navController = navController,
+                patientId = patientId,
+                viewModel = patientViewModel
+            )
+        }
+
+        composable("editPatientPage/{patientId}") { backStackEntry ->
+            val patientId = backStackEntry.arguments?.getString("patientId") ?: ""
+            EditPatientPage(
                 navController = navController,
                 patientId = patientId,
                 viewModel = patientViewModel

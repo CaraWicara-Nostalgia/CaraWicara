@@ -153,7 +153,11 @@ fun PatientProfilePage(
                             contentDescription = "Delete"
                         )
                     }
-                    IconButton(onClick = { /* Edit patient profile */ }) {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("editPatientPage/$patientId")
+                        }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit"

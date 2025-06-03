@@ -45,13 +45,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.karina.carawicara.R
 import com.karina.carawicara.data.TherapyHistory
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import kotlinx.coroutines.launch
@@ -452,29 +450,29 @@ fun MoodOption(
     ) {
         Surface(
             shape = CircleShape,
-            border = BorderStroke(1.dp, if (selected) Color.Black else Color.Gray),
-            color = if (selected) Color.LightGray else Color.White,
+            border = BorderStroke(
+                width = 2.dp,
+                color = if (selected) MaterialTheme.colorScheme.primary else Color.Gray
+            ),
+            color = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.White,
             modifier = Modifier
                 .size(60.dp)
                 .padding(4.dp),
             onClick = onClick
         ) {
             Box(contentAlignment = Alignment.Center) {
-                val iconRes = when (label) {
-                    "Senang" -> R.drawable.ic_senang
-                    "Biasa" -> R.drawable.ic_biasa
-                    "Tidak Fokus" -> R.drawable.ic_tidak_fokus
-                    else -> null
+                val emoji = when (label) {
+                    "Senang" -> "😊"
+                    "Biasa" -> "😐"
+                    "Tidak Fokus" -> "😕"
+                    else -> "❓"
                 }
 
-                if (iconRes != null) {
-                    Icon(
-                        painter = painterResource(id = iconRes),
-                        contentDescription = "Mood $label",
-                        tint = if (selected) MaterialTheme.colorScheme.primary else Color.Gray,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                Text(
+                    text = emoji,
+                    fontSize = 28.sp,
+                    textAlign = TextAlign.Center
+                )
             }
         }
 
@@ -482,6 +480,8 @@ fun MoodOption(
             text = label,
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            color = if (selected) MaterialTheme.colorScheme.primary else Color.Gray,
             modifier = Modifier.padding(top = 4.dp)
         )
     }
