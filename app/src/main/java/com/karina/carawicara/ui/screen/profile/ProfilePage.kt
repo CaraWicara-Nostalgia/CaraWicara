@@ -1,12 +1,13 @@
-package com.karina.carawicara.ui.screen.profile
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.*
@@ -47,14 +48,12 @@ fun ProfilePage(
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier
-                    .padding(8.dp),
+                modifier = Modifier.padding(8.dp),
                 title = {
                     Image(
                         painter = painterResource(id = R.drawable.logo_color),
                         contentDescription = "CaraWicara Logo",
-                        modifier = Modifier
-                            .height(32.dp),
+                        modifier = Modifier.height(32.dp),
                         contentScale = ContentScale.Fit
                     )
                 }
@@ -68,7 +67,8 @@ fun ProfilePage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             // Profile section
             Row(
@@ -90,7 +90,6 @@ fun ProfilePage(
                     )
                 }
 
-                // User email and role
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -113,6 +112,45 @@ fun ProfilePage(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // About section
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate("aboutPage") }
+                    .padding(vertical = 8.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "About",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Text(
+                    text = "About & Credits",
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp)
+                )
+
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = "About",
+                    tint = Color.Black
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Logout option
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -121,7 +159,6 @@ fun ProfilePage(
                     .clickable { showLogoutDialog = true }
                     .padding(vertical = 8.dp)
             ) {
-                // Logout icon placeholder (X in a box)
                 Box(
                     modifier = Modifier
                         .size(60.dp)
@@ -153,6 +190,7 @@ fun ProfilePage(
         }
     }
 
+    // Logout Dialog
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },

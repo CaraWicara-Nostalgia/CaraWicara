@@ -1,7 +1,7 @@
 package com.karina.carawicara.navigation
 
+import ProfilePage
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.karina.carawicara.R
-import com.karina.carawicara.ui.screen.profile.ProfilePage
 import com.karina.carawicara.ui.screen.SplashScreen
 import com.karina.carawicara.ui.screen.auth.LoginPage
 import com.karina.carawicara.ui.screen.flashcard.FlashcardPage
@@ -40,6 +39,7 @@ import com.karina.carawicara.ui.screen.patient.PatientProfilePage
 import com.karina.carawicara.ui.screen.patient.PatientSelectionPage
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import com.karina.carawicara.ui.screen.patient.PatientViewModelFactory
+import com.karina.carawicara.ui.screen.profile.AboutPage
 import com.karina.carawicara.ui.screen.therapyHistory.TherapyHistoryDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraDetailPage
 import com.karina.carawicara.ui.screen.pustakaWicara.PustakaWicaraPage
@@ -174,6 +174,8 @@ fun AppNavHost(navController: NavHostController) {
         // ----- Profile Routes -----
 
         composable("profilePage") { ProfilePage(navController) }
+
+        composable("aboutPage") { AboutPage(navController) }
 
         // ----- Flashcard Routes -----
 
