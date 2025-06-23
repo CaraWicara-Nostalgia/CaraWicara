@@ -81,7 +81,7 @@ fun KosakataExerciseDetailPage(
     val score by viewModel.score.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    var isLoading by remember { mutableStateOf(true) }
+    val isLoading by viewModel.isLoading.collectAsState()
     var isFlipped by remember { mutableStateOf(false) }
 
     val rotation by animateFloatAsState(
@@ -93,43 +93,31 @@ fun KosakataExerciseDetailPage(
         label = "card_flip"
     )
 
-    // Check loading state
-    LaunchedEffect(currentFlashcards) {
-        Log.d("KosakataExerciseDetailPage", "Current flashcards size: ${currentFlashcards.size}")
-        if (currentFlashcards.isNotEmpty()) {
-            isLoading = false
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        delay(5000)
-        if (isLoading) {
-            Log.w("KosakataExerciseDetailPage", "Loading took too long, showing error message")
-            isLoading = false
-        }
-    }
-
     // Reset flip state when index changes
     LaunchedEffect(currentIndex) {
         isFlipped = false
     }
 
-    // Efek untuk menangani penyelesaian latihan
-    LaunchedEffect(isExerciseCompleted) {
-        if (isExerciseCompleted) {
-            // Navigate to result page
-            navController.navigate("therapyResultPage/$score/${currentFlashcards.size}")
-            viewModel.resetExercise()
-        }
-    }
-
     // Set current category when page is loaded
     LaunchedEffect(category) {
         Log.d("KosakataExerciseDetailPage", "Category from navigation: $category")
-        isLoading = true
-        if (!category.isNullOrEmpty()) {
+        if (!category.isNullOrEmpty() && currentFlashcards.isEmpty()) {
             Log.d("KosakataExerciseDetailPage", "Setting current category: $category")
             viewModel.setCurrentCategory(category)
+        } else if (currentFlashcards.isNotEmpty()) {
+            viewModel.resetLoadingState()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+        savedStateHandle?.get<Boolean>("fromAssessment")?.let { fromAssessment ->
+            if (fromAssessment) {
+                Log.d("KosakataExerciseDetailPage", "Navigated from Assessment Page")
+                viewModel.moveToNextCard()
+                viewModel.resetLoadingState()
+                savedStateHandle.remove<Boolean>("fromAssessment")
+            }
         }
     }
 
@@ -425,7 +413,11 @@ fun KosakataExerciseDetailPage(
                             // Tombol BENAR
                             OutlinedButton(
                                 onClick = {
-                                    viewModel.handleCorrectAnswer()
+                                    navController.currentBackStackEntry?.savedStateHandle?.set("fromAssessment", true)
+                                    val currentCards = currentFlashcards[currentIndex]
+                                    navController.navigate(
+                                        "cardAssessmentPage/${currentCards.word}/$currentIndex/${currentFlashcards.size}/true"
+                                    )
                                 },
                                 modifier = Modifier
                                     .weight(1f)
@@ -446,7 +438,11 @@ fun KosakataExerciseDetailPage(
                             // Tombol SALAH
                             OutlinedButton(
                                 onClick = {
-                                    viewModel.handleWrongAnswer()
+                                    navController.currentBackStackEntry?.savedStateHandle?.set("fromAssessment", true)
+                                    val currentCards = currentFlashcards[currentIndex]
+                                    navController.navigate(
+                                        "cardAssessmentPage/${currentCards.word}/$currentIndex/${currentFlashcards.size}/false"
+                                    )
                                 },
                                 modifier = Modifier
                                     .weight(1f)

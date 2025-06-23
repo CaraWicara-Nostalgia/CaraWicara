@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.karina.carawicara.data.CardAssessment
 import com.karina.carawicara.data.FlashcardKosakataItem
+import com.karina.carawicara.data.SessionAssessment
 import com.karina.carawicara.data.entity.KosakataEntity
 import com.karina.carawicara.data.repository.FlashcardRepository
 import com.karina.carawicara.di.AppModule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -42,6 +45,12 @@ class KosakataExerciseViewModel(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val _sessionAssessment = MutableStateFlow(SessionAssessment())
+    val sessionAssessment: StateFlow<SessionAssessment> = _sessionAssessment.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     init {
         loadAllFlashcards()
@@ -126,6 +135,7 @@ class KosakataExerciseViewModel(
         Log.d("KosakataExerciseViewModel", "Setting current category: $category")
         _currentCategory.value = category
         _errorMessage.value = null
+        _isLoading.value = true
 
         _currentIndex.value = 0
         _score.value = 0
@@ -139,12 +149,14 @@ class KosakataExerciseViewModel(
                 if (count == 0) {
                     _errorMessage.value = "Tidak ada kosakata dalam kategori '$category'"
                     _currentFlashcards.value = emptyList()
+                    _isLoading.value = false
                     return@launch
                 }
                 repository.getKosakataByCategory(category)
                     .catch { e ->
                         Log.e("KosakataExerciseViewModel", "Error loading from database", e)
                         _errorMessage.value = "Error: ${e.message}"
+                        _isLoading.value = false
                         loadFlashcardsFromJson(category)
                     }
                     .collect { entityList ->
@@ -174,6 +186,7 @@ class KosakataExerciseViewModel(
                             limitedItems.forEachIndexed { index, item ->
                                 Log.d("KosakataExerciseViewModel", "[$index] ${item.word}, ${item.imageRes}")
                             }
+                            _isLoading.value = false
                         } else {
                             Log.w("KosakataExerciseViewModel", "Tidak ada data dari database, coba JSON")
                             _errorMessage.value = "Tidak ada flashcard tersedia di database"
@@ -183,6 +196,7 @@ class KosakataExerciseViewModel(
             } catch (e: Exception) {
                 Log.e("KosakataExerciseViewModel", "Error umum", e)
                 _errorMessage.value = "Error: ${e.message}"
+                _isLoading.value = false
                 loadFlashcardsFromJson(category)
             }
         }
@@ -253,8 +267,10 @@ class KosakataExerciseViewModel(
                 Log.e("KosakataExerciseViewModel", "Error parsing JSON", e)
                 loadDummyFlashcards(category)
             }
+            _isLoading.value = false
         } catch (e: Exception) {
             Log.e("KosakataExerciseViewModel", "Error loading flashcards from JSON", e)
+            _isLoading.value = false
             loadDummyFlashcards(category)
         }
     }
@@ -313,10 +329,12 @@ class KosakataExerciseViewModel(
         if (dummyFlashcards.isNotEmpty()) {
             _currentFlashcards.value = dummyFlashcards
             _errorMessage.value = "Menggunakan data dummy untuk kategori $category (mode pengembangan)"
+            _isLoading.value = false
             Log.d("KosakataExerciseViewModel", "Loaded ${dummyFlashcards.size} dummy flashcards for category: $category")
         } else {
             _currentFlashcards.value = emptyList()
             _errorMessage.value = "Tidak ditemukan flashcard untuk kategori $category"
+            _isLoading.value = false
             Log.e("KosakataExerciseViewModel", "No dummy flashcards for category: $category")
         }
     }
@@ -407,7 +425,10 @@ class KosakataExerciseViewModel(
         Log.d("KosakataExerciseViewModel", "Current Category: ${currentCategory.value}")
         Log.d("KosakataExerciseViewModel", "Category Count: ${categories.value.size}")
         Log.d("KosakataExerciseViewModel", "Categories: ${categories.value.map { it.title }}")
-        Log.d("KosakataExerciseViewModel", "Current Flashcards Count: ${currentFlashcards.value.size}")
+        Log.d(
+            "KosakataExerciseViewModel",
+            "Current Flashcards Count: ${currentFlashcards.value.size}"
+        )
         Log.d("KosakataExerciseViewModel", "Current Index: ${currentIndex.value}")
         Log.d("KosakataExerciseViewModel", "Error Message: ${errorMessage.value}")
 
@@ -435,6 +456,19 @@ class KosakataExerciseViewModel(
 
         Log.d("KosakataExerciseViewModel", "==== END DEBUG INFO ====")
     }
+
+    fun moveToNextCard() {
+        if (_currentIndex.value < _currentFlashcards.value.size - 1) {
+            _currentIndex.value += 1
+            Log.d("KosakataExerciseViewModel", "Moving to next card. New index: ${_currentIndex.value}")
+        } else {
+            Log.d("KosakataExerciseViewModel", "Reached end of cards")
+        }
+    }
+
+    fun resetLoadingState() {
+        _isLoading.value = false
+    }
 }
 
 data class KosakataExerciseCategory(
@@ -456,6 +490,39 @@ class KosakataExerciseViewModelFactory(
                 application,
                 AppModule.provideFlashcardRepository(application)
             ) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class AssessmentViewModel : ViewModel() {
+    private val _sessionAssessment = MutableStateFlow(SessionAssessment())
+    val sessionAssessment: StateFlow<SessionAssessment> = _sessionAssessment.asStateFlow()
+
+    fun addCardAssessment(assessment: CardAssessment) {
+        val current = _sessionAssessment.value
+        val updatedAssessments = current.cardAssessments + assessment
+        val totalCorrect = updatedAssessments.count { it.isCorrect }
+
+        _sessionAssessment.value = SessionAssessment(
+            cardAssessments = updatedAssessments,
+            totalCorrect = totalCorrect,
+            totalCards = updatedAssessments.size
+        )
+    }
+
+    fun resetSession() {
+        _sessionAssessment.value = SessionAssessment()
+    }
+}
+
+class AssessmentViewModelFactory(
+    private val application: Application
+) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AssessmentViewModel::class.java)) {
+            return AssessmentViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -3,6 +3,9 @@ package com.karina.carawicara.navigation
 import ProfilePage
 import android.app.Application
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -11,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.karina.carawicara.R
+import com.karina.carawicara.data.SessionAssessment
 import com.karina.carawicara.ui.screen.SplashScreen
 import com.karina.carawicara.ui.screen.auth.LoginPage
 import com.karina.carawicara.ui.screen.flashcard.FlashcardPage
@@ -20,6 +24,9 @@ import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuRecordPage
 import com.karina.carawicara.ui.screen.kenaliAku.KenaliAkuResultPage
 import com.karina.carawicara.ui.screen.auth.OnBoardingPage
 import com.karina.carawicara.ui.screen.auth.RegisterPage
+import com.karina.carawicara.ui.screen.flashcard.AssessmentViewModel
+import com.karina.carawicara.ui.screen.flashcard.AssessmentViewModelFactory
+import com.karina.carawicara.ui.screen.flashcard.CardAssessmentPage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExerciseDetailPage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExercisePage
 import com.karina.carawicara.ui.screen.flashcard.KosakataExerciseViewModelFactory
@@ -53,6 +60,12 @@ fun AppNavHost(navController: NavHostController) {
 
     val patientViewModel: PatientViewModel = viewModel(
         factory = PatientViewModelFactory(
+            application = LocalContext.current.applicationContext as Application
+        )
+    )
+
+    val assessmentViewModel: AssessmentViewModel = viewModel(
+        factory = AssessmentViewModelFactory(
             application = LocalContext.current.applicationContext as Application
         )
     )
@@ -256,28 +269,73 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable("therapyResultPage") {
+            val sessionAssessment by assessmentViewModel.sessionAssessment.collectAsState()
+
             TherapyResultPage(
                 navController = navController,
+                sessionAssessment = sessionAssessment,
+                patientViewModel = patientViewModel
+            )
+        }
+
+        composable("therapyResultPage/{score}/{totalQuestions}",
+        ) { backStackEntry ->
+            val score = backStackEntry.arguments?.getInt("score") ?: 0
+            val totalQuestions = backStackEntry.arguments?.getInt("totalQuestions") ?: 10
+
+            val simpleAssessment = remember {
+                SessionAssessment(
+                    cardAssessments = emptyList(),
+                    totalCorrect = score,
+                    totalCards = totalQuestions
+                )
+            }
+
+            TherapyResultPage(
+                navController = navController,
+                sessionAssessment = simpleAssessment,
                 patientViewModel = patientViewModel
             )
         }
 
         composable(
-            "therapyResultPage/{score}/{totalQuestions}",
+            "cardAssessmentPage/{cardWord}/{cardIndex}/{totalCards}/{isCorrect}",
             arguments = listOf(
-                navArgument("score") { type = NavType.IntType; defaultValue = 0 },
-                navArgument("totalQuestions") { type = NavType.IntType; defaultValue = 10 },
-                navArgument("patientId") { type = NavType.StringType; defaultValue = "none" }
+                navArgument("cardWord") { type = NavType.StringType },
+                navArgument("cardIndex") { type = NavType.IntType },
+                navArgument("totalCards") { type = NavType.IntType },
+                navArgument("isCorrect") { type = NavType.BoolType }
             )
-        ) { backStackEntry ->
-            val score = backStackEntry.arguments?.getInt("score") ?: 0
-            val totalQuestions = backStackEntry.arguments?.getInt("totalQuestions") ?: 10
+        ) { navBackStackEntry ->
+            val cardWord = navBackStackEntry.arguments?.getString("cardWord") ?: ""
+            val cardIndex = navBackStackEntry.arguments?.getInt("cardIndex") ?: 0
+            val totalCards = navBackStackEntry.arguments?.getInt("totalCards") ?: 0
+            val isCorrect = navBackStackEntry.arguments?.getBoolean("isCorrect") ?: false
 
-            TherapyResultPage(
+            CardAssessmentPage(
                 navController = navController,
-                score = score,
-                totalQuestions = totalQuestions,
-                patientViewModel = patientViewModel
+                cardWord = cardWord,
+                cardIndex = cardIndex,
+                totalCards = totalCards,
+                isCorrect = isCorrect,
+                onAssessmentComplete = { assessment ->
+                    assessmentViewModel.addCardAssessment(assessment)
+
+                    if (cardIndex + 1 < totalCards) {
+                        val categoryRoute = navController.previousBackStackEntry?.destination?.route
+                        if (categoryRoute?.contains("kosakataExerciseDetailPage") == true) {
+                            navController.popBackStack()
+                        } else {
+                            navController.navigate("kosakataExerciseDetailPage") {
+                                popUpTo("cardAssessmentPage") { inclusive = true }
+                            }
+                        }
+                    } else {
+                        navController.navigate("therapyResultPage") {
+                            popUpTo("cardAssessmentPage") { inclusive = true }
+                        }
+                    }
+                }
             )
         }
 

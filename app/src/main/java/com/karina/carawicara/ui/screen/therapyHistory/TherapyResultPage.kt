@@ -19,6 +19,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,11 +47,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.karina.carawicara.data.SessionAssessment
 import com.karina.carawicara.data.TherapyHistory
 import com.karina.carawicara.ui.screen.patient.PatientViewModel
 import kotlinx.coroutines.launch
@@ -60,57 +64,22 @@ import java.util.UUID
 @Composable
 fun TherapyResultPage(
     navController: NavController,
-    score: Int = 0,
-    totalQuestions: Int = 10,
+    sessionAssessment: SessionAssessment,
     patientViewModel: PatientViewModel
 ) {
     val previousRoute = remember {
         navController.previousBackStackEntry?.destination?.route ?: ""
     }
 
-    var withHelp by remember { mutableStateOf(false) }
-    var independent by remember { mutableStateOf(false) }
-    var needsRepetition by remember { mutableStateOf(false) }
-    var fullSpirit by remember { mutableStateOf(false) }
-
-    var selectedMood by remember { mutableStateOf<String?>(null) }
-
     var additionalNotes by remember { mutableStateOf("") }
-
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
     val selectedPatient by patientViewModel.selectedPatient.collectAsState()
-
-    // Get category ID from previous route
-    val categoryId = remember {
-        when {
-            previousRoute.contains("kosakataExerciseDetailPage") -> {
-                navController.previousBackStackEntry?.arguments?.getString("category") ?: ""
-            }
-            previousRoute.contains("pelafalanExerciseDetailPage") -> {
-                navController.previousBackStackEntry?.arguments?.getString("category") ?: ""
-            }
-            previousRoute.contains("sequenceExerciseDetailPage") -> {
-                navController.previousBackStackEntry?.arguments?.getString("categoryTitle") ?: ""
-            }
-            else -> ""
-        }
-    }
-
-    val therapyTpye = remember {
-        when {
-            previousRoute.contains("kosakataExerciseDetailPage") -> "Kosakata"
-            previousRoute.contains("pelafalanExerciseDetailPage") -> "Pelafalan"
-            previousRoute.contains("sequenceExerciseDetailPage") -> "Urutan"
-            else -> ""
-        }
-    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { },
+                title = { Text("Hasil Terapi") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("flashcardPage") }) {
                         Icon(
@@ -132,7 +101,7 @@ fun TherapyResultPage(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Correct",
+                text = "Hasil Akhir",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center
@@ -141,7 +110,7 @@ fun TherapyResultPage(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "$score/$totalQuestions",
+                text = "${sessionAssessment.totalCorrect}/${sessionAssessment.totalCards}",
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -150,7 +119,7 @@ fun TherapyResultPage(
             Spacer(modifier = Modifier.height(16.dp))
 
             LinearProgressIndicator(
-                progress = score.toFloat() / totalQuestions,
+                progress = sessionAssessment.totalCards.toFloat() / sessionAssessment.totalCards,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp),
@@ -160,76 +129,65 @@ fun TherapyResultPage(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Column(
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             ) {
-                Text(
-                    text = "Quick Notes",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Rangkuman Mood Anak",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
 
-                CheckboxItem(
-                    text = "Dapat melafalkan dengan bantuan",
-                    checked = withHelp,
-                    onCheckedChange = { withHelp = it }
-                )
+                    Text(
+                        text = "Mood Dominan: ${sessionAssessment.getDominantMood()}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
 
-                CheckboxItem(
-                    text = "Dapat melafalkan mandiri",
-                    checked = independent,
-                    onCheckedChange = { independent = it }
-                )
-
-                CheckboxItem(
-                    text = "Butuh pengulangan >3x",
-                    checked = needsRepetition,
-                    onCheckedChange = { needsRepetition = it }
-                )
-
-                CheckboxItem(
-                    text = "Penuh semangat",
-                    checked = fullSpirit,
-                    onCheckedChange = { fullSpirit = it }
-                )
+                    sessionAssessment.getMoodSummary().forEach { (mood, count) ->
+                        Text(
+                            text = "$mood: $count card",
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Column(
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = "Mood Anak",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    MoodOption(
-                        label = "Senang",
-                        selected = selectedMood == "Senang",
-                        onClick = { selectedMood = "Senang" }
+                    Text(
+                        text = "Rangkuman Quick Notes",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
 
-                    MoodOption(
-                        label = "Biasa",
-                        selected = selectedMood == "Biasa",
-                        onClick = { selectedMood = "Biasa" }
-                    )
-
-                    MoodOption(
-                        label = "Tidak Fokus",
-                        selected = selectedMood == "Tidak Fokus",
-                        onClick = { selectedMood = "Tidak Fokus" }
-                    )
+                    sessionAssessment.getQuickNotesSummary().forEach { (note, count) ->
+                        Text(
+                            text = "$note: $count card",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                    }
                 }
             }
 
@@ -263,87 +221,6 @@ fun TherapyResultPage(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            selectedPatient?.let { patient ->
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(
-                        text = "Pasien: ${patient.name}",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    OutlinedButton(
-                        onClick = { navController.navigate("patientSelectionForTherapy/flashcardPage")},
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Text("Ganti")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-            } ?: run {
-                OutlinedButton(
-                    onClick = { navController.navigate("patientSelectionForTherapy/flashcardPage")},
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                ) {
-                    Text(
-                        text = "Pilih Pasien",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Black
-                    )
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-
-            OutlinedButton(
-                onClick = {
-                    when {
-                        previousRoute.contains("kosakataExerciseDetailPage") -> {
-                            navController.navigate("kosakataExerciseDetailPage/$categoryId") {
-                                popUpTo("therapyResultPage") { inclusive = true }
-                            }
-                        }
-                        previousRoute.contains("pelafalanExerciseDetailPage") -> {
-                            navController.navigate("pelafalanExerciseDetailPage/$categoryId") {
-                                popUpTo("therapyResultPage") { inclusive = true }
-                            }
-                        }
-                        previousRoute.contains("sequenceExerciseDetailPage") -> {
-                            navController.navigate("sequenceExerciseDetailPage/$categoryId") {
-                                popUpTo("therapyResultPage") { inclusive = true }
-                            }
-                        }
-                        else -> {
-                            navController.navigate("flashcardPage") {
-                                popUpTo("therapyResultPage") { inclusive = true }
-                            }
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-            ) {
-                Text(
-                    text = "Ulangi Terapi",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Black
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
             Button(
                 onClick = {
                     if (selectedPatient == null) {
@@ -353,32 +230,29 @@ fun TherapyResultPage(
                         return@Button
                     }
 
-                    val notesBuilder = StringBuilder()
-                    if (withHelp) notesBuilder.append("Dapat melafalkan dengan bantuan\n")
-                    if (independent) notesBuilder.append("Dapat melafalkan mandiri\n")
-                    if (needsRepetition) notesBuilder.append("Butuh pengulangan >3x\n")
-                    if (fullSpirit) notesBuilder.append("Penuh semangat\n")
+                    val comprehensiveNotes = StringBuilder()
 
-                    if (selectedMood != null) {
-                        notesBuilder.append("Mood Anak: $selectedMood\n")
-                    }
+                    comprehensiveNotes.append("Mood Dominan: ${sessionAssessment.getDominantMood()}\n")
+                    comprehensiveNotes.append("Detail Mood: ${sessionAssessment.getMoodSummary()}\n")
+
+                    comprehensiveNotes.append("Quick Notes Summary: ${sessionAssessment.getQuickNotesSummary()}\n")
 
                     if (additionalNotes.isNotBlank()) {
-                        notesBuilder.append("Catatan Tambahan: $additionalNotes\n")
+                        comprehensiveNotes.append("Catatan Tambahan: $additionalNotes\n")
                     }
 
-                    val progressPercentage = (score * 100) / totalQuestions
+                    val progressPercentage = (sessionAssessment.totalCorrect * 100) / sessionAssessment.totalCards
 
                     val therapyHistory = TherapyHistory(
                         id = UUID.randomUUID().toString(),
                         patientId = selectedPatient!!.id,
-                        therapyType = therapyTpye,
+                        therapyType = "Kosakata",
                         date = LocalDate.now(),
-                        score = score,
-                        totalQuestions = totalQuestions,
+                        score = sessionAssessment.totalCorrect,
+                        totalQuestions = sessionAssessment.totalCards,
                         progressPercentage = progressPercentage,
-                        notes = notesBuilder.toString(),
-                        categoryId = categoryId,
+                        notes = comprehensiveNotes.toString(),
+                        categoryId = "",
                         showLine = true
                     )
 
@@ -389,7 +263,7 @@ fun TherapyResultPage(
                     }
 
                     navController.navigate("flashcardPage") {
-                        popUpTo("therapyResultPage") { inclusive = true }
+                        popUpTo(previousRoute) { inclusive = true }
                     }
                 },
                 modifier = Modifier
