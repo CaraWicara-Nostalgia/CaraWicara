@@ -81,7 +81,7 @@ fun PelafalanExerciseDetailPage(
     val score by viewModel.score.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    var isLoading by remember { mutableStateOf(true) }
+    val isLoading by viewModel.isLoading.collectAsState()
     var isFlipped by remember { mutableStateOf(false) }
 
     val rotation by animateFloatAsState(
@@ -97,35 +97,24 @@ fun PelafalanExerciseDetailPage(
         isFlipped = false
     }
 
-    LaunchedEffect(currentFlashcards) {
-        Log.d("PelafalanExerciseDetailPage", "Current flashcards size: ${currentFlashcards.size}")
-        if (currentFlashcards.isNotEmpty()) {
-            isLoading = false
-        }
-    }
-
     LaunchedEffect(Unit) {
-        delay(5000)
-        if (isLoading) {
-            Log.w("PelafalanExerciseDetailPage", "Loading took too long, showing error message")
-            isLoading = false
-        }
-    }
-
-    LaunchedEffect(isExerciseCompleted) {
-        if (isExerciseCompleted) {
-            // Navigate to result page
-            navController.navigate("therapyResultPage/$score/${currentFlashcards.size}")
-            viewModel.resetExercise()
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+        savedStateHandle?.get<Boolean>("fromAssessment")?.let { fromAssessment ->
+            if (fromAssessment) {
+                viewModel.moveToNextCard()
+                viewModel.resetLoadingState()
+                savedStateHandle.remove<Boolean>("fromAssessment")
+            }
         }
     }
 
     LaunchedEffect(category) {
         Log.d("PelafalanExerciseDetailPage", "Category from navigation: $category")
-        isLoading = true
-        if (!category.isNullOrEmpty()) {
+        if (!category.isNullOrEmpty() && currentFlashcards.isEmpty()) {
             Log.d("PelafalanExerciseDetailPage", "Setting current category: $category")
             viewModel.setCurrentCategory(category)
+        } else if (currentFlashcards.isNotEmpty()) {
+            viewModel.resetLoadingState()
         }
     }
 
@@ -417,7 +406,11 @@ fun PelafalanExerciseDetailPage(
                         ) {
                             OutlinedButton(
                                 onClick = {
-                                    viewModel.handleCorrectAnswer()
+                                    navController.currentBackStackEntry?.savedStateHandle?.set("fromAssessment", true)
+                                    val currentCards = currentFlashcards[currentIndex]
+                                    navController.navigate(
+                                        "cardAssessmentPage/${currentCards.word}/$currentIndex/${currentFlashcards.size}/true"
+                                    )
                                 },
                                 modifier = Modifier
                                     .weight(1f)
@@ -437,7 +430,11 @@ fun PelafalanExerciseDetailPage(
 
                             OutlinedButton(
                                 onClick = {
-                                    viewModel.handleWrongAnswer()
+                                    navController.currentBackStackEntry?.savedStateHandle?.set("fromAssessment", true)
+                                    val currentCards = currentFlashcards[currentIndex]
+                                    navController.navigate(
+                                        "cardAssessmentPage/${currentCards.word}/$currentIndex/${currentFlashcards.size}/false"
+                                    )
                                 },
                                 modifier = Modifier
                                     .weight(1f)

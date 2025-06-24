@@ -10,11 +10,13 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.karina.carawicara.data.FlashcardPelafalanItem
 import com.karina.carawicara.data.PelafalanExerciseCategory
+import com.karina.carawicara.data.SessionAssessment
 import com.karina.carawicara.data.entity.PelafalanEntity
 import com.karina.carawicara.data.repository.FlashcardRepository
 import com.karina.carawicara.di.AppModule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -43,6 +45,12 @@ class PelafalanExerciseViewModel(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
+
+    private val _sessionAssessment = MutableStateFlow(SessionAssessment())
+    val sessionAssessment: StateFlow<SessionAssessment> = _sessionAssessment.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     init {
         loadAllFlashcards()
@@ -75,31 +83,6 @@ class PelafalanExerciseViewModel(
 
                         if (uiCategories.isEmpty()) {
                             Log.w("PelafalanExerciseViewModel", "Dapat 0 kategori konsonan_m, menggunakan data dummy")
-                            loadDummyCategories()
-                        } else {
-                            _categories.value = uiCategories
-                            Log.d("PelafalanExerciseViewModel", "Berhasil memuat ${uiCategories.size} kategori dari database")
-                        }
-                    }
-                    repository.getCategoriesByType("konsonan_b").collect { dbCategories ->
-                        Log.d("PelafalanExerciseViewModel", "Dapat ${dbCategories.size} kategori konsonan_b")
-
-                        val uiCategories = dbCategories.map { category ->
-                            val pelafalanCount = repository.countPelafalanInCategory(category.id)
-                            Log.d("PelafalanExerciseViewModel", "Kategori ${category.id} memiliki $pelafalanCount konsonan_b")
-
-                            PelafalanExerciseCategory(
-                                id = category.id,
-                                title = category.title,
-                                description = category.description,
-                                total = category.total,
-                                progress = category.progress,
-                                progressPercentage = category.progressPercentage
-                            )
-                        }
-
-                        if (uiCategories.isEmpty()) {
-                            Log.w("PelafalanExerciseViewModel", "Dapat 0 kategori konsonan_b, menggunakan data dummy")
                             loadDummyCategories()
                         } else {
                             _categories.value = uiCategories
@@ -153,6 +136,7 @@ class PelafalanExerciseViewModel(
                 if (count == 0) {
                     _errorMessage.value = "Tidak ada konsonan_m dalam kategori '$category'"
                     _currentFlashcards.value = emptyList()
+                    _isLoading.value = false
                     return@launch
                 }
 
@@ -160,6 +144,7 @@ class PelafalanExerciseViewModel(
                     .catch { e ->
                         Log.e("PelafalanExerciseViewModel", "Error loading from database", e)
                         _errorMessage.value = "Error: ${e.message}"
+                        _isLoading.value = false
                         loadFlashcardsFromJson(category)
                     }
                     .collect { entityList ->
@@ -189,6 +174,7 @@ class PelafalanExerciseViewModel(
                             limitedItems.forEachIndexed { index, item ->
                                 Log.d("PelafalanExerciseViewModel", "[$index] ${item.word}, ${item.imageRes}")
                             }
+                            _isLoading.value = false
                         } else {
                             Log.w("PelafalanExerciseViewModel", "Tidak ada data dari database, coba JSON")
                             _errorMessage.value = "Tidak ada flashcard tersedia di database"
@@ -198,6 +184,7 @@ class PelafalanExerciseViewModel(
             } catch (e: Exception) {
                 Log.e("PelafalanExerciseViewModel", "Error umum", e)
                 _errorMessage.value = "Error: ${e.message}"
+                _isLoading.value = false
                 loadFlashcardsFromJson(category)
             }
         }
@@ -268,8 +255,10 @@ class PelafalanExerciseViewModel(
                 Log.e("PelafalanExerciseViewModel", "Error parsing JSON", e)
                 loadDummyFlashcards(category)
             }
+            _isLoading.value = false
         } catch (e: Exception) {
             Log.e("PelafalanExerciseViewModel", "Error loading flashcards from JSON", e)
+            _isLoading.value = false
             loadDummyFlashcards(category)
         }
     }
@@ -306,10 +295,12 @@ class PelafalanExerciseViewModel(
         if (dummyFlashcards.isNotEmpty()) {
             _currentFlashcards.value = dummyFlashcards
             _errorMessage.value = "Menggunakan data dummy untuk kategori $category (mode pengembangan)"
+            _isLoading.value = false
             Log.d("PelafalanExerciseViewModel", "Loaded ${dummyFlashcards.size} dummy flashcards for category: $category")
         } else {
             _currentFlashcards.value = emptyList()
             _errorMessage.value = "Tidak ditemukan flashcard untuk kategori $category"
+            _isLoading.value = false
             Log.e("PelafalanExerciseViewModel", "No dummy flashcards for category: $category")
         }
     }
@@ -424,6 +415,19 @@ class PelafalanExerciseViewModel(
         }
 
         Log.d("PelafalanExerciseViewModel", "==== END DEBUG INFO ====")
+    }
+
+    fun moveToNextCard() {
+        if (currentIndex.value < currentFlashcards.value.size - 1) {
+            _currentIndex.value += 1
+            Log.d("PelafalanExerciseViewModel", "Moved to next card: ${currentIndex.value}")
+        } else {
+            Log.d("PelafalanExerciseViewModel", "Already at the last card, cannot move forward")
+        }
+    }
+
+    fun resetLoadingState() {
+        _isLoading.value = false
     }
 }
 

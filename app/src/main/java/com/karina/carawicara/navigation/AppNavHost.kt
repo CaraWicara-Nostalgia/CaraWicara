@@ -325,10 +325,8 @@ fun AppNavHost(navController: NavHostController) {
                         val categoryRoute = navController.previousBackStackEntry?.destination?.route
                         if (categoryRoute?.contains("kosakataExerciseDetailPage") == true) {
                             navController.popBackStack()
-                        } else {
-                            navController.navigate("kosakataExerciseDetailPage") {
-                                popUpTo("cardAssessmentPage") { inclusive = true }
-                            }
+                        } else if ( categoryRoute?.contains("pelafalanExerciseDetailPage") == true) {
+                            navController.popBackStack()
                         }
                     } else {
                         navController.navigate("therapyResultPage") {
