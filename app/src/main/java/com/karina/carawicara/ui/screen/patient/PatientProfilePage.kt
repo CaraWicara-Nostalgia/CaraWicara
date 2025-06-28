@@ -65,6 +65,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.karina.carawicara.R
 import com.karina.carawicara.data.TherapyHistory
+import com.karina.carawicara.ui.screen.therapyHistory.parseTherapyNotes
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 import java.time.Month
@@ -438,6 +439,8 @@ fun TherapyHistoryItem(
     history: TherapyHistory,
     onClick: () -> Unit = {}
 ){
+    val parsedNotes = parseTherapyNotes(history.notes)
+
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -498,15 +501,46 @@ fun TherapyHistoryItem(
                     fontWeight = FontWeight.Medium
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                if (parsedNotes.dominantMood != "Tidak Diketahui") {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Mood Dominan: ${parsedNotes.dominantMood}",
+                        fontSize = 11.sp,
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
 
-                Text(
-                    text = history.notes,
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(top = 4.dp),
-                    lineHeight = 16.sp
-                )
+                if (parsedNotes.quickNotesSummary.isNotEmpty()) {
+                    val topNote = parsedNotes.quickNotesSummary.maxByOrNull { it.value }
+                    if (topNote != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Catatan Utama: ${topNote.key}",
+                            fontSize = 11.sp,
+                            color = Color.Gray,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+
+                if (parsedNotes.additionalNotes.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = parsedNotes.additionalNotes.take(50) + if (parsedNotes.additionalNotes.length > 50) "..." else "",
+                        fontSize = 11.sp,
+                        color = Color.Gray,
+                        lineHeight = 14.sp
+                    )
+                } else if (parsedNotes.moodSummary.isEmpty() && parsedNotes.quickNotesSummary.isEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = history.notes.take(50) + if (history.notes.length > 50) "..." else "",
+                        fontSize = 11.sp,
+                        color = Color.Gray,
+                        lineHeight = 14.sp
+                    )
+                }
             }
         }
 
